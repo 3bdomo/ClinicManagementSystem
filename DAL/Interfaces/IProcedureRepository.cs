@@ -9,5 +9,7 @@ namespace DAL.Interfaces
 {
     public interface IProcedureRepository: IGenericRepository<Procedure>
     {
+        Task<IEnumerable<Procedure>> GetByMedicalRecordAsync(int recordId);
+        Task<IEnumerable<Procedure>> GetByPatientAsync(int patientId);
     }
 }

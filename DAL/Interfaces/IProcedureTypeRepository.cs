@@ -9,5 +9,6 @@ namespace DAL.Interfaces
 {
     public interface IProcedureTypeRepository: IGenericRepository<ProcedureType>
     {
+        Task<IEnumerable<ProcedureType>> GetActiveAsync();
     }
 }
