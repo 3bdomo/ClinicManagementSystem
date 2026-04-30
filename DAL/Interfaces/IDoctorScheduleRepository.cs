@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
+using Common.Enums;
 namespace DAL.Interfaces
 {
     public interface IDoctorScheduleRepository: IGenericRepository<DoctorSchedule>
