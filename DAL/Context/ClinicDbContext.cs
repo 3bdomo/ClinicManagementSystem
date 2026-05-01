@@ -31,17 +31,12 @@ namespace DAL.Context
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
         public DbSet<InvoiceItem> InvoiceItems { get; set; }
-<<<<<<< HEAD
-        public DbSet<Receptionist> Receptionists { get; set; }
-=======
         public DbSet<Receptionist> Receptionists { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
->>>>>>> 0426ac091cf4583972dc0e09fa966683424a3a5a
 
-      
 
             modelBuilder.ApplyConfigurationsFromAssembly(
                 typeof(ClinicDbContext).Assembly);
