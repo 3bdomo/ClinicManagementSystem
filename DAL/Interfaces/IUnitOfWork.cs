@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore.Storage;
 namespace DAL.Interfaces
 {
     public interface IUnitOfWork : IDisposable
@@ -16,6 +17,8 @@ namespace DAL.Interfaces
         IProcedureTypeRepository ProcedureTypes {get; }
         IProcedureRepository Procedures {get; }
         IInvoiceRepository Invoices {get; }
+
+        Task<IDbContextTransaction> BeginTransactionAsync();
         Task SaveChangesAsync();    
     }
 }
