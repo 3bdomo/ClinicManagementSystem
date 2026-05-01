@@ -26,8 +26,9 @@ namespace DAL.Context
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
 
         public DbSet<InvoiceItem> InvoiceItems { get; set; }
-        DbSet<Receptionist> Receptionists { get; set; }
+        public DbSet<Receptionist> Receptionists { get; set; }
 
+      
 
 
 

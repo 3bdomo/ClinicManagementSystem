@@ -1,4 +1,4 @@
-﻿using DAL.Models;
+﻿using ClinicSystem.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,6 @@ namespace DAL.Interfaces
         Task<IEnumerable<Patient>> GetDeletedAsync();    
         Task<bool> RestoreAsync(int patientId);
         Task<Patient?> GetByNationalIdAsync(string nationalId);
-        Task<Patient?> GetByUserIdAsync(string userId);
+        Task<Patient?> GetByUserIdAsync(int userId);
     }
 }

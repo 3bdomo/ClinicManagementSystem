@@ -15,10 +15,10 @@ namespace DAL.Repositories
         protected readonly ClinicDbContext _context;
         protected readonly DbSet<T> _dbSet;
 
-        public GenericRepository(ClinicDbContext context, DbSet<T> dbSet)
+        public GenericRepository(ClinicDbContext context)
         {
             _context = context;
-            _dbSet = dbSet;
+            _dbSet = context.Set<T>();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(int pageNumber, int pageSize)

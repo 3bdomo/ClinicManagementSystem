@@ -12,6 +12,7 @@ namespace DAL.Repositories
     internal class UnitOfWork : IUnitOfWork
     {
         private readonly ClinicDbContext _context;
+     
         public IPatientRepository Patients {  get;private set; }
 
         public IDoctorRepository Doctors {  get; private set; }

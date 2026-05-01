@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL.Models;
+using System.Linq.Expressions;
+using ClinicSystem.DAL.Models;
 using Common.Enums;
 namespace DAL.Interfaces
 {
