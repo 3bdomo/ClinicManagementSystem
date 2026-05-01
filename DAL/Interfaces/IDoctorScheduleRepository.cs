@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+<<<<<<< HEAD
 using ClinicSystem.DAL.Models;
+=======
+>>>>>>> 0426ac091cf4583972dc0e09fa966683424a3a5a
 using Common.Enums;
+using ClinicSystem.DAL.Models;
 namespace DAL.Interfaces
 {
     public interface IDoctorScheduleRepository: IGenericRepository<DoctorSchedule>
