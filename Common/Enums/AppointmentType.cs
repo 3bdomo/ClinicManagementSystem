@@ -8,6 +8,6 @@ namespace Common.Enums
 {
     public enum AppointmentType
     {
-        Consultation,  Surgery
+        Consultation,  Surgery, FollowUp
     }
 }
