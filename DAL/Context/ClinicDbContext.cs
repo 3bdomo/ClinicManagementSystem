@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using ClinicSystem.DAL.Models;
 namespace DAL.Context
 {
     public class ClinicDbContext : IdentityDbContext<ApplicationUser>
@@ -26,10 +26,12 @@ namespace DAL.Context
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
 
         public DbSet<InvoiceItem> InvoiceItems { get; set; }
+        DbSet<Receptionist> Receptionists { get; set; }
 
 
 
 
 
-        }
+
+    }
 }

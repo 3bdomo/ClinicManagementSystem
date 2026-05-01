@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ClinicSystem.DAL.Models;
 
-namespace DAL.Models
+public class RecordAttachment
 {
-    public class RecordAttachment
-    {
-    }
+    public int Id { get; set; }
+    public int MedicalRecordId { get; set; }
+    public string FileName { get; set; } = string.Empty;
+    public string FilePath { get; set; } = string.Empty;
+    public string FileType { get; set; } = string.Empty;
+    public DateTime UploadedAt { get; set; }
+    public string? UploadedBy { get; set; }
+
+    // Navigation Properties
+    public MedicalRecord MedicalRecord { get; set; } = null!;
 }
