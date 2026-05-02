@@ -28,7 +28,9 @@ namespace DAL.Repositories
 
         public IInvoiceRepository Invoices {  get; private set; }
 
-        public UnitOfWork(ClinicDbContext context, IPatientRepository patients, IDoctorRepository doctors, IDoctorScheduleRepository doctorSchedules, IAppointmentRepository appointments, IMedicalRecordRepository medicalRecords, IProcedureTypeRepository procedureTypes, IProcedureRepository procedures, IInvoiceRepository invoices)
+        public IReceptionistRepository Receptionists { get; private set; }
+
+        public UnitOfWork(ClinicDbContext context, IPatientRepository patients, IDoctorRepository doctors, IDoctorScheduleRepository doctorSchedules, IAppointmentRepository appointments, IMedicalRecordRepository medicalRecords, IProcedureTypeRepository procedureTypes, IProcedureRepository procedures, IInvoiceRepository invoices, IReceptionistRepository receptionists)
         {
             _context = context;
             Patients = patients;
@@ -39,6 +41,7 @@ namespace DAL.Repositories
             ProcedureTypes = procedureTypes;
             Procedures = procedures;
             Invoices = invoices;
+            Receptionists = receptionists;
         }
 
 

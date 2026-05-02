@@ -27,6 +27,7 @@ public class Patient : IAuditable, ISoftDeletable
     public DateTime? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
 
+
     // Navigation Properties
     public ApplicationUser? ApplicationUser { get; set; }
     public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();

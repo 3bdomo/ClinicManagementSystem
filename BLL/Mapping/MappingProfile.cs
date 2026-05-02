@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BLL.DTOs;
+using BLL.DTOs.Patient;
 using ClinicSystem.DAL.Models;
 
 namespace ClinicSystem.BLL.Mapping;
@@ -9,9 +10,8 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
 
-        CreateMap<Patient, PatientDto>()
-            .ForMember(dest => dest.ApplicationUserId,
-                       opt => opt.MapFrom(src => src.ApplicationUserId));
+        CreateMap<Patient, PatientDto>();
+          //  .ForMember(dest => dest.ApplicationUserId,opt => opt.MapFrom(src => src.ApplicationUserId));
 
         CreateMap<PatientDto, Patient>()
             .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
@@ -24,7 +24,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Appointments, opt => opt.Ignore())
             .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
             .ForMember(dest => dest.Invoices, opt => opt.Ignore())
-            .ForMember(dest => dest.ApplicationUser, opt => opt.Ignore());
+            .ForMember(dest => dest.ApplicationUser, opt => opt.Ignore())
+            .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore());
 
         CreateMap<PatientRegisterDto, Patient>()
             .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore())

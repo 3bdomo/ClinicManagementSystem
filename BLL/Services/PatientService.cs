@@ -30,7 +30,8 @@ namespace BLL.Services
            await _unitOfWork.Patients.AddAsync(patientEntity);
            await _unitOfWork.SaveChangesAsync();
            return OperationResult.Success("Patient created successfully.");
-                
+            //return OperationResult<PatientDto>.Success(_mapper.Map<PatientDto>(patient));
+
         }
 
         public Task<OperationResult> DeleteAsync(int id)
