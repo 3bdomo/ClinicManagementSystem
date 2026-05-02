@@ -4,7 +4,7 @@ using BLL.DTOs.Patient;
 using BLL.DTOs;
 using ClinicSystem.DAL.Models;
 
-namespace ClinicSystem.BLL.Mapping;
+namespace BLL.Mapping;
 
 public class MappingProfile : Profile
 {
