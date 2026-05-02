@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using ClinicSystem.DAL.Models;
 namespace BLL.Services
 {
     internal class PatientService : IPatientService
@@ -16,14 +16,21 @@ namespace BLL.Services
       
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public PatientService(IUnitOfWork unitOfWork)
+        public PatientService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;//context of database
+            _mapper = mapper;
         }
+     
 
-        public Task<OperationResult> CreateAsync(PatientDTO dto)
+        public async Task<OperationResult> CreateAsync(PatientDTO dto)
         {
-            throw new NotImplementedException();
+           var patientEntity = _mapper.Map<Patient>(dto);
+
+           await _unitOfWork.Patients.AddAsync(patientEntity);
+           await _unitOfWork.SaveChangesAsync();
+           return OperationResult.Success("Patient created successfully.");
+                
         }
 
         public Task<OperationResult> DeleteAsync(int id)
