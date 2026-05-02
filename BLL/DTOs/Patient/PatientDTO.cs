@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL.DTOs.Patient
 {
-    public class PatientDTO
+    public class PatientDto
     {
     }
 }

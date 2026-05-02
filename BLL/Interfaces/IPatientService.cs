@@ -9,14 +9,14 @@ namespace BLL.Interfaces
 {
     public interface IPatientService
     {
-        Task<OperationResult<IEnumerable<PatientDTO>>> GetAllAsync(int page, int pageSize);
-        Task<OperationResult<PatientDTO>> GetByIdAsync(int id);
-        Task<OperationResult<IEnumerable<PatientDTO>>> SearchAsync(string query);
-        Task<OperationResult> CreateAsync(PatientDTO dto);
-        Task<OperationResult> UpdateAsync(PatientDTO dto);
+        Task<OperationResult<IEnumerable<PatientDto>>> GetAllAsync(int page, int pageSize);
+        Task<OperationResult<PatientDto>> GetByIdAsync(int id);
+        Task<OperationResult<IEnumerable<PatientDto>>> SearchAsync(string query);
+        Task<OperationResult> CreateAsync(PatientDto dto);
+        Task<OperationResult> UpdateAsync(PatientDto dto);
         Task<OperationResult> DeleteAsync(int id);         // soft delete
         Task<OperationResult<PatientHistoryDto>> GetFullHistoryAsync(int id);
-        Task<OperationResult<IEnumerable<PatientDTO>>> GetDeletedAsync();// ✅ Admin only
+        Task<OperationResult<IEnumerable<PatientDto>>> GetDeletedAsync();// ✅ Admin only
         Task<OperationResult> RestoreAsync(int id);     //     ✅ Admin only
     }
 }

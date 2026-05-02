@@ -23,7 +23,7 @@ namespace BLL.Services
         }
      
 
-        public async Task<OperationResult> CreateAsync(PatientDTO dto)
+        public async Task<OperationResult> CreateAsync(PatientDto dto)
         {
            var patientEntity = _mapper.Map<Patient>(dto);
 
@@ -38,17 +38,17 @@ namespace BLL.Services
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult<IEnumerable<PatientDTO>>> GetAllAsync(int page, int pageSize)
+        public Task<OperationResult<IEnumerable<PatientDto>>> GetAllAsync(int page, int pageSize)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult<PatientDTO>> GetByIdAsync(int id)
+        public Task<OperationResult<PatientDto>> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult<IEnumerable<PatientDTO>>> GetDeletedAsync()
+        public Task<OperationResult<IEnumerable<PatientDto>>> GetDeletedAsync()
         {
             throw new NotImplementedException();
         }
@@ -63,12 +63,12 @@ namespace BLL.Services
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult<IEnumerable<PatientDTO>>> SearchAsync(string query)
+        public Task<OperationResult<IEnumerable<PatientDto>>> SearchAsync(string query)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult> UpdateAsync(PatientDTO dto)
+        public Task<OperationResult> UpdateAsync(PatientDto dto)
         {
             throw new NotImplementedException();
         }
