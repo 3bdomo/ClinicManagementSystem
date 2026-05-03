@@ -18,7 +18,7 @@ namespace BLL.Interfaces
         Task<OperationResult> UpdateAsync(PatientDto dto);
         Task<OperationResult> DeleteAsync(int id);         // soft delete
         Task<OperationResult<PatientHistoryDto>> GetFullHistoryAsync(int id);
-        Task<OperationResult<IEnumerable<PatientDto>>> GetDeletedAsync();// ✅ Admin only
-        Task<OperationResult> RestoreAsync(int id);     //     ✅ Admin only
+        Task<OperationResult<IEnumerable<PatientDto>>> GetDeletedAsync();//Admin only
+        Task<OperationResult> RestoreAsync(int id);     // Admin only
     }
 }

@@ -20,10 +20,15 @@ namespace BLL.Services
 
         public async Task<OperationResult> CreateAsync(PatientDto dto)
         {
+            var existingPatient = await _unitOfWork.Patients.GetByNationalIdAsync(dto.NationalId);
+            if (existingPatient != null)
+                return OperationResult.Failure("A patient with the same National ID already exists.");
             var patientEntity = _mapper.Map<Patient>(dto);
             await _unitOfWork.Patients.AddAsync(patientEntity);
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success("Patient created successfully.");
+
+
         }
 
         public async Task<OperationResult> DeleteAsync(int id)
