@@ -8,12 +8,15 @@ namespace DAL.Repositories
 {
     internal class DoctorRepository : GenericRepository<Doctor>, IDoctorRepository
     {
-        public DoctorRepository(ClinicDbContext context) : base(context) 
-    {
-    }
+        public DoctorRepository(ClinicDbContext context) : base(context)
+        {
+        }
 
-    public async Task<IEnumerable<Doctor>> GetAvailableDoctorsAsync()
-        => await _dbSet.Where(d => d.IsAvailable).ToListAsync();
+        public async Task<IEnumerable<Doctor>> GetAvailableAsync()
+            => await _dbSet.Where(d => d.IsAvailable).ToListAsync();
+
+        public async Task<IEnumerable<Doctor>> GetAvailableDoctorsAsync()
+            => await _dbSet.Where(d => d.IsAvailable).ToListAsync();
 
         public async Task<Doctor?> GetByEmailAsync(string email)
             => await _dbSet
@@ -22,6 +25,15 @@ namespace DAL.Repositories
 
         public async Task<IEnumerable<Doctor>> GetBySpecializationAsync(Specialization spec)
             => await _dbSet.Where(d => d.Specialization == spec).ToListAsync();
+
+        public async Task<Doctor?> GetByUserIdAsync(string applicationUserId)
+            => await _dbSet
+                .FirstOrDefaultAsync(d => d.ApplicationUserId == applicationUserId);
+
+        public async Task<Doctor?> GetWithSchedulesAsync(int doctorId)
+            => await _dbSet
+                .Include(d => d.DoctorSchedules)
+                .FirstOrDefaultAsync(d => d.Id == doctorId);
 
         public async Task<Doctor?> GetWithUserAsync(int doctorId)
             => await _dbSet

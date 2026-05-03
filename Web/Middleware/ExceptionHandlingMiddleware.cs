@@ -7,9 +7,9 @@ public class ExceptionHandlingMiddleware
 
     public ExceptionHandlingMiddleware(
         RequestDelegate next,
-        ILogger<ExceptionHandlingMiddleware> logger)
+        ILogger<ExceptionHandlingMiddleware> logger)   
     {
-        _next   = next;
+        _next = next;
         _logger = logger;
     }
 
@@ -21,7 +21,11 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception - Path: {Path}", context.Request.Path);
+            _logger.LogError(ex, "Unhandled exception - Path: {Path} | User: {User} | Method: {Method}",
+                context.Request.Path,
+                context.User.Identity?.Name ?? "Anonymous",
+                context.Request.Method);
+
             context.Response.Redirect("/Home/Error");
         }
     }
