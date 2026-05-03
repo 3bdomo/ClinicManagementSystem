@@ -9,6 +9,8 @@ namespace BLL.Interfaces
 {
     public interface IPatientService
     {
+        Task<OperationResult<IEnumerable<PatientDto>>> GetAllAsync();
+
         Task<OperationResult<IEnumerable<PatientDto>>> GetAllAsync(int page, int pageSize);
         Task<OperationResult<PatientDto>> GetByIdAsync(int id);
         Task<OperationResult<IEnumerable<PatientDto>>> SearchAsync(string query);
