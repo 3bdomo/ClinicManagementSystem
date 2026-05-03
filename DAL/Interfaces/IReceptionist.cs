@@ -1,13 +1,7 @@
-﻿using ClinicSystem.DAL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ClinicSystem.DAL.Models;
 
-namespace DAL.Interfaces
+namespace DAL.Interfaces;
+
+public interface IReceptionistRepository : IGenericRepository<Receptionist>
 {
-    public interface IReceptionistRepository : IGenericRepository<Receptionist>
-    {
-    }
 }
