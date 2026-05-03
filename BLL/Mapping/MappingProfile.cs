@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.DTOs.Patient;
+using BLL.DTOs.Shared;
+using BLL.DTOs.User;
 using ClinicSystem.DAL.Models;
 
 namespace ClinicSystem.BLL.Mapping;
