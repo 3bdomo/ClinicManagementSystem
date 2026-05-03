@@ -1,0 +1,450 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Appointments";
+}
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght%40400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#643f00",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#0d1d2b",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary": "#006b5f",
+                        "primary-container": "#1a73e8",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#727785",
+                        "surface-container": "#e3efff",
+                        "surface-dim": "#ccdcf0",
+                        "on-secondary-fixed": "#00201c",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-surface-variant": "#414754",
+                        "background": "#f7f9ff",
+                        "tertiary-fixed": "#ffddb5",
+                        "secondary-fixed-dim": "#70d8c8",
+                        "primary": "#005bbf",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#8df5e4",
+                        "on-tertiary-container": "#ffffff",
+                        "inverse-on-surface": "#e8f1ff",
+                        "inverse-surface": "#233241",
+                        "surface-variant": "#d4e4f8",
+                        "surface": "#f7f9ff",
+                        "on-primary-container": "#ffffff",
+                        "outline-variant": "#c1c6d6",
+                        "on-secondary-fixed-variant": "#005048",
+                        "inverse-primary": "#adc7ff",
+                        "primary-fixed-dim": "#adc7ff",
+                        "surface-container-high": "#daeafe",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#005bc0",
+                        "surface-container-low": "#edf4ff",
+                        "on-surface": "#0d1d2b",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#8df5e4",
+                        "tertiary-container": "#a46a00",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb957",
+                        "tertiary": "#835400",
+                        "on-primary-fixed": "#001a41",
+                        "on-secondary-container": "#007165",
+                        "surface-container-highest": "#d4e4f8",
+                        "on-tertiary-fixed": "#2a1800",
+                        "surface-bright": "#f7f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "sm": "12px",
+                        "unit": "4px",
+                        "lg": "24px",
+                        "xxl": "48px",
+                        "md": "16px",
+                        "xs": "8px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Inter"], "body-sm": ["Inter"], "h3": ["Inter"], "h1": ["Inter"], "label-sm": ["Inter"], "label-md": ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9ff; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    </style>
+<title>Appointments - ClinicSystem</title><link href="/css/site.css" rel="stylesheet"/><link href="/css/dashboard.css" rel="stylesheet"/></head>
+<body class="bg-background text-on-background"><input id="CurrentMvcView" type="hidden" value="Views/Appointment/Index.cshtml"/>
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-[240px] z-50 bg-slate-950 dark:bg-black border-r border-slate-800 flex flex-col py-6">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-primary-container rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="clinical_notes">clinical_notes</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-white leading-tight">ClinicSystem</h1>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Medical Management</p>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-1">
+<a class="text-slate-400 hover:text-white px-6 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95" href="/Home/Index">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-sans text-sm tracking-tight">Dashboard</span>
+</a>
+<a class="text-slate-400 hover:text-white px-6 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95" href="/Patient/Index">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-sans text-sm tracking-tight">Patients</span>
+</a>
+<a class="bg-blue-600/10 text-white border-l-4 border-blue-600 px-6 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95" href="/Appointment/Index">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-sans text-sm tracking-tight">Appointments</span>
+</a>
+<a class="text-slate-400 hover:text-white px-6 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95" href="/Procedure/ManageTypes">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-sans text-sm tracking-tight">Inventory</span>
+</a>
+<a class="text-slate-400 hover:text-white px-6 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-sans text-sm tracking-tight">Staff</span>
+</a>
+</div>
+<div class="mt-auto border-t border-slate-800 pt-6 flex flex-col gap-1">
+<a class="text-slate-400 hover:text-white px-6 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95" href="/User/Index">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-sans text-sm tracking-tight">Settings</span>
+</a>
+<a class="text-slate-400 hover:text-white px-6 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-sans text-sm tracking-tight">Support</span>
+</a>
+</div>
+</nav>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 h-16 w-[calc(100%-240px)] z-40 bg-white border-b border-slate-200 flex justify-between items-center px-8 shadow-sm">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Search patients, appointments, or medical records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-500 hover:bg-slate-50 p-2 rounded-full transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<div class="flex items-center gap-3 pl-6 border-l border-slate-200">
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900 leading-none">Dr. Julian Vance</p>
+<p class="text-[11px] text-slate-500 font-medium">Head of Surgery</p>
+</div>
+<img alt="User avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" data-alt="A professional close-up portrait of a male doctor in his late 40s wearing a clean white medical coat and a blue stethoscope. He has a warm, confident expression, set against a bright, softly blurred clinical background with high-key lighting. The overall aesthetic is modern, trustworthy, and clean, aligning with a premium healthcare design system using a light-mode color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy8mWaZ_gQkQBfHCUfvEEFOdqcY0pXmyUgVuoZO2dIm0AUGoGBYBTdbG5VmbBc5heIpcilwMJGDVM50BCa3Ugz4ZT7XBqHYVL1exNa99fxUAP-ZqNF_BT9u7pJ2I3EdJgomyoZC_zPKa-Zm0CyiDnJrrj21tPAq8miRzimiLQKyop4leURxanNuyf09XGmGQ3pT-PZSKZlL3IGSFhhD3Ge6Dq6MxZNtmIm9nh1g-GznFVqfJawWUUvU5rjhIFyLYh1wU7Pwomsf-A"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] pt-16 min-h-screen">
+<div class="p-8">
+<!-- Content Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-h1 text-h1 text-on-background">Appointments</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage schedules and clinical availability for the medical team.</p>
+</div>
+<button class="bg-primary text-white font-label-md text-label-md px-6 py-3 rounded-lg shadow-md hover:bg-on-primary-fixed-variant transition-all flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="add" style="font-variation-settings: 'wght' 700;">add</span>
+                    Book Appointment
+                </button>
+</div>
+<!-- Filter Row -->
+<div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-wrap items-center gap-6 border border-slate-100">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Practitioner</label>
+<div class="relative min-w-[200px]">
+<select class="w-full appearance-none bg-slate-50 border border-outline-variant rounded-lg px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
+<option>All Doctors</option>
+<option>Dr. Julian Vance</option>
+<option>Dr. Sarah Miller</option>
+<option>Dr. Robert Chen</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Selected Date</label>
+<div class="relative min-w-[180px]">
+<input class="w-full bg-slate-50 border border-outline-variant rounded-lg px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" type="text" value="October 24, 2023"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="calendar_today">calendar_today</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Appointment Type</label>
+<div class="flex bg-slate-100 p-1 rounded-lg">
+<button class="px-4 py-1.5 rounded-md text-xs font-bold bg-white text-primary shadow-sm">All Types</button>
+<button class="px-4 py-1.5 rounded-md text-xs font-bold text-slate-500 hover:text-slate-700">Consultation</button>
+<button class="px-4 py-1.5 rounded-md text-xs font-bold text-slate-500 hover:text-slate-700">Surgery</button>
+</div>
+</div>
+<div class="ml-auto flex items-center gap-2 self-end pb-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary-container text-white">
+<span class="material-symbols-outlined" data-icon="calendar_view_day">calendar_view_day</span>
+</button>
+</div>
+</div>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Left: Month View -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+<div class="p-6 border-b border-slate-50 flex items-center justify-between">
+<h3 class="font-h3 text-h3 text-on-background">October 2023</h3>
+<div class="flex gap-1">
+<button class="p-1.5 hover:bg-slate-100 rounded-md transition-colors"><span class="material-symbols-outlined text-slate-600" data-icon="chevron_left">chevron_left</span></button>
+<button class="p-1.5 hover:bg-slate-100 rounded-md transition-colors"><span class="material-symbols-outlined text-slate-600" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+<div class="p-6">
+<div class="calendar-grid mb-4">
+<div class="text-center text-[10px] font-bold text-slate-400 uppercase">Sun</div>
+<div class="text-center text-[10px] font-bold text-slate-400 uppercase">Mon</div>
+<div class="text-center text-[10px] font-bold text-slate-400 uppercase">Tue</div>
+<div class="text-center text-[10px] font-bold text-slate-400 uppercase">Wed</div>
+<div class="text-center text-[10px] font-bold text-slate-400 uppercase">Thu</div>
+<div class="text-center text-[10px] font-bold text-slate-400 uppercase">Fri</div>
+<div class="text-center text-[10px] font-bold text-slate-400 uppercase">Sat</div>
+</div>
+<div class="calendar-grid gap-y-4">
+<!-- Calendar Days (Abbreviated Sample) -->
+<div class="text-center py-2 text-slate-300 text-sm">26</div>
+<div class="text-center py-2 text-slate-300 text-sm">27</div>
+<div class="text-center py-2 text-slate-300 text-sm">28</div>
+<div class="text-center py-2 text-slate-300 text-sm">29</div>
+<div class="text-center py-2 text-slate-300 text-sm">30</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">1</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">2</div>
+<!-- Week 1 -->
+<div class="text-center py-2 font-medium text-sm text-slate-700">3</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700 relative">
+                                    4<span class="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-0.5"><span class="w-1 h-1 rounded-full bg-blue-500"></span><span class="w-1 h-1 rounded-full bg-purple-500"></span></span>
+</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">5</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700 relative">6<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-blue-500"></span></div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">7</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">8</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">9</div>
+<!-- Selected Week Sample -->
+<div class="text-center py-2 font-medium text-sm text-slate-700">10</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">11</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">12</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700 relative">13<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-purple-500"></span></div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">14</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">15</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">16</div>
+<!-- Current Day -->
+<div class="text-center py-2 font-medium text-sm text-slate-700">17</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">18</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">19</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700 relative">20<span class="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-0.5"><span class="w-1 h-1 rounded-full bg-blue-500"></span><span class="w-1 h-1 rounded-full bg-blue-500"></span></span></div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">21</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">22</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">23</div>
+<!-- Active Day -->
+<div class="text-center py-2 font-bold text-sm bg-primary text-white rounded-lg shadow-md ring-2 ring-primary ring-offset-2">24</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">25</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">26</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">27</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">28</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">29</div>
+<div class="text-center py-2 font-medium text-sm text-slate-700">30</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+<h4 class="font-label-md text-label-md text-on-background mb-4">Legend</h4>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-blue-500"></span>
+<span class="text-sm font-medium text-slate-600">General Consultation</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-purple-500"></span>
+<span class="text-sm font-medium text-slate-600">Surgical Procedure</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-tertiary-container"></span>
+<span class="text-sm font-medium text-slate-600">Follow-up Session</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Day View Time Slots -->
+<div class="col-span-12 lg:col-span-8">
+<div class="bg-white rounded-xl shadow-sm border border-slate-100 p-8">
+<div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-50">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex flex-col items-center justify-center border border-primary-container/20">
+<span class="text-[10px] font-bold text-primary uppercase">Tue</span>
+<span class="text-lg font-black text-primary">24</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-slate-900">Tuesday's Schedule</h3>
+<p class="text-sm text-slate-500">4 Appointments Scheduled • 3 Slots Available</p>
+</div>
+</div>
+</div>
+<!-- Time Slots Grid -->
+<div class="space-y-4">
+<!-- 08:00 Slot (Occupied - Consultation) -->
+<div class="grid grid-cols-10 gap-4 items-start">
+<div class="col-span-1 py-4">
+<span class="text-sm font-bold text-slate-400">08:00</span>
+</div>
+<div class="col-span-9">
+<div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4 flex justify-between items-center group cursor-pointer hover:shadow-md transition-all">
+<div class="flex items-center gap-4">
+<img class="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover" data-alt="A candid portrait of a female patient in her 30s with a calm and friendly expression. She is wearing a soft cream sweater, sitting in a modern clinical waiting room with large windows and bright natural light. The photo has a professional, clean, and optimistic feeling, with soft focus on the background clinic interiors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoPcUmaQ706rfXdOKI_7oI2gKxtaQnGRXmeL030EMUh0UjCZeiJsuDgkntlvOcSe0ImAZJDzZZvuZYDZl13UpKe2olUQBUVhK-0Z_MtuBTm8jPl8iGy4zOVw4gk3kteir0nJROsA2I_P7XhSXWqp8_0iqv9rLYTro2zL-R8nMlQGC45SqD9X7nLDn1z2jriwH2ZVZAqoL0tziLK2O4aCJcWcb_9wZ41P0ZxAVbmuYh1wyhA7ylyJriPoq3xvm8Cq9wenfosow3s7U"/>
+<div>
+<h5 class="text-sm font-bold text-blue-900">Elena Rodriguez</h5>
+<p class="text-xs text-blue-700/70 font-medium">Dr. Sarah Miller • Initial Consultation</p>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-600">CONFIRMED</span>
+<p class="text-[11px] text-blue-400 mt-1">Duration: 45 min</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 09:00 Slot (Empty) -->
+<div class="grid grid-cols-10 gap-4 items-start">
+<div class="col-span-1 py-4">
+<span class="text-sm font-bold text-slate-400">09:00</span>
+</div>
+<div class="col-span-9">
+<div class="border-2 border-dashed border-slate-200 rounded-lg p-4 flex items-center justify-center hover:border-primary/50 hover:bg-slate-50 transition-all cursor-pointer group">
+<button class="flex items-center gap-2 text-slate-400 group-hover:text-primary font-bold text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="add_circle">add_circle</span>
+                                            Available Slot
+                                        </button>
+</div>
+</div>
+</div>
+<!-- 10:00 Slot (Occupied - Surgery) -->
+<div class="grid grid-cols-10 gap-4 items-start">
+<div class="col-span-1 py-4">
+<span class="text-sm font-bold text-slate-400">10:00</span>
+</div>
+<div class="col-span-9">
+<div class="bg-purple-50 border-l-4 border-purple-600 rounded-lg p-4 flex justify-between items-center group cursor-pointer hover:shadow-md transition-all">
+<div class="flex items-center gap-4">
+<img class="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover" data-alt="A focused portrait of an elderly gentleman in his 70s with grey hair and glasses, wearing a checked shirt. He is sitting in a brightly lit professional medical office environment. The style is crisp and clear, conveying a sense of dignity and care, consistent with a high-end medical application's visual language." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3uoQIJsWoLIcNWKV6r1w9ZLultgbyxk5of2FyFfS92Iaj3Ug5yT8CeTgHnh1amWEYhWdekHd59dCuvIOjRMhOk8xiGhTJFjLL75W7TcIqSmUPydV-Q0CgaP85sTVgHrPQG_swgWsY_0BRpsgzyk5OX8iUrXV0WC0i_bYkeOkO0xQ84N1vw_Ara89Nt0QgG8ZAf3hZSV1RV9Dhwgd5KIUpx0omFBPsFpTn9-Bb75_GJaHAdnAd75vjAW0iNl8LDwAaaSzrCvLKQZY"/>
+<div>
+<h5 class="text-sm font-bold text-purple-900">Marcus Thorne</h5>
+<p class="text-xs text-purple-700/70 font-medium">Dr. Julian Vance • Orthopedic Surgery</p>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-600">PREPARING</span>
+<p class="text-[11px] text-purple-400 mt-1">Duration: 120 min</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 12:00 Slot (Empty) -->
+<div class="grid grid-cols-10 gap-4 items-start">
+<div class="col-span-1 py-4">
+<span class="text-sm font-bold text-slate-400">12:00</span>
+</div>
+<div class="col-span-9">
+<div class="border-2 border-dashed border-slate-200 rounded-lg p-4 flex items-center justify-center hover:border-primary/50 hover:bg-slate-50 transition-all cursor-pointer group">
+<button class="flex items-center gap-2 text-slate-400 group-hover:text-primary font-bold text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="add_circle">add_circle</span>
+                                            Available Slot
+                                        </button>
+</div>
+</div>
+</div>
+<!-- 13:00 Slot (Occupied - Consultation) -->
+<div class="grid grid-cols-10 gap-4 items-start">
+<div class="col-span-1 py-4">
+<span class="text-sm font-bold text-slate-400">13:00</span>
+</div>
+<div class="col-span-9">
+<div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4 flex justify-between items-center group cursor-pointer hover:shadow-md transition-all">
+<div class="flex items-center gap-4">
+<img class="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover" data-alt="A portrait of a male patient in his early 30s with short hair and a neat beard, wearing a smart casual blue shirt. He is looking at the camera with a slight, friendly smile. The background is a clean, modern clinic with bright daylighting. The image quality is high-resolution with natural colors and professional composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAOyfKK4sT7ZuWwqY7rXlZ0cAcDWbONobc9-nIg_BprGZOSzTkHsGSzQhel-aQ_wh_oPc_H9Qslw6JHviokGjwQ_7bwL7DkfVB3Xt1hzoPNco0yPXMmcjYYneK_zxn818bJUsKrADUAKP4b_EBHrmHAqcv6bLcGOp3rifvdqzUi6SA-mc64d5m_KC8XA7rLDME4dDCRTE4IpnQDruQCN9HZpQXiIOMY5TUluAV-eP0fd4k6pJP-8EbCkzAmDpCQRBKtwXKIZ8HQxY"/>
+<div>
+<h5 class="text-sm font-bold text-blue-900">David Chang</h5>
+<p class="text-xs text-blue-700/70 font-medium">Dr. Sarah Miller • Follow-up Visit</p>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-600">CONFIRMED</span>
+<p class="text-[11px] text-blue-400 mt-1">Duration: 30 min</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 14:00 Slot (Empty) -->
+<div class="grid grid-cols-10 gap-4 items-start">
+<div class="col-span-1 py-4">
+<span class="text-sm font-bold text-slate-400">14:00</span>
+</div>
+<div class="col-span-9">
+<div class="border-2 border-dashed border-slate-200 rounded-lg p-4 flex items-center justify-center hover:border-primary/50 hover:bg-slate-50 transition-all cursor-pointer group">
+<button class="flex items-center gap-2 text-slate-400 group-hover:text-primary font-bold text-sm">
+<span class="material-symbols-outlined text-lg" data-icon="add_circle">add_circle</span>
+                                            Available Slot
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB Button (Contextual) -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-2xl" data-icon="add" style="font-variation-settings: 'wght' 700;">add</span>
+</button>
+</div>
+<script src="/js/site.js"></script><script src="/js/schedule-form.js"></script><script src="/js/slot-picker.js"></script><script src="/js/invoice-builder.js"></script><script src="/js/appointment-calendar.js"></script></body></html>

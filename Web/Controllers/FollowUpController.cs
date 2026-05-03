@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-public class HomeController : Controller
+public class FollowUpController : Controller
 {
     public IActionResult Index() => View();
 }

@@ -1,0 +1,5 @@
+.dashboard-gradient{background:linear-gradient(135deg,#f7f9ff 0%,#e3efff 55%,#d8e2ff 100%)}
+.stat-card{background:white;border:1px solid #d4e4f8;border-radius:1rem;padding:1.5rem;box-shadow:0 8px 24px rgba(15,23,42,.06)}
+.slot-button.is-selected{outline:3px solid rgba(26,115,232,.25);background:#1a73e8!important;color:white!important}
+.invoice-row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:.75rem;align-items:center;margin-bottom:.75rem}
+@media(max-width:900px){aside{position:static!important;width:100%!important;height:auto!important}main{margin-left:0!important}.invoice-row{grid-template-columns:1fr}}

@@ -1,0 +1,375 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Patient Details";
+}
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Patient Details - ClinicSystem</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght%40400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed-variant": "#643f00",
+            "on-secondary": "#ffffff",
+            "on-background": "#0d1d2b",
+            "surface-container-lowest": "#ffffff",
+            "on-primary": "#ffffff",
+            "secondary": "#006b5f",
+            "primary-container": "#1a73e8",
+            "primary-fixed": "#d8e2ff",
+            "on-tertiary": "#ffffff",
+            "outline": "#727785",
+            "surface-container": "#e3efff",
+            "surface-dim": "#ccdcf0",
+            "on-secondary-fixed": "#00201c",
+            "on-primary-fixed-variant": "#004493",
+            "on-surface-variant": "#414754",
+            "background": "#f7f9ff",
+            "tertiary-fixed": "#ffddb5",
+            "secondary-fixed-dim": "#70d8c8",
+            "primary": "#005bbf",
+            "on-error": "#ffffff",
+            "secondary-fixed": "#8df5e4",
+            "on-tertiary-container": "#ffffff",
+            "inverse-on-surface": "#e8f1ff",
+            "inverse-surface": "#233241",
+            "surface-variant": "#d4e4f8",
+            "surface": "#f7f9ff",
+            "on-primary-container": "#ffffff",
+            "outline-variant": "#c1c6d6",
+            "on-secondary-fixed-variant": "#005048",
+            "inverse-primary": "#adc7ff",
+            "primary-fixed-dim": "#adc7ff",
+            "surface-container-high": "#daeafe",
+            "error-container": "#ffdad6",
+            "surface-tint": "#005bc0",
+            "surface-container-low": "#edf4ff",
+            "on-surface": "#0d1d2b",
+            "error": "#ba1a1a",
+            "secondary-container": "#8df5e4",
+            "tertiary-container": "#a46a00",
+            "on-error-container": "#93000a",
+            "tertiary-fixed-dim": "#ffb957",
+            "tertiary": "#835400",
+            "on-primary-fixed": "#001a41",
+            "on-secondary-container": "#007165",
+            "surface-container-highest": "#d4e4f8",
+            "on-tertiary-fixed": "#2a1800",
+            "surface-bright": "#f7f9ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "xl": "32px",
+            "sm": "12px",
+            "unit": "4px",
+            "lg": "24px",
+            "xxl": "48px",
+            "md": "16px",
+            "xs": "8px"
+          },
+          "fontFamily": {
+            "h2": ["Inter"], "body-sm": ["Inter"], "h3": ["Inter"], "h1": ["Inter"], "label-sm": ["Inter"], "label-md": ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"]
+          },
+          "fontSize": {
+            "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+            "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+            "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<link href="/css/site.css" rel="stylesheet"/><link href="/css/dashboard.css" rel="stylesheet"/></head>
+<body class="bg-background text-on-background min-h-screen"><input id="CurrentMvcView" type="hidden" value="Views/Patient/Details.cshtml"/>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[240px] z-50 bg-slate-950 flex flex-col h-full py-6 border-r border-slate-800">
+<div class="px-6 mb-10 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="clinical_notes">clinical_notes</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-white leading-none">ClinicSystem</h1>
+<p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Medical Management</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1 px-2">
+<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="/Home/Index">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-sans text-sm tracking-tight">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 bg-blue-600/10 text-white border-l-4 border-blue-600 px-4 py-3 transition-transform scale-98 active:scale-95" href="/Patient/Index">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-sans text-sm tracking-tight">Patients</span>
+</a>
+<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="/Appointment/Index">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-sans text-sm tracking-tight">Appointments</span>
+</a>
+<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="/Procedure/ManageTypes">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-sans text-sm tracking-tight">Inventory</span>
+</a>
+<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-sans text-sm tracking-tight">Staff</span>
+</a>
+</nav>
+<div class="px-2 mt-auto pt-6 border-t border-slate-800 flex flex-col gap-1">
+<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="/User/Index">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-sans text-sm tracking-tight">Settings</span>
+</a>
+<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-sans text-sm tracking-tight">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="ml-[240px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 h-16 w-[calc(100%-240px)] z-40 bg-white border-b border-slate-200 shadow-sm flex justify-between items-center px-8 transition-all duration-200 ease-in-out">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+<input class="w-full bg-slate-50 border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search medical records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<div class="flex items-center gap-3 pl-6 border-l border-slate-200">
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900">Dr. Sarah Jenkins</p>
+<p class="text-xs text-slate-500">Chief Surgeon</p>
+</div>
+<img alt="User avatar" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" data-alt="A professional portrait of a female doctor with a kind expression, wearing a white lab coat and a stethoscope. She is set against a clean, brightly lit modern medical office background with soft blue and white tones, reflecting a high-end corporate healthcare aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgjzwNOPvlqrNciXzNiqdARk5CqbwzZ4VPfDkPTk7Faq58F3bowd-AOs_1ksoBuq0eYq7DVccwh7DAsC-eJ0Te2JZ3AhvZUiErauRU6hqe7L46gs6CG0HxOk3k9UHp9Tyrskp6vz71e0ncmZr5mL4HsFd1AIUvpHQn--74V5Orv6t0GR0ReHYiNntv0IAqSWtta4Y8yh9qrYS7KnjgXNoVNhIbbS5R46xYXHzYVhPmYkmnCgCx2RXS0ZccahiJpqvsCdq3j30s95U"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="mt-16 p-8">
+<!-- Patient Info Header Bar (Bento-style Header) -->
+<section class="grid grid-cols-12 gap-6 mb-8">
+<div class="col-span-12 lg:col-span-8 bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center gap-8">
+<div class="w-24 h-24 rounded-2xl overflow-hidden shadow-inner border-4 border-slate-50">
+<img alt="Patient image" class="w-full h-full object-cover" data-alt="A high-quality studio portrait of a middle-aged male patient with a friendly and calm demeanor. The lighting is soft and professional, emphasizing a healthcare context. The background is a clean, minimalist off-white, maintaining the corporate modern aesthetic of the ClinicSystem UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsltY_7a9hVDyBNFRmEjzH_HEH4SOXNJdsy1wLymXzKNnHcFojavp3v6_vEDNncqBaOuiHyMzideOuHBceF5tsIwu2LLqGUCLEbNBiFLmaumyFGuqTc9JrUUtFk0nTlcQv1XaxTjKUz3gyecelL_vys8ydmgbju9k_0ubAihg5NOcz602xU61AQgfOBgUFT6xYBrncj_L9qLdU2o6aqBjJfSdpGKWo0YZJzNVdGnAIofckLtmjkCz3-n8HjHI8fe2LPjzh326kMLw"/>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h2 class="font-h1 text-h1 text-on-surface">Eleanor Vance</h2>
+<p class="font-label-md text-label-md text-slate-500 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="fingerprint">fingerprint</span>
+                  ID: 294-8832-10
+                </p>
+</div>
+<div class="flex gap-2">
+<button class="bg-primary text-white px-4 py-2 rounded-lg font-label-md text-label-md hover:shadow-lg transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+                  Edit Profile
+                </button>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-8">
+<div>
+<p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Age</p>
+<p class="font-h3 text-h3 text-on-surface">34 Years</p>
+</div>
+<div>
+<p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Blood Type</p>
+<p class="font-h3 text-h3 text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-error" data-icon="bloodtype" data-weight="fill">bloodtype</span>
+                  O+ Positive
+                </p>
+</div>
+<div>
+<p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Last Visit</p>
+<p class="font-h3 text-h3 text-on-surface">Oct 12, 2023</p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 grid grid-cols-2 gap-4">
+<div class="bg-surface-container-high p-4 rounded-xl flex flex-col justify-between">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="medical_services">medical_services</span>
+<div>
+<p class="text-xs font-bold text-primary-fixed-variant uppercase">Active Plans</p>
+<p class="text-2xl font-black text-on-surface-variant">02</p>
+</div>
+</div>
+<div class="bg-secondary-container p-4 rounded-xl flex flex-col justify-between">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="receipt_long">receipt_long</span>
+<div>
+<p class="text-xs font-bold text-on-secondary-container uppercase">Unpaid</p>
+<p class="text-2xl font-black text-on-surface-variant">$420.00</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Tabs Navigation -->
+<section class="mb-6">
+<div class="flex items-center gap-2 border-b border-slate-200">
+<button class="px-6 py-4 font-label-md text-label-md border-b-2 border-primary text-primary transition-all">Medical Records</button>
+<button class="px-6 py-4 font-label-md text-label-md border-b-2 border-transparent text-slate-500 hover:text-on-surface hover:bg-slate-50 transition-all">Procedures</button>
+<button class="px-6 py-4 font-label-md text-label-md border-b-2 border-transparent text-slate-500 hover:text-on-surface hover:bg-slate-50 transition-all">Attachments</button>
+<button class="px-6 py-4 font-label-md text-label-md border-b-2 border-transparent text-slate-500 hover:text-on-surface hover:bg-slate-50 transition-all">Invoices</button>
+</div>
+</section>
+<!-- Tab Content Area -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column: Medical Records Feed -->
+<div class="col-span-12 lg:col-span-8 space-y-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-h2 text-h2 text-on-surface">Recent Activity</h3>
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+              View Historical Timeline <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Record Card 1 -->
+<article class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all">
+<div class="bg-slate-50 px-6 py-3 border-b border-slate-100 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md text-slate-700">October 12, 2023 — 10:30 AM</span>
+</div>
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Follow-up</span>
+</div>
+<div class="p-6">
+<div class="flex gap-6">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="stethoscope">stethoscope</span>
+<p class="font-label-md text-label-md text-slate-900">Dr. Alan Turing — Cardiology</p>
+</div>
+<h4 class="font-h3 text-h3 text-on-surface mb-3">Hypertension Routine Checkup</h4>
+<p class="font-body-md text-body-md text-slate-600 leading-relaxed mb-4">
+                    Patient reports occasional dizziness during early morning hours. Blood pressure readings show slight elevation (145/95). Current medication dosage reviewed and maintained. Recommended low-sodium diet and increased hydration.
+                  </p>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-slate-100 text-slate-600 rounded text-[11px] font-medium border border-slate-200">#CardioPulse</span>
+<span class="px-2 py-1 bg-slate-100 text-slate-600 rounded text-[11px] font-medium border border-slate-200">#VitalSigns</span>
+</div>
+</div>
+<div class="w-32 h-32 bg-slate-100 rounded-lg flex flex-col items-center justify-center border-2 border-dashed border-slate-200 text-slate-400 hover:text-primary hover:border-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined text-3xl" data-icon="ecg_heart">ecg_heart</span>
+<span class="text-[10px] font-bold uppercase mt-2">View ECG</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Record Card 2 -->
+<article class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all">
+<div class="bg-slate-50 px-6 py-3 border-b border-slate-100 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md text-slate-700">September 24, 2023 — 02:15 PM</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="vaccines">vaccines</span>
+<p class="font-label-md text-label-md text-slate-900">Nurse Practitioner Clara Barton</p>
+</div>
+<h4 class="font-h3 text-h3 text-on-surface mb-3">Annual Influenza Immunization</h4>
+<p class="font-body-md text-body-md text-slate-600 leading-relaxed">
+                Administered 0.5 mL of quadrivalent influenza vaccine intramuscularly. No immediate adverse reactions noted. Patient advised on potential localized soreness at injection site.
+              </p>
+</div>
+</article>
+</div>
+<!-- Right Column: Sidebar Actions & Info -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<!-- Attachments Quick View -->
+<div class="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Latest Attachments</h3>
+<button class="text-primary text-xs font-bold">Upload New</button>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-4">
+<div class="aspect-square bg-slate-100 rounded-lg border border-slate-200 overflow-hidden group relative">
+<img alt="X-ray thumbnail" class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="A clear medical X-ray of a human chest, displayed in a high-contrast black and white digital format. The image is crisp and clinical, emphasizing medical precision. It is part of a modern UI layout, reflecting a clean, corporate healthcare software environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfJpf1KFdIOn0wSNqXC_QkUyqd6cytER8JHPBGbLI-rXcgaHVMh2oVwpZwqvts5pSRxW7abfyBr98E4daU5n2vScSTn3XDM1dDBOolgCIXli8azsFIPib4QHDY-Eip4VUBg1QK_1pYLZcyOX1CIsy-x8ANFH0GzLNfcs3Zo1Slb9DB4UCX0sQpRQPw2sbflUVCNgqvhy8ehLKJ5xcUZBjvpyjVxvyRsWWiAFy-huSuewGgdYgp8ye9VLQMfSqotK2FjrYv7vKJ0BU"/>
+<div class="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-white" data-icon="visibility">visibility</span>
+</div>
+</div>
+<div class="aspect-square bg-slate-100 rounded-lg border border-slate-200 overflow-hidden group relative">
+<div class="w-full h-full flex flex-col items-center justify-center bg-blue-50 text-blue-600">
+<span class="material-symbols-outlined text-3xl" data-icon="description">description</span>
+<span class="text-[10px] font-bold mt-1">LAB_RES.PDF</span>
+</div>
+<div class="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-white" data-icon="download">download</span>
+</div>
+</div>
+</div>
+<div class="border-2 border-dashed border-slate-200 rounded-lg p-6 text-center hover:border-primary transition-all group cursor-pointer">
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary mb-2 text-3xl" data-icon="cloud_upload">cloud_upload</span>
+<p class="text-xs text-slate-500 group-hover:text-primary font-medium">Drag and drop files here or <span class="underline">browse</span></p>
+</div>
+</div>
+<!-- Quick Stats / Procedures List -->
+<div class="bg-slate-900 rounded-xl p-6 text-white shadow-xl">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-slate-400 mb-4">Pending Procedures</h3>
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-blue-400 text-sm" data-icon="biotech">biotech</span>
+</div>
+<div>
+<p class="text-sm font-bold">Blood Panel (Complete)</p>
+<p class="text-[11px] text-slate-400">Scheduled for Tomorrow, 09:00 AM</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-blue-400 text-sm" data-icon="radiology">radiology</span>
+</div>
+<div>
+<p class="text-sm font-bold">MRI Scans (Lumbar)</p>
+<p class="text-[11px] text-slate-400">Awaiting Insurance Approval</p>
+</div>
+</li>
+</ul>
+<button class="w-full mt-6 py-3 bg-white text-slate-900 rounded-lg font-bold text-sm hover:bg-blue-50 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+              Add Procedure
+            </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- FAB (Contextual for Patient Screen) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-2xl" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<script src="/js/site.js"></script><script src="/js/schedule-form.js"></script><script src="/js/slot-picker.js"></script><script src="/js/invoice-builder.js"></script><script src="/js/appointment-calendar.js"></script></body></html>

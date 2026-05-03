@@ -1,0 +1,25 @@
+<aside class="fixed left-0 top-0 h-full w-[240px] z-50 bg-slate-950 border-r border-slate-800 flex flex-col py-6">
+    <div class="px-6 mb-8 flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-white">medical_services</span>
+        </div>
+        <div>
+            <h1 class="text-lg font-black text-white leading-tight">ClinicSystem</h1>
+            <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Medical Management</p>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-1">
+        <a class="clinic-nav-link" asp-controller="Home" asp-action="Index"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+        <a class="clinic-nav-link" asp-controller="Patient" asp-action="Index"><span class="material-symbols-outlined">person</span>Patients</a>
+        <a class="clinic-nav-link" asp-controller="Appointment" asp-action="Index"><span class="material-symbols-outlined">event</span>Appointments</a>
+        <a class="clinic-nav-link" asp-controller="Billing" asp-action="Index"><span class="material-symbols-outlined">receipt_long</span>Billing</a>
+        <a class="clinic-nav-link" asp-controller="Doctor" asp-action="Index"><span class="material-symbols-outlined">stethoscope</span>Doctors</a>
+        <a class="clinic-nav-link" asp-controller="DoctorSchedule" asp-action="Index"><span class="material-symbols-outlined">calendar_month</span>Schedules</a>
+        <a class="clinic-nav-link" asp-controller="Procedure" asp-action="ManageTypes"><span class="material-symbols-outlined">medical_information</span>Procedures</a>
+        <a class="clinic-nav-link" asp-controller="User" asp-action="Index"><span class="material-symbols-outlined">group</span>Users</a>
+        <a class="clinic-nav-link" asp-controller="FollowUp" asp-action="Index"><span class="material-symbols-outlined">notification_important</span>Follow Ups</a>
+    </nav>
+    <div class="px-4 pt-4 border-t border-slate-800">
+        <a class="clinic-nav-link" asp-controller="Account" asp-action="Login"><span class="material-symbols-outlined">logout</span>Logout</a>
+    </div>
+</aside>
