@@ -1,0 +1,8 @@
+@if (TempData["Success"] != null)
+{
+    <div class="mb-4 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 p-4 font-semibold">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="mb-4 rounded-xl bg-red-50 text-red-700 border border-red-200 p-4 font-semibold">@TempData["Error"]</div>
+}
