@@ -1,0 +1,408 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Deleted Patients";
+}
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght%40400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed-variant": "#643f00",
+            "on-secondary": "#ffffff",
+            "on-background": "#0d1d2b",
+            "surface-container-lowest": "#ffffff",
+            "on-primary": "#ffffff",
+            "secondary": "#006b5f",
+            "primary-container": "#1a73e8",
+            "primary-fixed": "#d8e2ff",
+            "on-tertiary": "#ffffff",
+            "outline": "#727785",
+            "surface-container": "#e3efff",
+            "surface-dim": "#ccdcf0",
+            "on-secondary-fixed": "#00201c",
+            "on-primary-fixed-variant": "#004493",
+            "on-surface-variant": "#414754",
+            "background": "#f7f9ff",
+            "tertiary-fixed": "#ffddb5",
+            "secondary-fixed-dim": "#70d8c8",
+            "primary": "#005bbf",
+            "on-error": "#ffffff",
+            "secondary-fixed": "#8df5e4",
+            "on-tertiary-container": "#ffffff",
+            "inverse-on-surface": "#e8f1ff",
+            "inverse-surface": "#233241",
+            "surface-variant": "#d4e4f8",
+            "surface": "#f7f9ff",
+            "on-primary-container": "#ffffff",
+            "outline-variant": "#c1c6d6",
+            "on-secondary-fixed-variant": "#005048",
+            "inverse-primary": "#adc7ff",
+            "primary-fixed-dim": "#adc7ff",
+            "surface-container-high": "#daeafe",
+            "error-container": "#ffdad6",
+            "surface-tint": "#005bc0",
+            "surface-container-low": "#edf4ff",
+            "on-surface": "#0d1d2b",
+            "error": "#ba1a1a",
+            "secondary-container": "#8df5e4",
+            "tertiary-container": "#a46a00",
+            "on-error-container": "#93000a",
+            "tertiary-fixed-dim": "#ffb957",
+            "tertiary": "#835400",
+            "on-primary-fixed": "#001a41",
+            "on-secondary-container": "#007165",
+            "surface-container-highest": "#d4e4f8",
+            "on-tertiary-fixed": "#2a1800",
+            "surface-bright": "#f7f9ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "h2": ["Inter"], "body-sm": ["Inter"], "h3": ["Inter"], "h1": ["Inter"], "label-sm": ["Inter"], "label-md": ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"]
+          },
+          "fontSize": {
+            "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+            "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+            "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<title>Deleted Patients - ClinicSystem</title><link href="/css/site.css" rel="stylesheet"/><link href="/css/dashboard.css" rel="stylesheet"/></head>
+<body class="bg-background text-on-background min-h-screen"><input id="CurrentMvcView" type="hidden" value="Views/Patient/Deleted.cshtml"/>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[240px] z-50 bg-slate-950 flex flex-col h-full py-6 border-r border-slate-800">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-lg" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-white leading-none">ClinicSystem</h1>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Medical Management</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95 hover:bg-slate-900" href="/Home/Index">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-sans text-sm tracking-tight">Dashboard</span>
+</a>
+<!-- Active Tab: Patients -->
+<a class="bg-blue-600/10 text-white border-l-4 border-blue-600 px-4 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95" href="/Patient/Index">
+<span class="material-symbols-outlined text-blue-500" data-icon="person">person</span>
+<span class="font-sans text-sm tracking-tight font-bold">Patients</span>
+</a>
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95 hover:bg-slate-900" href="/Appointment/Index">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-sans text-sm tracking-tight">Appointments</span>
+</a>
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95 hover:bg-slate-900" href="/Procedure/ManageTypes">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-sans text-sm tracking-tight">Inventory</span>
+</a>
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95 hover:bg-slate-900" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-sans text-sm tracking-tight">Staff</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-slate-800 pt-4 space-y-1">
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95 hover:bg-slate-900" href="/User/Index">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-sans text-sm tracking-tight">Settings</span>
+</a>
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95 hover:bg-slate-900" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-sans text-sm tracking-tight">Support</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 h-16 w-[calc(100%-240px)] z-40 bg-white border-b border-slate-200 shadow-sm flex justify-between items-center px-8">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" data-icon="search">search</span>
+<input class="w-full bg-slate-50 border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="Global search patients, records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-500 hover:text-blue-600 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<div class="flex items-center gap-3 pl-6 border-l border-slate-200">
+<div class="text-right">
+<p class="text-xs font-bold text-slate-900">Dr. Sarah Mitchell</p>
+<p class="text-[10px] text-slate-500 uppercase">Chief Surgeon</p>
+</div>
+<img alt="User avatar" class="w-10 h-10 rounded-full border-2 border-primary-fixed-dim object-cover" data-alt="A professional headshot of a female doctor with dark hair tied back, wearing a white medical coat and a subtle stethoscope, in a bright, modern clinic setting with soft daylight and a professional corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_b--1gcq0S2IsypPrsdUXRiklivhMuyaL1ph6pNiJldtfbuQgN_Y9cT19_KF-1KfWTfYJvuMIIIKteZjWs5oYSBE_9b0hV4Z92ZehpMkxoP9t2GZNxSS-Gyy8pNeukR73QMDkFb01fEqxSdSWn7U0MV2_lNlDrh7f5_vtF442B7KX-PBsuPg9DYJ3XNU6IxW2pjZdysi0FSH6UadfI7YzGNAPsz6cW6k_1l8sir5IZADmfdreGNZM5PwEzAFuH7kCSTRI4gXxo2w"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-24 pl-[272px] pr-8 pb-12 min-h-screen">
+<!-- Page Header -->
+<div class="flex items-end justify-between mb-8">
+<div>
+<nav class="flex items-center gap-2 text-slate-400 text-xs mb-2">
+<span>Home</span>
+<span class="material-symbols-outlined text-[12px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-medium">Patients</span>
+</nav>
+<h2 class="font-h1 text-h1 text-on-background">Patients</h2>
+<p class="text-slate-500 text-sm mt-1">Manage and monitor patient records and medical histories.</p>
+</div>
+<button class="bg-primary hover:bg-primary-container text-white px-6 py-3 rounded-lg flex items-center gap-2 font-label-md transition-all shadow-md hover:shadow-lg">
+<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+        Add Patient
+      </button>
+</div>
+<!-- Filter & Search Bento Bar -->
+<div class="grid grid-cols-12 gap-4 mb-6">
+<div class="col-span-12 lg:col-span-5 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+<label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Search Patient</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+<input class="w-full bg-slate-50 border-slate-200 rounded-lg py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all" placeholder="Name, ID or Phone number..." type="text"/>
+</div>
+</div>
+<div class="col-span-6 lg:col-span-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+<label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Gender</label>
+<select class="w-full bg-slate-50 border-slate-200 rounded-lg py-2.5 px-4 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all appearance-none">
+<option>All Genders</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+</div>
+<div class="col-span-6 lg:col-span-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+<label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Blood Type</label>
+<select class="w-full bg-slate-50 border-slate-200 rounded-lg py-2.5 px-4 text-sm focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all appearance-none">
+<option>All Types</option>
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>AB+</option>
+<option>AB-</option>
+<option>O+</option>
+<option>O-</option>
+</select>
+</div>
+<div class="col-span-12 lg:col-span-1 flex items-end">
+<button class="w-full h-[54px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-slate-50 border-b border-slate-100">
+<tr>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">#</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Full Name</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">National ID</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Phone</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Blood Type</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Registered</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 text-sm text-slate-500">01</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">JD</div>
+<span class="text-sm font-bold text-slate-900 font-label-md">James Dorian</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">ID-992-001</td>
+<td class="px-6 py-4 text-sm text-slate-600">+1 (555) 012-3456</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded-full bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-tight">O- Positive</span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500">Oct 12, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 (Soft Deleted) -->
+<tr class="bg-slate-50/30 opacity-60">
+<td class="px-6 py-4 text-sm text-slate-400 line-through">02</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-xs">AS</div>
+<span class="text-sm font-bold text-slate-500 line-through font-label-md">Alice Sterling</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-400 line-through">ID-884-212</td>
+<td class="px-6 py-4 text-sm text-slate-400 line-through">+1 (555) 987-6543</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-tight">A+ Positive</span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-400 line-through">Sep 28, 2023</td>
+<td class="px-6 py-4 text-right">
+<button class="flex items-center gap-1.5 ml-auto bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="restore_from_trash">restore_from_trash</span>
+                  Restore
+                </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 text-sm text-slate-500">03</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-xs">RK</div>
+<span class="text-sm font-bold text-slate-900 font-label-md">Robert Kim</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">ID-112-554</td>
+<td class="px-6 py-4 text-sm text-slate-600">+1 (555) 443-2111</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded-full bg-teal-50 text-teal-600 text-[10px] font-bold uppercase tracking-tight">B- Negative</span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500">Oct 05, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 text-sm text-slate-500">04</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">EL</div>
+<span class="text-sm font-bold text-slate-900 font-label-md">Elena Lopez</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">ID-772-331</td>
+<td class="px-6 py-4 text-sm text-slate-600">+1 (555) 222-3333</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded-full bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-tight">AB+ Positive</span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500">Nov 01, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="bg-slate-50/50 px-6 py-4 flex items-center justify-between border-t border-slate-100">
+<p class="text-xs text-slate-500 font-medium">Showing <span class="text-slate-900">1</span> to <span class="text-slate-900">10</span> of <span class="text-slate-900">42</span> patients</p>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-white hover:text-primary transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center text-xs font-bold shadow-sm">1</button>
+<button class="w-8 h-8 rounded-lg border border-transparent flex items-center justify-center text-xs font-bold text-slate-600 hover:bg-white hover:border-slate-200 transition-colors">2</button>
+<button class="w-8 h-8 rounded-lg border border-transparent flex items-center justify-center text-xs font-bold text-slate-600 hover:bg-white hover:border-slate-200 transition-colors">3</button>
+<span class="text-slate-400 px-1 text-xs">...</span>
+<button class="w-8 h-8 rounded-lg border border-transparent flex items-center justify-center text-xs font-bold text-slate-600 hover:bg-white hover:border-slate-200 transition-colors">5</button>
+<button class="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-white hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Stats Cards (Asymmetric Layout) -->
+<div class="grid grid-cols-12 gap-6 mt-10">
+<div class="col-span-12 md:col-span-8 bg-gradient-to-br from-primary to-blue-700 p-8 rounded-2xl shadow-xl text-white relative overflow-hidden">
+<div class="relative z-10 flex flex-col justify-between h-full">
+<div>
+<span class="text-blue-100 text-xs font-bold uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full mb-4 inline-block">System Insights</span>
+<h3 class="text-2xl font-bold mb-2">Patient Growth this Quarter</h3>
+<p class="text-blue-100/80 text-sm max-w-md">Your clinic has seen a 24% increase in new patient registrations compared to the previous quarter. Most new admissions are focused in the Cardiology and General Practice departments.</p>
+</div>
+<div class="mt-8 flex items-end gap-12">
+<div>
+<p class="text-3xl font-black">1,402</p>
+<p class="text-xs text-blue-100 uppercase tracking-wider font-bold">Active Records</p>
+</div>
+<div>
+<p class="text-3xl font-black">+84</p>
+<p class="text-xs text-blue-100 uppercase tracking-wider font-bold">This Month</p>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined absolute -right-10 -bottom-10 text-[200px] text-white/5 pointer-events-none" data-icon="trending_up">trending_up</span>
+</div>
+<div class="col-span-12 md:col-span-4 bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-center items-center text-center">
+<div class="w-16 h-16 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl" data-icon="health_metrics">health_metrics</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 mb-2">Demographic Health</h3>
+<p class="text-slate-500 text-sm mb-6">Analyze patient distribution by age, location and risk factors.</p>
+<button class="w-full py-3 bg-slate-900 hover:bg-black text-white rounded-xl text-sm font-bold transition-all shadow-md">
+          View Detailed Reports
+        </button>
+</div>
+</div>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+</button>
+<script src="/js/site.js"></script><script src="/js/schedule-form.js"></script><script src="/js/slot-picker.js"></script><script src="/js/invoice-builder.js"></script><script src="/js/appointment-calendar.js"></script></body></html>
