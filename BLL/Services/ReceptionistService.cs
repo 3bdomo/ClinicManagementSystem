@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BLL.DTOs;
 using BLL.DTOs.Receptionist;
 using BLL.Interfaces;
 using Common.Results;
@@ -9,6 +8,9 @@ namespace BLL.Services.Implementations;
 
 public class ReceptionistService : IReceptionistService
 {
+    private const int MinNameLength = 3;
+    private const int MaxNameLength = 100;
+
     private readonly IUnitOfWork _uow;
     private readonly IMapper _mapper;
 
@@ -20,139 +22,120 @@ public class ReceptionistService : IReceptionistService
 
     public async Task<OperationResult<IEnumerable<ReceptionistDto>>> GetAllAsync()
     {
-        try
-        {
-            var receptionists = await _uow.Receptionists.GetAllWithUsersAsync();
-            var dtos = _mapper.Map<IEnumerable<ReceptionistDto>>(receptionists);
-            return OperationResult<IEnumerable<ReceptionistDto>>.Success(dtos);
-        }
-        catch (Exception ex)
-        {
-            return OperationResult<IEnumerable<ReceptionistDto>>.Failure(
-                $"An error occurred while retrieving receptionists: {ex.Message}");
-        }
+        var receptionists = await _uow.Receptionists.GetAllWithUsersAsync();
+        var dtos = _mapper.Map<List<ReceptionistDto>>(receptionists);
+
+        var message = dtos.Count == 0
+            ? "No receptionists found in the system"
+            : $"Retrieved {dtos.Count} receptionist(s) successfully";
+
+        return OperationResult<IEnumerable<ReceptionistDto>>.Success(dtos, message);
     }
 
     public async Task<OperationResult<IEnumerable<ReceptionistDto>>> GetActiveAsync()
     {
-        try
-        {
-            var receptionists = await _uow.Receptionists.GetActiveAsync();
-            var dtos = _mapper.Map<IEnumerable<ReceptionistDto>>(receptionists);
-            return OperationResult<IEnumerable<ReceptionistDto>>.Success(dtos);
-        }
-        catch (Exception ex)
-        {
-            return OperationResult<IEnumerable<ReceptionistDto>>.Failure(
-                $"An error occurred while retrieving active receptionists: {ex.Message}");
-        }
+        var receptionists = await _uow.Receptionists.GetActiveAsync();
+        var dtos = _mapper.Map<List<ReceptionistDto>>(receptionists);
+
+        var message = dtos.Count == 0
+            ? "No active receptionists found"
+            : $"Retrieved {dtos.Count} active receptionist(s) successfully";
+
+        return OperationResult<IEnumerable<ReceptionistDto>>.Success(dtos, message);
     }
 
     public async Task<OperationResult<ReceptionistDto>> GetByIdAsync(int id)
     {
-        try
-        {
-            if (id <= 0)
-                return OperationResult<ReceptionistDto>.Failure("Invalid receptionist id");
-
-            var receptionist = await _uow.Receptionists.GetWithUserAsync(id);
-            if (receptionist == null)
-                return OperationResult<ReceptionistDto>.Failure("Receptionist not found");
-
-            var dto = _mapper.Map<ReceptionistDto>(receptionist);
-            return OperationResult<ReceptionistDto>.Success(dto);
-        }
-        catch (Exception ex)
-        {
+        if (id <= 0)
             return OperationResult<ReceptionistDto>.Failure(
-                $"An error occurred while retrieving the receptionist: {ex.Message}");
-        }
+                "Receptionist id must be a positive number");
+
+        var receptionist = await _uow.Receptionists.GetWithUserAsync(id);
+
+        if (receptionist == null)
+            return OperationResult<ReceptionistDto>.Failure(
+                $"Receptionist with id {id} was not found");
+
+        var dto = _mapper.Map<ReceptionistDto>(receptionist);
+        return OperationResult<ReceptionistDto>.Success(
+            dto,
+            "Receptionist retrieved successfully");
     }
 
     public async Task<OperationResult<ReceptionistDto>> GetByUserIdAsync(string userId)
     {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return OperationResult<ReceptionistDto>.Failure("User id is required");
+        if (string.IsNullOrWhiteSpace(userId))
+            return OperationResult<ReceptionistDto>.Failure("User id is required");
 
-            var receptionist = await _uow.Receptionists.GetByUserIdAsync(userId);
-            if (receptionist == null)
-                return OperationResult<ReceptionistDto>.Failure("Receptionist profile not found");
+        var receptionist = await _uow.Receptionists.GetByUserIdAsync(userId);
 
-            var dto = _mapper.Map<ReceptionistDto>(receptionist);
-            return OperationResult<ReceptionistDto>.Success(dto);
-        }
-        catch (Exception ex)
-        {
+        if (receptionist == null)
             return OperationResult<ReceptionistDto>.Failure(
-                $"An error occurred while retrieving the receptionist: {ex.Message}");
-        }
+                "No receptionist profile is linked to this user account");
+
+        var dto = _mapper.Map<ReceptionistDto>(receptionist);
+        return OperationResult<ReceptionistDto>.Success(
+            dto,
+            "Receptionist profile retrieved successfully");
     }
 
     public async Task<OperationResult> UpdateAsync(UpdateReceptionistDto dto)
     {
-        try
-        {
-            if (dto == null)
-                return OperationResult.Failure("Request data is empty");
+        if (dto == null)
+            return OperationResult.Failure("Update data is required");
 
-            if (dto.Id <= 0)
-                return OperationResult.Failure("Invalid receptionist id");
+        if (dto.Id <= 0)
+            return OperationResult.Failure("Receptionist id must be a positive number");
 
-            if (string.IsNullOrWhiteSpace(dto.FullName))
-                return OperationResult.Failure("Full name is required");
+        if (string.IsNullOrWhiteSpace(dto.FullName))
+            return OperationResult.Failure("Full name is required");
 
-            var receptionist = await _uow.Receptionists.GetWithUserAsync(dto.Id);
-            if (receptionist == null)
-                return OperationResult.Failure("Receptionist not found");
+        var trimmedName = dto.FullName.Trim();
 
-            receptionist.FullName = dto.FullName.Trim();
-            receptionist.IsActive = dto.IsActive;
-
-            if (receptionist.ApplicationUser != null)
-            {
-                receptionist.ApplicationUser.FullName = dto.FullName.Trim();
-
-                if (!string.IsNullOrWhiteSpace(dto.PhoneNumber))
-                    receptionist.ApplicationUser.PhoneNumber = dto.PhoneNumber.Trim();
-            }
-
-            _uow.Receptionists.Update(receptionist);
-            await _uow.SaveChangesAsync();
-
-            return OperationResult.Success("Receptionist updated successfully");
-        }
-        catch (Exception ex)
-        {
+        if (trimmedName.Length < MinNameLength)
             return OperationResult.Failure(
-                $"An error occurred while updating the receptionist: {ex.Message}");
-        }
+                $"Full name must be at least {MinNameLength} characters long");
+
+        if (trimmedName.Length > MaxNameLength)
+            return OperationResult.Failure(
+                $"Full name must not exceed {MaxNameLength} characters");
+
+        var receptionist = await _uow.Receptionists.GetWithUserAsync(dto.Id);
+
+        if (receptionist == null)
+            return OperationResult.Failure(
+                $"Receptionist with id {dto.Id} was not found");
+
+        receptionist.FullName = trimmedName;
+        receptionist.IsActive = dto.IsActive;
+
+        receptionist.ApplicationUser!.FullName = trimmedName;
+        receptionist.ApplicationUser.PhoneNumber =
+            string.IsNullOrWhiteSpace(dto.PhoneNumber) ? null : dto.PhoneNumber.Trim();
+
+        _uow.Receptionists.Update(receptionist);
+        await _uow.SaveChangesAsync();
+
+        return OperationResult.Success("Receptionist updated successfully");
     }
 
     public async Task<OperationResult> ToggleActiveAsync(int id)
     {
-        try
-        {
-            if (id <= 0)
-                return OperationResult.Failure("Invalid receptionist id");
+        if (id <= 0)
+            return OperationResult.Failure("Receptionist id must be a positive number");
 
-            var receptionist = await _uow.Receptionists.GetByIdAsync(id);
-            if (receptionist == null)
-                return OperationResult.Failure("Receptionist not found");
+        var receptionist = await _uow.Receptionists.GetByIdAsync(id);
 
-            receptionist.IsActive = !receptionist.IsActive;
-
-            _uow.Receptionists.Update(receptionist);
-            await _uow.SaveChangesAsync();
-
-            var status = receptionist.IsActive ? "activated" : "deactivated";
-            return OperationResult.Success($"Receptionist {status} successfully");
-        }
-        catch (Exception ex)
-        {
+        if (receptionist == null)
             return OperationResult.Failure(
-                $"An error occurred while toggling receptionist status: {ex.Message}");
-        }
+                $"Receptionist with id {id} was not found");
+
+        receptionist.IsActive = !receptionist.IsActive;
+
+        _uow.Receptionists.Update(receptionist);
+        await _uow.SaveChangesAsync();
+
+        var status = receptionist.IsActive ? "activated" : "deactivated";
+        return OperationResult.Success($"Receptionist has been {status} successfully");
     }
 }
