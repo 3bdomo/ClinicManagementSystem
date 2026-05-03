@@ -2,14 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using UI.Models;
 
-namespace UI.Controllers
-{
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
             _logger = logger;
         }
 
