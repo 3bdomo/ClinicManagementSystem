@@ -10,6 +10,8 @@ public class Doctor
     public Specialization Specialization { get; set; }
     public string? Bio { get; set; }
     public decimal ConsultationFee { get; set; }
+    
+    public string? Phone { get; set; }
     public bool IsAvailable { get; set; } = true;
 
     // Navigation Properties
