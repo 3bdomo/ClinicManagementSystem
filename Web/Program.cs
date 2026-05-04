@@ -1,4 +1,5 @@
 using BLL.Extensions;
+using BLL.Services;
 using ClinicSystem.DAL.Models;
 using Common.Interfaces;
 using DAL.Extensions;
@@ -24,6 +25,7 @@ builder.Host.UseSerilog();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<PatientAccountService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
