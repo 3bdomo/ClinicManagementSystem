@@ -26,12 +26,12 @@ public class ExceptionHandlingMiddleware
                 context.User.Identity?.Name ?? "Anonymous",
                 context.Request.Method);
 
-            if (!context.Response.HasStarted)
-            {
-                context.Response.Redirect("/Home/Error");
-            }
+            if (context.Response.HasStarted) return;
 
-            
+            context.Response.Clear();
+            context.Response.Redirect("/Home/Error");
+
+
         }
     }
 }
