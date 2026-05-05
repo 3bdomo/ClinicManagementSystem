@@ -5,7 +5,7 @@ namespace ClinicSystem.DAL.Models;
 public class Doctor
 {
     public int Id { get; set; }
-    public string ApplicationUserId { get; set; } = string.Empty;
+    public string? ApplicationUserId { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     public Specialization Specialization { get; set; }
     public string? Bio { get; set; }
