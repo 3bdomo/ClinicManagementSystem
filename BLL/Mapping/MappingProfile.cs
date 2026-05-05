@@ -231,6 +231,21 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Patient, opt => opt.Ignore())
             .ForMember(dest => dest.Receptionist, opt => opt.Ignore());
 
+        CreateMap<RegisterDto, Patient>()
+            .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore())
+            .ForMember(dest => dest.ApplicationUser, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
+            .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+            .ForMember(dest => dest.DeletedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.DeletedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.Appointments, opt => opt.Ignore())
+            .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
+            .ForMember(dest => dest.Invoices, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
+
         CreateMap<PatientRegisterDto, Patient>()
             .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore())
             .ForMember(dest => dest.ApplicationUser, opt => opt.Ignore())
