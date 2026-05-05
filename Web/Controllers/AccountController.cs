@@ -65,7 +65,7 @@ public class AccountController : Controller
             {
                 IsPersistent = model.RememberMe
             });
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Dashboard", "Home");
         }
         
         ModelState.AddModelError(string.Empty, result.Message);
@@ -73,11 +73,11 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult PatientLogin() => View();
+    public IActionResult LoginDoctor() => View();
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> PatientLogin(LoginViewModel model)
+    public async Task<IActionResult> LoginDoctor(LoginViewModel model)
     {
         if (!ModelState.IsValid) return View(model);
 
@@ -85,7 +85,7 @@ public class AccountController : Controller
         if (result.IsSuccess)
         {
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, result.Data, new AuthenticationProperties { IsPersistent = model.RememberMe });
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Dashboard", "Home");
         }
         
         ModelState.AddModelError(string.Empty, result.Message);
@@ -105,7 +105,7 @@ public class AccountController : Controller
         if (result.IsSuccess)
         {
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, result.Data, new AuthenticationProperties { IsPersistent = model.RememberMe });
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Dashboard", "Home");
         }
         
         ModelState.AddModelError(string.Empty, result.Message);
@@ -129,4 +129,6 @@ public class AccountController : Controller
 
         return Json(new { UserId = userId, FullName = fullName, Role = role });
     }
+    [HttpGet]
+    public IActionResult AccessDenied() => View();
 }

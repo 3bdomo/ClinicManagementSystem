@@ -3,6 +3,9 @@ using Common.Enums;
 using DAL.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Web.Data;
 
@@ -97,7 +100,8 @@ public static class DbSeeder
                 {
                     ApplicationUserId = recUser.Id,
                     FullName = "Mona Adel",
-                    Phone = "01000000002"
+                    Phone = "01000000002",
+                    CreatedAt = DateTime.UtcNow
                 });
             }
         }
@@ -113,5 +117,153 @@ public static class DbSeeder
         }
 
         await context.SaveChangesAsync();
+
+        // 6. Seed Patients
+        if (!context.Patients.Any())
+        {
+            var patientUser = new ApplicationUser
+            {
+                UserName = "patient@clinic.com",
+                Email = "patient@clinic.com",
+                FullName = "Sara Tarek",
+                UserRole = UserRole.Patient,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                EmailConfirmed = true
+            };
+            if ((await userManager.CreateAsync(patientUser, "Patient@123")).Succeeded)
+            {
+                await userManager.AddToRoleAsync(patientUser, "Patient");
+                context.Patients.Add(new Patient
+                {
+                    ApplicationUserId = patientUser.Id,
+                    FullName = "Sara Tarek",
+                    DateOfBirth = new DateOnly(1995, 5, 20),
+                    Gender = Gender.Female,
+                    NationalId = "29505201234567",
+                    Phone = "01000000003",
+                    Address = "Cairo, Egypt",
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+            await context.SaveChangesAsync(); // Save to generate IDs
+        }
+
+        // Fetch needed records for relations
+        var doctor = await context.Doctors.FirstOrDefaultAsync(d => d.FullName == "Dr. Ahmed Ali");
+        var patient = await context.Patients.FirstOrDefaultAsync(p => p.FullName == "Sara Tarek");
+        var procType = await context.ProcedureTypes.FirstOrDefaultAsync(p => p.Name == "Consultation");
+
+        if (doctor != null && patient != null)
+        {
+            // 7. Seed Doctor Schedule
+            if (!context.DoctorSchedules.Any())
+            {
+                context.DoctorSchedules.Add(new DoctorSchedule
+                {
+                    DoctorId = doctor.Id,
+                    ScheduleType = ScheduleType.Consultation,
+                    DayOfWeek = DayOfWeek.Monday,
+                    StartTime = new TimeOnly(9, 0),
+                    EndTime = new TimeOnly(17, 0),
+                    SlotMinutes = 30,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                });
+                await context.SaveChangesAsync();
+            }
+
+            // 8. Seed Appointment
+            if (!context.Appointments.Any())
+            {
+                var schedule = await context.DoctorSchedules.FirstOrDefaultAsync();
+                context.Appointments.Add(new Appointment
+                {
+                    PatientId = patient.Id,
+                    DoctorId = doctor.Id,
+                    DoctorScheduleId = schedule?.Id,
+                    AppointmentDate = DateTime.Today.AddHours(10), // Today at 10 AM
+                    DurationMinutes = 30,
+                    AppointmentType = AppointmentType.Consultation,
+                    Status = AppointmentStatus.Completed,
+                    CreatedAt = DateTime.UtcNow
+                });
+                await context.SaveChangesAsync();
+            }
+
+            // 9. Seed Medical Record
+            if (!context.MedicalRecords.Any())
+            {
+                var appointment = await context.Appointments.FirstOrDefaultAsync();
+                if (appointment != null)
+                {
+                    var record = new MedicalRecord
+                    {
+                        PatientId = patient.Id,
+                        DoctorId = doctor.Id,
+                        AppointmentId = appointment.Id,
+                        Diagnosis = "Common Cold",
+                        Notes = "Patient needs to rest and take prescribed medication.",
+                        VisitDate = appointment.AppointmentDate,
+                        FollowUpDate = DateTime.Today.AddDays(7),
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    context.MedicalRecords.Add(record);
+                    await context.SaveChangesAsync();
+
+                    if (procType != null)
+                    {
+                        record.Procedures.Add(new Procedure
+                        {
+                            MedicalRecordId = record.Id,
+                            ProcedureTypeId = procType.Id,
+                            PerformedAt = appointment.AppointmentDate,
+                            DurationMinutes = 30,
+                            Cost = procType.DefaultCost,
+                            CreatedAt = DateTime.UtcNow
+                        });
+                        await context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            // 10. Seed Invoice
+            if (!context.Invoices.Any())
+            {
+                var appointment = await context.Appointments.FirstOrDefaultAsync();
+                if (appointment != null)
+                {
+                    var invoice = new Invoice
+                    {
+                        PatientId = patient.Id,
+                        AppointmentId = appointment.Id,
+                        TotalAmount = doctor.ConsultationFee + (procType?.DefaultCost ?? 0),
+                        Status = InvoiceStatus.Unpaid,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    context.Invoices.Add(invoice);
+                    
+                    invoice.Items.Add(new InvoiceItem
+                    {
+                        Description = "Consultation Fee",
+                        Quantity = 1,
+                        UnitPrice = doctor.ConsultationFee,
+                        ItemType = InvoiceItemType.Consultation
+                    });
+
+                    if (procType != null)
+                    {
+                        invoice.Items.Add(new InvoiceItem
+                        {
+                            Description = procType.Name,
+                            Quantity = 1,
+                            UnitPrice = procType.DefaultCost,
+                            ItemType = InvoiceItemType.Procedure
+                        });
+                    }
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
     }
 }
