@@ -23,8 +23,12 @@ namespace DAL.Repositories
                 .Include(d => d.ApplicationUser)
                 .FirstOrDefaultAsync(d => d.ApplicationUser.Email == email);
 
-        public async Task<IEnumerable<Doctor>> GetBySpecializationAsync(Specialization spec)
-            => await _dbSet.Where(d => d.Specialization == spec).ToListAsync();
+        public async Task<IEnumerable<Doctor>> GetBySpecializationAsync(Specialization specialization, int pageNumber, int pageSize)
+            => await _dbSet
+                .Where(d => d.Specialization == specialization)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
         public async Task<Doctor?> GetByUserIdAsync(string applicationUserId)
             => await _dbSet

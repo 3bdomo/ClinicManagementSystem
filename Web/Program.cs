@@ -1,4 +1,5 @@
 using BLL.Extensions;
+using BLL.Services;
 using ClinicSystem.DAL.Models;
 using Common.Interfaces;
 using DAL.Extensions;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Web.Middleware;
 using Serilog;
 using Web.Services;
+using BLL.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,8 @@ builder.Host.UseSerilog();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<PatientAccountService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -53,6 +57,20 @@ builder.Services.AddBllServices();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await Web.Data.DbSeeder.SeedAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
 
 // 5. Middleware Pipeline
 app.UseMiddleware<ExceptionHandlingMiddleware>();
