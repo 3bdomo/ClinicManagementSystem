@@ -14,9 +14,9 @@
     <link rel="stylesheet" href="~/css/dashboard.css" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body class="bg-background text-on-background min-h-screen">
+<body class="bg-slate-50 text-slate-900 min-h-screen">
     @await Html.PartialAsync("_Sidebar")
-    <main class="ml-[240px] min-h-screen">
+    <main class="ml-[360px] min-h-screen">
         @await Html.PartialAsync("_NavBar")
         <section class="p-8">
             @await Html.PartialAsync("_Alerts")

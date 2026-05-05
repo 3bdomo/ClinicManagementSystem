@@ -1,291 +1,56 @@
-
+@model RegisterViewModel
 @{
     Layout = null;
-    ViewData["Title"] = "Register Patient";
+    ViewData["Title"] = "Patient Registration";
 }
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Register Patient - ClinicSystem</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght%40400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            line-height: 1;
-            text-transform: none;
-            letter-spacing: normal;
-            word-wrap: normal;
-            white-space: nowrap;
-            direction: ltr;
-        }
-        .form-input-focus:focus-within label {
-            color: #005bbf;
-        }
-    </style>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-tertiary-fixed-variant": "#643f00",
-                    "on-secondary": "#ffffff",
-                    "on-background": "#0d1d2b",
-                    "surface-container-lowest": "#ffffff",
-                    "on-primary": "#ffffff",
-                    "secondary": "#006b5f",
-                    "primary-container": "#1a73e8",
-                    "primary-fixed": "#d8e2ff",
-                    "on-tertiary": "#ffffff",
-                    "outline": "#727785",
-                    "surface-container": "#e3efff",
-                    "surface-dim": "#ccdcf0",
-                    "on-secondary-fixed": "#00201c",
-                    "on-primary-fixed-variant": "#004493",
-                    "on-surface-variant": "#414754",
-                    "background": "#f7f9ff",
-                    "tertiary-fixed": "#ffddb5",
-                    "secondary-fixed-dim": "#70d8c8",
-                    "primary": "#005bbf",
-                    "on-error": "#ffffff",
-                    "secondary-fixed": "#8df5e4",
-                    "on-tertiary-container": "#ffffff",
-                    "inverse-on-surface": "#e8f1ff",
-                    "inverse-surface": "#233241",
-                    "surface-variant": "#d4e4f8",
-                    "surface": "#f7f9ff",
-                    "on-primary-container": "#ffffff",
-                    "outline-variant": "#c1c6d6",
-                    "on-secondary-fixed-variant": "#005048",
-                    "inverse-primary": "#adc7ff",
-                    "primary-fixed-dim": "#adc7ff",
-                    "surface-container-high": "#daeafe",
-                    "error-container": "#ffdad6",
-                    "surface-tint": "#005bc0",
-                    "surface-container-low": "#edf4ff",
-                    "on-surface": "#0d1d2b",
-                    "error": "#ba1a1a",
-                    "secondary-container": "#8df5e4",
-                    "tertiary-container": "#a46a00",
-                    "on-error-container": "#93000a",
-                    "tertiary-fixed-dim": "#ffb957",
-                    "tertiary": "#835400",
-                    "on-primary-fixed": "#001a41",
-                    "on-secondary-container": "#007165",
-                    "surface-container-highest": "#d4e4f8",
-                    "on-tertiary-fixed": "#2a1800",
-                    "surface-bright": "#f7f9ff"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "fontFamily": {
-                    "h2": ["Inter"],
-                    "body-sm": ["Inter"],
-                    "h3": ["Inter"],
-                    "h1": ["Inter"],
-                    "label-sm": ["Inter"],
-                    "label-md": ["Inter"],
-                    "body-md": ["Inter"],
-                    "body-lg": ["Inter"]
-            },
-            "fontSize": {
-                    "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                    "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                    "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                    "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
-                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
-                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
-            },
-            "spacing": {
-                "xs": "8px",
-                "unit": "4px",
-                "xxl": "48px",
-                "lg": "24px",
-                "sm": "12px",
-                "xl": "32px",
-                "md": "16px"
-            }
-          }
-        }
-      }
-    </script>
-<link href="/css/site.css" rel="stylesheet"/><link href="/css/dashboard.css" rel="stylesheet"/></head>
-<body class="bg-background text-on-background font-body-md selection:bg-primary/20 overflow-x-hidden"><input id="CurrentMvcView" type="hidden" value="Views/Account/Register.cshtml"/>
-<main class="min-h-screen flex flex-col lg:flex-row">
-<!-- Brand/Hero Area (Left Side) -->
-<section class="lg:w-[40%] bg-[#0F1F35] relative overflow-hidden flex flex-col justify-between p-xl lg:p-xxl text-white">
-<!-- Background Decorative Patterns -->
-<div class="absolute inset-0 opacity-20 pointer-events-none">
-<div class="absolute -top-1/4 -left-1/4 w-[150%] h-[150%] bg-gradient-to-br from-primary via-transparent to-transparent opacity-30 rounded-full blur-[120px]"></div>
-<div class="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-secondary-container/20 to-transparent"></div>
-<div class="absolute inset-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDGwboeOPCcLqANivntsyoIIuk1g0AQkJl69O6jeZUKmn7NnkkgExu60HGeLWe8rC8BC0SJ4Jlw6yiQOBKA-MuMOmM6LZ1smDzdHlNW90dnksW29tXlaEcadVlSo74AF1cWGBv3A47GSBAFwKw5v5MNsLnul0KUUabgzp_2U5Z7tzio9WsWOHSB2wau_TrmBOA15WGUlozDeRK42ODAmDOew0Wph0DhXMJk00M5Ekp5Y95tDGrCEgey_n7i1Uw4V7gdEDlrXEtsHVo'); opacity: 0.05;"></div>
-</div>
-<!-- Content -->
-<div class="relative z-10">
-<div class="flex items-center gap-md mb-xxl">
-<div class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-primary text-3xl" data-icon="medical_services">medical_services</span>
-</div>
-<span class="font-h2 tracking-tight">ClinicSystem</span>
-</div>
-<div class="space-y-lg max-w-md">
-<h1 class="font-h1 leading-tight">Advanced Healthcare, Simplified.</h1>
-<p class="font-body-lg text-primary-fixed/70">Join thousands of patients who manage their health journey with our intuitive, secure, and HIPAA-compliant platform.</p>
-<ul class="space-y-md pt-lg">
-<li class="flex items-center gap-md">
-<span class="material-symbols-outlined text-secondary-fixed shrink-0" data-icon="check_circle">check_circle</span>
-<span class="font-body-md text-white/90">Instant access to medical records</span>
-</li>
-<li class="flex items-center gap-md">
-<span class="material-symbols-outlined text-secondary-fixed shrink-0" data-icon="check_circle">check_circle</span>
-<span class="font-body-md text-white/90">Direct communication with specialists</span>
-</li>
-<li class="flex items-center gap-md">
-<span class="material-symbols-outlined text-secondary-fixed shrink-0" data-icon="check_circle">check_circle</span>
-<span class="font-body-md text-white/90">24/7 online appointment booking</span>
-</li>
-</ul>
-</div>
-</div>
-<div class="relative z-10 pt-xxl">
-<div class="p-lg bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center gap-md">
-<img alt="Doctor profile" class="w-12 h-12 rounded-full object-cover border-2 border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqNCrzdUrjciKZMCbIOW0y_-W0dKaIrxe5fTkZHR8IgVS469CTDp42d_4iL9ICesD3BmWlbnmcrn-bykbQISnH77e1_oltL2U0qkWxOdBFKQblVUAWJqtpI1x4R5XvghYtWvs1weCIZwrVa7l02LqevKJAG6kvH6RkzB4BypZGXfJs484qivfu03KN7aVzALMlihGAQQN6GnyLRuMAnZ6Myx6LJ_r2zoWKCPW1Enf6D8ea4CihzXvA8eIsBl0pYVTZHFiAteh_52E"/>
-<div>
-<p class="font-label-md text-white">Trust and Security</p>
-<p class="font-body-sm text-white/60">Your data is encrypted and protected by enterprise-grade security protocols.</p>
-</div>
-</div>
-<div class="mt-lg flex items-center gap-xxl opacity-40">
-<div class="flex items-center gap-xs">
-<span class="material-symbols-outlined text-sm" data-icon="security">security</span>
-<span class="font-label-sm uppercase tracking-wider">Secure</span>
-</div>
-<div class="flex items-center gap-xs">
-<span class="material-symbols-outlined text-sm" data-icon="verified_user">verified_user</span>
-<span class="font-label-sm uppercase tracking-wider">HIPAA Compliant</span>
-</div>
-</div>
-</div>
-<!-- Side Image Overlay (Desktop) -->
-<div class="hidden lg:block absolute bottom-0 right-0 w-64 h-64 opacity-10 grayscale pointer-events-none translate-x-1/4 translate-y-1/4">
-<img alt="Medical interface abstract" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZTLTV4tAEwhUDuHcKrIrgx5_bMtpZdx0UzFIOohOHuaejCLmOmKsoSwuJyP2HxkMy7-gt6faMZlLRUpIKxRdEypmHkwBzEKFHDJ-LULVX1fx5T7I6XL1hS5N7rROy2JyE3mG_0Wo6-1YXSnksAdPHR9pG2FEUtIZ0S0Ym6NaHr1QRNx9mteQvC-iq0BarP9HNWu8bj60RV45OVK-xbrrTJLpzoALOeVpfCT1X2NB8D6hxfhKkUXwz4MuGu5WCPHROsHK3hQe_YOY"/>
-</div>
-</section>
-<!-- Registration Form (Right Side) -->
-<section class="lg:w-[60%] flex items-center justify-center p-xl lg:p-xxl bg-white">
-<div class="w-full max-w-xl">
-    <div class="mb-xxl">
-        <h2 class="font-h1 text-on-surface mb-xs">Create Patient Account</h2>
-        <p class="font-body-lg text-on-surface-variant">Welcome! Let's get your profile set up in a few easy steps.</p>
-    </div>
- 
-    <form class="space-y-xl" asp-action="Register" method="post">
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <!-- Section: Personal Information -->
-        <div class="space-y-lg">
-            <div class="flex items-center gap-sm pb-xs border-b border-outline-variant">
-                <span class="material-symbols-outlined text-primary" data-icon="person">person</span>
-                <h3 class="font-h3 text-on-surface">Personal Information</h3>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
-                <div class="flex flex-col gap-xs md:col-span-2 group form-input-focus">
-                    <label id="fullname"name="fullname" class="font-label-md text-on-surface-variant transition-colors">Full Name</label>
-                    @* <input id="fullname"name="fullname" class="w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md" placeholder="Johnathan Doe" type="text"/> *@
-               @Html.TextBoxFor(model => new BLL.DTOs.Patient.PatientRegisterDto().FullName, new { @class = "w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md"})
-                    </div>
-                <div class="flex flex-col gap-xs group form-input-focus">
-                    <label class="font-label-md text-on-surface-variant transition-colors">National ID</label>
-                    @* <input type="number" class="w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md" placeholder="X-XXXXXXX-X" type="text"/> *@
-                    @Html.TextBoxFor(model => new BLL.DTOs.Patient.PatientRegisterDto().NationalId, new { @class = "w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md"})
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Registration - ClinicSystem</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="bg-slate-50 text-slate-900" style="font-family:Inter,sans-serif">
+    <main class="min-h-screen p-6 lg:p-10">
+        <div class="mx-auto max-w-6xl">
+            <div class="mb-8 flex items-center justify-between">
+                <div>
+                    <a asp-action="Login" class="inline-flex items-center gap-2 text-sm font-bold text-sky-600">
+                        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                        Login
+                    </a>
+                    <h1 class="mt-3 text-4xl font-black">Patient registration</h1>
+                    <p class="mt-2 text-slate-600">Create your portal account and link it to your patient file by National ID.</p>
                 </div>
-                <div class="flex flex-col gap-xs group form-input-focus">
-                    <label class="font-label-md text-on-surface-variant transition-colors">Date of Birth</label>
-                    @* <input class="w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md" type="date"/> *@
-                @Html.TextBoxFor(model => new BLL.DTOs.Patient.PatientRegisterDto().DateOfBirth, new { @class = "w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md", type = "date"})
-                    </div>
-                <div class="flex flex-col gap-xs group form-input-focus">
-                    <label class="font-label-md text-on-surface-variant transition-colors">Gender</label>
-                    <select id="Gender" name="Gender" class="w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md">
-                        <option disabled="" selected="" value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="prefer_not_to_say">Prefer not to say</option>
-                        
-                    </select>
-                   
+                <span class="material-symbols-outlined rounded-lg bg-sky-600 p-4 text-4xl text-white">person_add</span>
+            </div>
+            <form asp-action="Register" method="post" class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="grid gap-5 md:grid-cols-2">
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="FullName">Full name</label><input asp-for="FullName" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Email">Email</label><input asp-for="Email" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Password">Password</label><input asp-for="Password" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="ConfirmPassword">Confirm password</label><input asp-for="ConfirmPassword" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="NationalId">National ID</label><input asp-for="NationalId" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" placeholder="14 digits" /></div>
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Phone">Phone</label><input asp-for="Phone" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="DateOfBirth">Date of birth</label><input asp-for="DateOfBirth" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Gender">Gender</label><select asp-for="Gender" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" asp-items="Html.GetEnumSelectList<Common.Enums.Gender>()"></select></div>
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="BloodType">Blood type</label><input asp-for="BloodType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
+                    <div><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="EmergencyContact">Emergency contact</label><input asp-for="EmergencyContact" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
+                    <div class="md:col-span-2"><label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Address">Address</label><textarea asp-for="Address" rows="3" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600"></textarea></div>
                 </div>
-                <div class="flex flex-col gap-xs group form-input-focus">
-                    <label class="font-label-md text-on-surface-variant transition-colors">Blood Type</label>
-                    <select name="BoldType" class="w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md">
-                        <option disabled="" selected="" value="">Select Blood Type</option>
-                        <option value="A+">A+</option>
-                        <option value="A-">A-</option>
-                        <option value="B+">B+</option>
-                        <option value="B-">B-</option>
-                        <option value="AB+">AB+</option>
-                        <option value="AB-">AB-</option>
-                        <option value="O+">O+</option>
-                        <option value="O-">O-</option>
-                    </select>
+                <div class="mt-6 flex justify-end gap-3 border-t border-slate-200 pt-5">
+                    <a asp-action="Login" class="rounded-lg px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-100">Cancel</a>
+                    <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-sky-700">
+                        <span class="material-symbols-outlined text-[18px]">person_add</span>
+                        Create Account
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
-        <!-- Section: Contact & Security -->
-        <div class="space-y-lg">
-            <div class="flex items-center gap-sm pb-xs border-b border-outline-variant">
-                <span class="material-symbols-outlined text-primary" data-icon="contact_page">contact_page</span>
-                <h3 class="font-h3 text-on-surface">Contact &amp; Security</h3>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
-                <div class="flex flex-col gap-xs group form-input-focus">
-                    <label name="Phone" class="font-label-md text-on-surface-variant transition-colors">Phone Number</label>
-                    @* <input class="w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md" placeholder="+1 (555) 000-0000" type="tel"/> *@
-                @Html.TextBoxFor(model => new BLL.DTOs.Patient.PatientRegisterDto().Phone, new { @class = "w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md", type = "tel", placeholder = "+1 (555) 000-0000" })
-                    </div>
-                <div class="flex flex-col gap-xs group form-input-focus">
-                    <label class="font-label-md text-on-surface-variant transition-colors">Email Address</label>
-                    @* <input class="w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md" placeholder="john.doe&#64;example.com" type="email"/> *@
-                @Html.TextBoxFor(model => new BLL.DTOs.Patient.PatientRegisterDto().Email, new { @class = "w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md", type = "email", placeholder = "exapmle@eaxmple.com"})
-                    </div>
-                <div class="flex flex-col gap-xs group form-input-focus">
-                    <label class="font-label-md text-on-surface-variant transition-colors">Password</label>
-                    @* <input class="w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md" placeholder="••••••••" type="password"/> *@
-                @Html.TextBoxFor(model => new BLL.DTOs.Patient.PatientRegisterDto().Password, new { @class = "w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md", type = "password", placeholder = "••••••••" })
-                    </div>
-                <div class="flex flex-col gap-xs group form-input-focus">
-                    <label class="font-label-md text-on-surface-variant transition-colors">Confirm Password</label>
-                    <input class="w-full h-12 px-md bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-on-surface font-body-md" placeholder="••••••••" type="password"/>
-                </div>
-            </div>
-        </div>
-        <!-- Informational Note -->
-        <div class="flex gap-md bg-primary-fixed/10 p-md rounded-xl items-center">
-            <span class="material-symbols-outlined text-primary text-xl">info</span>
-            <p class="font-body-sm text-on-surface">Existing patient files will be linked automatically via National ID.</p>
-        </div>
-        <!-- Action Buttons -->
-        <div class="pt-lg space-y-md">
-            <button class="w-full h-14 bg-primary text-on-primary font-label-md rounded-xl shadow-[0_8px_30px_rgb(0,91,191,0.2)] hover:shadow-[0_8px_35px_rgb(0,91,191,0.4)] active:scale-[0.98] transition-all flex items-center justify-center gap-xs" type="submit">
-                Create Account
-                <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
-            </button>
-            <div class="text-center">
-                <p class="font-body-md text-on-surface-variant">Already registered? <a class="text-primary font-label-md hover:underline decoration-2 underline-offset-4" href="#">Login here</a></p>
-            </div>
-        </div>
-    </form>
-</div>
-</section>
-</main>
-<script src="/js/site.js"></script><script src="/js/schedule-form.js"></script><script src="/js/slot-picker.js"></script><script src="/js/invoice-builder.js"></script><script src="/js/appointment-calendar.js"></script></body></html>
+    </main>
+</body>
+</html>

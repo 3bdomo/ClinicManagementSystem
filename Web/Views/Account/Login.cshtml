@@ -1,196 +1,354 @@
+@model LoginViewModel
 @{
     Layout = null;
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Staff Login";
 }
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Login - ClinicSystem</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght%40400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-tertiary-fixed-variant": "#643f00",
-                        "on-secondary": "#ffffff",
-                        "on-background": "#0d1d2b",
-                        "surface-container-lowest": "#ffffff",
-                        "on-primary": "#ffffff",
-                        "secondary": "#006b5f",
-                        "primary-container": "#1a73e8",
-                        "primary-fixed": "#d8e2ff",
-                        "on-tertiary": "#ffffff",
-                        "outline": "#727785",
-                        "surface-container": "#e3efff",
-                        "surface-dim": "#ccdcf0",
-                        "on-secondary-fixed": "#00201c",
-                        "on-primary-fixed-variant": "#004493",
-                        "on-surface-variant": "#414754",
-                        "background": "#f7f9ff",
-                        "tertiary-fixed": "#ffddb5",
-                        "secondary-fixed-dim": "#70d8c8",
-                        "primary": "#005bbf",
-                        "on-error": "#ffffff",
-                        "secondary-fixed": "#8df5e4",
-                        "on-tertiary-container": "#ffffff",
-                        "inverse-on-surface": "#e8f1ff",
-                        "inverse-surface": "#233241",
-                        "surface-variant": "#d4e4f8",
-                        "surface": "#f7f9ff",
-                        "on-primary-container": "#ffffff",
-                        "outline-variant": "#c1c6d6",
-                        "on-secondary-fixed-variant": "#005048",
-                        "inverse-primary": "#adc7ff",
-                        "primary-fixed-dim": "#adc7ff",
-                        "surface-container-high": "#daeafe",
-                        "error-container": "#ffdad6",
-                        "surface-tint": "#005bc0",
-                        "surface-container-low": "#edf4ff",
-                        "on-surface": "#0d1d2b",
-                        "error": "#ba1a1a",
-                        "secondary-container": "#8df5e4",
-                        "tertiary-container": "#a46a00",
-                        "on-error-container": "#93000a",
-                        "tertiary-fixed-dim": "#ffb957",
-                        "tertiary": "#835400",
-                        "on-primary-fixed": "#001a41",
-                        "on-secondary-container": "#007165",
-                        "surface-container-highest": "#d4e4f8",
-                        "on-tertiary-fixed": "#2a1800",
-                        "surface-bright": "#f7f9ff"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "layout": "{'sidebar_width': '240px', 'header_height': '64px', 'page_padding': '32px', 'gutter': '24px'}",
-                        "xl": "32px",
-                        "sm": "12px",
-                        "unit": "4px",
-                        "lg": "24px",
-                        "xxl": "48px",
-                        "md": "16px",
-                        "xs": "8px"
-                    },
-                    "fontFamily": {
-                        "h2": ["Inter"],
-                        "body-sm": ["Inter"],
-                        "h3": ["Inter"],
-                        "h1": ["Inter"],
-                        "label-sm": ["Inter"],
-                        "label-md": ["Inter"],
-                        "body-md": ["Inter"],
-                        "body-lg": ["Inter"]
-                    },
-                    "fontSize": {
-                        "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                        "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
-                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
-                    }
-                },
-            },
-        }
-    </script>
-<style>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ClinicSystem — Secure staff login for doctors and receptionists." />
+    <title>Staff Login – ClinicSystem</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
         body { font-family: 'Inter', sans-serif; }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+
+        .glass-card {
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.08);
         }
-        .login-gradient {
-            background: linear-gradient(135deg, #1A73E8 0%, #0F1F35 100%);
+
+        .role-tab {
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .role-tab.active-doctor {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+        }
+
+        .role-tab.active-receptionist {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(139,92,246,0.4);
+        }
+
+        .submit-btn-doctor {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            box-shadow: 0 4px 20px rgba(59,130,246,0.35);
+        }
+        .submit-btn-doctor:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            box-shadow: 0 6px 28px rgba(59,130,246,0.5);
+        }
+
+        .submit-btn-receptionist {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            box-shadow: 0 4px 20px rgba(139,92,246,0.35);
+        }
+        .submit-btn-receptionist:hover {
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            box-shadow: 0 6px 28px rgba(139,92,246,0.5);
+        }
+
+        .input-field {
+            background: rgba(255,255,255,0.06) !important;
+            border-color: rgba(255,255,255,0.12) !important;
+            color: #f1f5f9 !important;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-field::placeholder { color: #64748b !important; }
+        .input-field:focus {
+            background: rgba(255,255,255,0.09) !important;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2) !important;
+            border-color: #3b82f6 !important;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.08;
+            animation: float linear infinite;
+        }
+
+        @@keyframes float {
+            0%   { transform: translateY(0) rotate(0deg); opacity: 0.05; }
+            50%  { opacity: 0.12; }
+            100% { transform: translateY(-120vh) rotate(720deg); opacity: 0; }
+        }
+
+        @@keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-animate { animation: fadeInUp 0.6s ease both; }
+
+        .pulse-ring {
+            animation: pulse-ring 2.5s ease-in-out infinite;
+        }
+        @@keyframes pulse-ring {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); }
+            50%       { box-shadow: 0 0 0 12px rgba(59,130,246,0); }
         }
     </style>
-<link href="/css/site.css" rel="stylesheet"/><link href="/css/dashboard.css" rel="stylesheet"/></head>
-<body class="bg-background text-on-background min-h-screen flex items-center justify-center p-md login-gradient"><input id="CurrentMvcView" type="hidden" value="Views/Account/Login.cshtml"/>
-<div class="w-full max-w-md">
-<!-- Logo Branding Header (Outside card for impact) -->
-<div class="flex flex-col items-center mb-xl">
-<div class="bg-white/10 backdrop-blur-md p-md rounded-xl mb-md">
-<span class="material-symbols-outlined text-white text-[48px]" data-icon="medical_services">medical_services</span>
-</div>
-<h1 class="font-h1 text-h1 text-white tracking-tighter">ClinicSystem</h1>
-<p class="font-body-md text-body-md text-blue-100/80 mt-xs">Professional Medical Management</p>
-</div>
-<!-- Main Login Card -->
-<div class="bg-white rounded-xl shadow-2xl p-xl border border-white/10 overflow-hidden relative">
-<!-- Subtle Background Texture -->
-<div class="absolute top-0 right-0 p-lg opacity-[0.03] pointer-events-none">
-<span class="material-symbols-outlined text-[120px]" data-icon="health_and_safety">health_and_safety</span>
-</div>
-<div class="relative z-10">
-<div class="mb-lg">
-<h2 class="font-h2 text-h2 text-on-background">Sign In</h2>
-<p class="font-body-md text-body-md text-outline">Enter your credentials to access your dashboard</p>
-</div>
-<form class="space-y-lg" onsubmit="return false;">
-<!-- Email Input -->
-<div class="space-y-xs">
-<label class="font-label-md text-label-md text-on-surface" for="email">Email Address</label>
-<div class="relative">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="mail">mail</span>
-<input class="w-full pl-10 pr-md py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body-md text-body-md outline-none" id="email" name="email" placeholder="doctor&#64;clinicsystem.com" type="email"/>
-</div>
-</div>
-<!-- Password Input -->
-<div class="space-y-xs">
-<div class="flex justify-between items-center">
-<label class="font-label-md text-label-md text-on-surface" for="password">Password</label>
-<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Forgot password?</a>
-</div>
-<div class="relative">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="lock">lock</span>
-<input class="w-full pl-10 pr-md py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body-md text-body-md outline-none" id="password" name="password" placeholder="••••••••" type="password"/>
-<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant" type="button">
-<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
-</button>
-</div>
-</div>
-<!-- Remember Me -->
-<div class="flex items-center space-x-xs">
-<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" id="remember" type="checkbox"/>
-<label class="font-body-sm text-body-sm text-on-surface-variant select-none" for="remember">Keep me signed in for 30 days</label>
-</div>
-<!-- Sign In Button -->
-<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-4 rounded-lg shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center space-x-xs" type="submit">
-<span>Sign In</span>
-<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
-</button>
-</form>
-<div class="mt-xl pt-lg border-t border-surface-variant text-center">
-<p class="font-body-md text-body-md text-on-surface-variant mb-sm">New to our clinic?</p>
-<a class="inline-flex items-center space-x-xs font-label-md text-label-md text-primary hover:text-primary-container transition-colors" asp-action="Register" asp-controller="Account">
-<span>Register as Patient</span>
-<span class="material-symbols-outlined text-[18px]" data-icon="person_add">person_add</span>
-</a>
-</div>
-</div>
-</div>
-<!-- Footer Links -->
-<div class="mt-lg flex justify-center space-x-lg">
-<a class="font-body-sm text-body-sm text-blue-200/60 hover:text-white transition-colors" href="#">Privacy Policy</a>
-<span class="text-blue-200/20">•</span>
-<a class="font-body-sm text-body-sm text-blue-200/60 hover:text-white transition-colors" href="#">Terms of Service</a>
-<span class="text-blue-200/20">•</span>
-<a class="font-body-sm text-body-sm text-blue-200/60 hover:text-white transition-colors" href="#">Contact Support</a>
-</div>
-</div>
-<!-- Background Decorative Image (Subtle) -->
-<div class="fixed inset-0 z-[-1] opacity-10 pointer-events-none">
-<img class="w-full h-full object-cover" data-alt="A clean, professional medical facility hallway with soft, high-key lighting. The scene is rendered in a minimalist, corporate modern style with blue and white tones. The atmosphere is calm and sterile, reflecting medical precision and reliability, perfectly aligned with a professional healthcare management system interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAc6qoZPYr1DPg56NPWdQ2Tq718rJ97Bt_Lk6rIcoDOldkZvloYIyMhiVOSpoZmUFANVPh1csHwdaDbyhGE-oxyYTAK0dnucb2UuC6RIlKUNW2o20rfMJduz4fDhQb0nRC5oC_DzyEDiI-26sihkskZhZ-GHxWLI2pD6PYqm2Gzjgi7mChU6LMpRDcpTZ6CrTeN3btgjtCk-WJ3A9SAkl72BvQbOTdKM0aYPbf7uF4tYK3_XTO7lrhNiOBbtHgQ-skYzTTXozXmPwo"/>
-</div>
-<script src="/js/site.js"></script><script src="/js/schedule-form.js"></script><script src="/js/slot-picker.js"></script><script src="/js/invoice-builder.js"></script><script src="/js/appointment-calendar.js"></script></body></html>
+</head>
+<body class="min-h-screen overflow-hidden" style="background: #020818;">
+
+    @* Animated background *@
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+        @* Grid overlay *@
+        <div class="absolute inset-0" style="background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px); background-size: 48px 48px;"></div>
+
+        @* Gradient blobs *@
+        <div class="absolute rounded-full blur-3xl" style="width:600px;height:600px;top:-100px;left:-100px;background:radial-gradient(circle, rgba(59,130,246,0.15), transparent 70%);"></div>
+        <div class="absolute rounded-full blur-3xl" style="width:500px;height:500px;bottom:-80px;right:-80px;background:radial-gradient(circle, rgba(139,92,246,0.12), transparent 70%);"></div>
+        <div class="absolute rounded-full blur-2xl" style="width:300px;height:300px;top:40%;left:60%;background:radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%);"></div>
+
+        @* Floating particles *@
+        <div class="particle" style="width:6px;height:6px;background:#3b82f6;left:15%;animation-duration:18s;animation-delay:0s;top:100%;"></div>
+        <div class="particle" style="width:10px;height:10px;background:#8b5cf6;left:35%;animation-duration:24s;animation-delay:4s;top:100%;"></div>
+        <div class="particle" style="width:4px;height:4px;background:#06b6d4;left:55%;animation-duration:20s;animation-delay:8s;top:100%;"></div>
+        <div class="particle" style="width:8px;height:8px;background:#3b82f6;left:75%;animation-duration:16s;animation-delay:2s;top:100%;"></div>
+        <div class="particle" style="width:5px;height:5px;background:#10b981;left:85%;animation-duration:22s;animation-delay:6s;top:100%;"></div>
+    </div>
+
+    <main class="relative z-10 min-h-screen flex">
+
+        @* Left panel — branding *@
+        <aside class="hidden lg:flex flex-col justify-between p-16 w-[55%]">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center pulse-ring">
+                    <span class="material-symbols-outlined text-white text-2xl">medical_services</span>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-white">ClinicSystem</h1>
+                    <p class="text-xs font-bold tracking-widest text-slate-500 uppercase">Medical Management</p>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex gap-3 mb-10">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-bold text-emerald-400">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        System online
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 px-3 py-1 text-xs font-bold text-blue-400">
+                        <span class="material-symbols-outlined text-[14px]">lock</span> Secured
+                    </span>
+                </div>
+                <h2 class="text-6xl font-black text-white leading-[1.1] tracking-tight">
+                    Your clinic,<br/>
+                    <span style="background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">fully connected.</span>
+                </h2>
+                <p class="mt-6 text-lg text-slate-400 leading-relaxed max-w-md">
+                    Access appointments, medical records, billing, and patient data—securely and instantly.
+                </p>
+
+                @* Feature pills *@
+                <div class="mt-10 flex flex-wrap gap-3">
+                    <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-blue-400 text-xl">event</span>
+                        <span class="text-sm font-semibold text-slate-300">Appointments</span>
+                    </div>
+                    <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-emerald-400 text-xl">clinical_notes</span>
+                        <span class="text-sm font-semibold text-slate-300">Medical Records</span>
+                    </div>
+                    <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-purple-400 text-xl">receipt_long</span>
+                        <span class="text-sm font-semibold text-slate-300">Billing</span>
+                    </div>
+                    <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-amber-400 text-xl">notification_important</span>
+                        <span class="text-sm font-semibold text-slate-300">Follow Ups</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6 text-xs text-slate-600">
+                <span>© 2026 ClinicSystem</span>
+                <span class="w-1 h-1 rounded-full bg-slate-700"></span>
+                <span>Staff portal only</span>
+            </div>
+        </aside>
+
+        @* Right panel — Login form *@
+        <section class="flex-1 flex items-center justify-center p-6 lg:p-12">
+            <div class="w-full max-w-md card-animate">
+
+                @* Role selector tabs *@
+                <div class="flex gap-3 mb-8" id="roleTabs">
+                    <button type="button" id="tabDoctor"
+                            onclick="selectRole('Doctor')"
+                            class="role-tab flex-1 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold text-slate-400 border border-slate-700 active-doctor">
+                        <span class="material-symbols-outlined text-[20px]">stethoscope</span>
+                        Doctor
+                    </button>
+                    <button type="button" id="tabReceptionist"
+                            onclick="selectRole('Receptionist')"
+                            class="role-tab flex-1 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold text-slate-400 border border-slate-700">
+                        <span class="material-symbols-outlined text-[20px]">support_agent</span>
+                        Receptionist
+                    </button>
+                </div>
+
+                @* Card *@
+                <div class="glass-card rounded-3xl p-8 lg:p-10">
+                    @* Dynamic header *@
+                    <div class="mb-8">
+                        <div id="roleIcon" class="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center mb-5">
+                            <span class="material-symbols-outlined text-white text-3xl">stethoscope</span>
+                        </div>
+                        <h2 id="roleTitle" class="text-3xl font-black text-white">Doctor Login</h2>
+                        <p id="roleSubtitle" class="mt-2 text-sm text-slate-400">Access your clinical dashboard and patient records.</p>
+                    </div>
+
+                    @* Validation summary *@
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-400">
+                            <span class="material-symbols-outlined align-middle text-[16px] mr-1">error</span>
+                            Invalid email or password. Please try again.
+                        </div>
+                    }
+
+                    <form asp-action="Login" method="post" class="space-y-5">
+                        @Html.AntiForgeryToken()
+
+                        <div>
+                            <label class="mb-2 block text-sm font-semibold text-slate-300" asp-for="Email">
+                                Email address
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-500 text-[20px]">mail</span>
+                                <input asp-for="Email" type="email"
+                                       placeholder="yourname@clinic.com"
+                                       class="input-field w-full rounded-xl border pl-12 pr-4 py-3.5 text-sm focus:outline-none" />
+                            </div>
+                            <span asp-validation-for="Email" class="mt-1 text-xs text-red-400"></span>
+                        </div>
+
+                        <div>
+                            <label class="mb-2 block text-sm font-semibold text-slate-300" asp-for="Password">
+                                Password
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-500 text-[20px]">lock</span>
+                                <input asp-for="Password" type="password" id="passwordInput"
+                                       placeholder="••••••••"
+                                       class="input-field w-full rounded-xl border pl-12 pr-12 py-3.5 text-sm focus:outline-none" />
+                                <button type="button" onclick="togglePassword()"
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+                                    <span id="eyeIcon" class="material-symbols-outlined text-[20px]">visibility</span>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="mt-1 text-xs text-red-400"></span>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input asp-for="RememberMe" type="checkbox"
+                                       class="h-4 w-4 rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 focus:ring-offset-0" />
+                                <span class="text-sm text-slate-400">Remember me</span>
+                            </label>
+                            <a asp-controller="User" asp-action="ResetPassword"
+                               class="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors">
+                                Forgot password?
+                            </a>
+                        </div>
+
+                        <button id="submitBtn" type="submit"
+                                class="submit-btn-doctor w-full flex items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white transition-all duration-200 mt-2">
+                            <span class="material-symbols-outlined text-[20px]">login</span>
+                            Sign in as Doctor
+                        </button>
+                    </form>
+
+                    <div class="mt-6 pt-6 border-t border-white/5 text-center">
+                        <p class="text-xs text-slate-600">
+                            Patient?
+                            <a asp-action="Register" class="text-blue-400 hover:text-blue-300 font-semibold ml-1">Register here</a>
+                            or
+                            <a asp-action="Login" asp-controller="Account" class="text-slate-500 hover:text-slate-400 font-semibold ml-1">Patient login</a>
+                        </p>
+                    </div>
+                </div>
+
+                @* System status *@
+                <div class="mt-6 flex items-center justify-center gap-4 text-xs text-slate-700">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        All systems operational
+                    </span>
+                    <span>·</span>
+                    <span>v2.0.0</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let currentRole = 'Doctor';
+
+        function selectRole(role) {
+            currentRole = role;
+            const tabDoc  = document.getElementById('tabDoctor');
+            const tabRec  = document.getElementById('tabReceptionist');
+            const icon    = document.getElementById('roleIcon');
+            const title   = document.getElementById('roleTitle');
+            const sub     = document.getElementById('roleSubtitle');
+            const btn     = document.getElementById('submitBtn');
+
+            // Reset tabs
+            tabDoc.className = tabDoc.className.replace('active-doctor','').replace('active-receptionist','').trim();
+            tabRec.className = tabRec.className.replace('active-doctor','').replace('active-receptionist','').trim();
+
+            if (role === 'Doctor') {
+                tabDoc.classList.add('active-doctor');
+                icon.className = 'w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center mb-5';
+                icon.innerHTML = '<span class="material-symbols-outlined text-white text-3xl">stethoscope</span>';
+                title.textContent = 'Doctor Login';
+                sub.textContent   = 'Access your clinical dashboard and patient records.';
+                btn.className     = btn.className.replace('submit-btn-receptionist','submit-btn-doctor');
+                btn.innerHTML     = '<span class="material-symbols-outlined text-[20px]">login</span> Sign in as Doctor';
+            } else {
+                tabRec.classList.add('active-receptionist');
+                icon.className = 'w-14 h-14 rounded-2xl bg-violet-600 flex items-center justify-center mb-5';
+                icon.innerHTML = '<span class="material-symbols-outlined text-white text-3xl">support_agent</span>';
+                title.textContent = 'Receptionist Login';
+                sub.textContent   = 'Manage appointments, patients, and billing.';
+                btn.className     = btn.className.replace('submit-btn-doctor','submit-btn-receptionist');
+                btn.innerHTML     = '<span class="material-symbols-outlined text-[20px]">login</span> Sign in as Receptionist';
+            }
+        }
+
+        function togglePassword() {
+            const input   = document.getElementById('passwordInput');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeIcon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                eyeIcon.textContent = 'visibility';
+            }
+        }
+
+        // Focus ring color follow role
+        document.getElementById('passwordInput')?.addEventListener('focus', () => {
+            if (currentRole === 'Receptionist') {
+                document.getElementById('passwordInput').style.boxShadow = '0 0 0 3px rgba(139,92,246,0.2)';
+                document.getElementById('passwordInput').style.borderColor = '#8b5cf6';
+            }
+        });
+    </script>
+</body>
+</html>
