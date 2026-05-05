@@ -5,6 +5,7 @@ namespace DAL.Interfaces;
 public interface IUnitOfWork : IDisposable
 {
     IPatientRepository        Patients        { get; }
+    IUserRepository           Users           { get; }
     IDoctorRepository         Doctors         { get; }
     IDoctorScheduleRepository DoctorSchedules { get; }
     IAppointmentRepository    Appointments    { get; }

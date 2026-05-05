@@ -24,6 +24,7 @@ public static class DalServiceExtensions
         services.AddScoped<IProcedureRepository,      ProcedureRepository>();
         services.AddScoped<IInvoiceRepository,        InvoiceRepository>();
         services.AddScoped<IReceptionistRepository,   ReceptionistRepository>();
+        services.AddScoped<IUserRepository,            UserRepository>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 

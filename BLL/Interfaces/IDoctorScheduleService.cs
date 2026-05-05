@@ -1,3 +1,4 @@
+using BLL.DTOs.Doctor;
 using BLL.DTOs.Patient;
 using Common.Enums;
 using Common.Results;

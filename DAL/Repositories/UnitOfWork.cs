@@ -14,6 +14,7 @@ namespace DAL.Repositories
         private readonly ClinicDbContext _context;
      
         public IPatientRepository Patients {  get;private set; }
+        public IUserRepository Users { get; private set; }
 
         public IDoctorRepository Doctors {  get; private set; }
 
@@ -30,7 +31,17 @@ namespace DAL.Repositories
 
         public IReceptionistRepository Receptionists { get; private set; }
 
-        public UnitOfWork(ClinicDbContext context, IPatientRepository patients, IDoctorRepository doctors, IDoctorScheduleRepository doctorSchedules, IAppointmentRepository appointments, IMedicalRecordRepository medicalRecords, IProcedureTypeRepository procedureTypes, IProcedureRepository procedures, IInvoiceRepository invoices, IReceptionistRepository receptionists)
+        public UnitOfWork(ClinicDbContext context,
+            IPatientRepository patients,
+            IDoctorRepository doctors,
+            IDoctorScheduleRepository doctorSchedules,
+            IAppointmentRepository appointments,
+            IMedicalRecordRepository medicalRecords,
+            IProcedureTypeRepository procedureTypes,
+            IProcedureRepository procedures,
+            IInvoiceRepository invoices,
+            IReceptionistRepository receptionists,
+            IUserRepository users)
         {
             _context = context;
             Patients = patients;
@@ -42,6 +53,7 @@ namespace DAL.Repositories
             Procedures = procedures;
             Invoices = invoices;
             Receptionists = receptionists;
+            Users = users;
         }
 
 
