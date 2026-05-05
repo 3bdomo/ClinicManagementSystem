@@ -31,13 +31,13 @@ public static class BllServiceExtensions
 
         services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
 
-        services.AddScoped <IPatientAccountService, PatientAccountService>();
+        services.AddScoped<IPatientAccountService, PatientAccountService>();
 
         //services.AddScoped <IDashboardService, DashboardService>();
 
-        services.AddScoped <IReceptionistService , ReceptionistService>();
+        services.AddScoped<IReceptionistService, ReceptionistService>();
 
-        services.AddScoped <IUserService, UserService>();
+        services.AddScoped<IUserService, UserService>();
 
 
 

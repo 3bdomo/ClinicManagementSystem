@@ -1,3 +1,4 @@
+using DAL.Interfaces;
 using BLL.DTOs.Patient;
 using BLL.Interfaces;
 using Common.Enums;
@@ -8,8 +9,8 @@ namespace BLL.Services;
 
 public class DoctorService:IDoctorService
 {
-    private readonly UnitOfWork _unitOfWork;
-    public DoctorService(UnitOfWork unitOfWork)
+    private readonly IUnitOfWork _unitOfWork;
+    public DoctorService(IUnitOfWork unitOfWork)
     {
         this._unitOfWork = unitOfWork;
     }

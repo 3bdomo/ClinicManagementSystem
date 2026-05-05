@@ -1,3 +1,4 @@
+using DAL.Interfaces;
 using System.Security.Cryptography;
 using AutoMapper;
 using BLL.DTOs.User;
@@ -12,9 +13,9 @@ namespace BLL.Services;
 public class UserService:IUserService
 {
     
-    private readonly UnitOfWork _unitOfWork;
-    private readonly Mapper _mapper;
-    public UserService(UnitOfWork unitOfWork, Mapper mapper)
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
