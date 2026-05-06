@@ -54,25 +54,19 @@
                     <span class="material-symbols-outlined text-sky-600">payments</span>
                     <p class="mt-4 text-sm font-bold text-slate-500">Today's Revenue</p>
                     <p class="mt-1 text-2xl font-black">@m.TodayRevenue.ToString("N0") EGP</p>
-            @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
-            {
                     <a asp-controller="Billing" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
                         View billing <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                     </a>
-            }
                 </div>
                 <div class="stat-card">
                     <span class="material-symbols-outlined text-amber-500">receipt_long</span>
                     <p class="mt-4 text-sm font-bold text-slate-500">Pending Invoices</p>
                     <p class="mt-1 text-2xl font-black text-amber-600">@m.PendingInvoicesCount</p>
-            @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
-            {
                     <a asp-controller="Billing" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
                         View unpaid <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                     </a>
                 </div>
             }
-        </div>
             <div class="stat-card">
                 <span class="material-symbols-outlined text-emerald-500">notification_important</span>
                 <p class="mt-4 text-sm font-bold text-slate-500">Upcoming Follow-ups</p>
