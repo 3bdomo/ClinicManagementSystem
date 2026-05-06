@@ -17,4 +17,5 @@ public class DoctorScheduleFormViewModel
     [Range(5, 240)] public int SlotMinutes { get; set; } = 30;
     public bool IsActive { get; set; } = true;
     public string? Notes { get; set; }
+    public IEnumerable<SelectListItem> Doctors { get; set; } = [];
 }

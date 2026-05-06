@@ -1,6 +1,7 @@
 using AutoMapper;
 using BLL.DTOs.Appointment;
 using BLL.DTOs.Patient;
+using BLL.DTOs.Doctor;
 using BLL.DTOs.Shared;
 using BLL.DTOs.User;
 using Common.Enums;
@@ -64,6 +65,9 @@ public class WebMappingProfile : Profile
         CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.ProcedureTypeDto>();
         CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.CreateProcedureTypeDto>();
         CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.UpdateProcedureTypeDto>();
+
+        CreateMap<DoctorScheduleDto, DoctorScheduleFormViewModel>();
+        CreateMap<DoctorScheduleFormViewModel, DoctorScheduleDto>();
     }
 
     private BloodType? ParseBloodType(string? val)

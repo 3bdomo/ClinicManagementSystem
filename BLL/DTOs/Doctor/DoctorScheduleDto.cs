@@ -2,7 +2,7 @@ using Common.Enums;
 
 namespace BLL.DTOs.Doctor;
 
-public abstract class DoctorScheduleDto
+public class DoctorScheduleDto
 {
     public int Id { get; set; }
     public int DoctorId { get; set; }
