@@ -68,6 +68,11 @@ public class AccountController : Controller
         var result = await _authService.LoginAsync(new LoginDto { Email = model.Email, Password = model.Password, RememberMe = model.RememberMe });
         if (result.IsSuccess)
         {
+            if (!result.Data.IsInRole(UserRole.Patient.ToString()))
+            {
+                ModelState.AddModelError(string.Empty, "Access denied. You do not have patient privileges.");
+                return View(model);
+            }
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, result.Data, new AuthenticationProperties
             {
                 IsPersistent = model.RememberMe
@@ -91,6 +96,12 @@ public class AccountController : Controller
         var result = await _authService.LoginAsync(new LoginDto { Email = model.Email, Password = model.Password, RememberMe = model.RememberMe });
         if (result.IsSuccess)
         {
+            if (!result.Data.IsInRole(UserRole.Doctor.ToString()) && !result.Data.IsInRole(UserRole.Receptionist.ToString()))
+            {
+                ModelState.AddModelError(string.Empty, "Access denied. You do not have doctor or receptionist privileges.");
+                return View(model);
+            }
+
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, result.Data, new AuthenticationProperties { IsPersistent = model.RememberMe });
             return RedirectToAction("Dashboard", "Home");
         }
