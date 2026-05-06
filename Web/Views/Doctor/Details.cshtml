@@ -1,7 +1,9 @@
 @model DoctorDetailsViewModel
 @{
     ViewData["Title"] = "Doctor Details";
-    var doc = Model.Doctor;
+    var doc = Model?.Doctor ?? new DoctorFormViewModel();
+    var schedules = Model?.Schedules ?? Enumerable.Empty<DoctorScheduleFormViewModel>();
+    var todayAppointments = Model?.TodayAppointments ?? Enumerable.Empty<AppointmentRowViewModel>();
 }
 <div class="space-y-6">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -37,7 +39,7 @@
         <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
             <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
                 <div class="flex h-14 w-14 items-center justify-center rounded-full bg-sky-100 text-2xl font-black text-sky-600">
-                    @doc.FullName.FirstOrDefault()
+                    @doc.FullName?.FirstOrDefault()
                 </div>
                 <div>
                     <h3 class="text-base font-black text-slate-950">@doc.FullName</h3>
@@ -85,12 +87,12 @@
         <div class="lg:col-span-2 grid gap-4 sm:grid-cols-3 content-start">
             <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm text-center">
                 <span class="material-symbols-outlined text-2xl text-sky-600">event</span>
-                <p class="mt-2 text-2xl font-black">@Model.TodayAppointments.Count()</p>
+                <p class="mt-2 text-2xl font-black">@todayAppointments.Count()</p>
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Today's Appointments</p>
             </div>
             <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm text-center">
                 <span class="material-symbols-outlined text-2xl text-sky-600">calendar_month</span>
-                <p class="mt-2 text-2xl font-black">@Model.Schedules.Count(s => s.IsActive)</p>
+                <p class="mt-2 text-2xl font-black">@schedules.Count(s => s.IsActive)</p>
                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Schedules</p>
             </div>
             <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm text-center">
@@ -114,7 +116,7 @@
                 </a>
             }
         </div>
-        @if (Model.Schedules.Any())
+        @if (schedules.Any())
         {
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
@@ -131,7 +133,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    @foreach (var s in Model.Schedules)
+                    @foreach (var s in schedules)
                     {
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-4 py-4 text-sm font-semibold text-slate-900">@s.ScheduleType</td>
@@ -180,7 +182,7 @@
     </div>
 
     @* Today's Appointments *@
-    @if (Model.TodayAppointments.Any())
+    @if (todayAppointments.Any())
     {
         <div class="rounded-lg border border-slate-200 bg-white shadow-sm">
             <div class="border-b border-slate-100 px-6 py-4">
@@ -196,7 +198,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    @foreach (var a in Model.TodayAppointments)
+                    @foreach (var a in todayAppointments)
                     {
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-4 py-4">
@@ -209,9 +211,9 @@
                             <td class="px-4 py-4 text-sm text-slate-600">@a.AppointmentType</td>
                             <td class="px-4 py-4">
                                 <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-bold
-                                    @(a.Status == Common.Enums.AppointmentStatus.Completed ? "bg-emerald-50 text-emerald-700" :
-                                      a.Status == Common.Enums.AppointmentStatus.InProgress ? "bg-blue-50 text-blue-700" :
-                                      "bg-amber-50 text-amber-700")">
+                                            @(a.Status == Common.Enums.AppointmentStatus.Completed ? "bg-emerald-50 text-emerald-700" :
+                                                                            a.Status == Common.Enums.AppointmentStatus.InProgress ? "bg-blue-50 text-blue-700" :
+                                                                            "bg-amber-50 text-amber-700")">
                                     @a.Status
                                 </span>
                             </td>

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.DTOs.Appointment;
 using BLL.DTOs.Patient;
+using BLL.DTOs.Doctor;
 using BLL.DTOs.Shared;
 using BLL.DTOs.User;
 using Common.Enums;
@@ -33,10 +34,8 @@ public class WebMappingProfile : Profile
             .ForMember(dest => dest.DeletedAt,        opt => opt.Ignore());
 
 
-        CreateMap<PatientFormViewModel, PatientDto>()
-            .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => FormatBloodType(src.BloodType)));
-        CreateMap<PatientDto, PatientFormViewModel>()
-            .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => ParseBloodType(src.BloodType)));
+        CreateMap<PatientFormViewModel, PatientDto>();
+        CreateMap<PatientDto, PatientFormViewModel>();
 
        
         CreateMap<PatientHistoryDto, PatientDetailsViewModel>()
@@ -115,37 +114,15 @@ public class WebMappingProfile : Profile
                 opt => opt.MapFrom(src => src.CancellationReason));
 
         CreateMap<AuditInfoDto, AuditInfoViewModel>();
+
+        CreateMap<BLL.DTOs.Procedure.ProcedureTypeDto, ProcedureTypeFormViewModel>();
+        CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.ProcedureTypeDto>();
+        CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.CreateProcedureTypeDto>();
+        CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.UpdateProcedureTypeDto>();
+
+        CreateMap<DoctorScheduleDto, DoctorScheduleFormViewModel>();
+        CreateMap<DoctorScheduleFormViewModel, DoctorScheduleDto>();
     }
 
-    private BloodType? ParseBloodType(string? val)
-    {
-        if (string.IsNullOrEmpty(val)) return null;
-        if (val == "A+") return BloodType.A_Positive;
-        if (val == "A-") return BloodType.A_Negative;
-        if (val == "B+") return BloodType.B_Positive;
-        if (val == "B-") return BloodType.B_Negative;
-        if (val == "AB+") return BloodType.AB_Positive;
-        if (val == "AB-") return BloodType.AB_Negative;
-        if (val == "O+") return BloodType.O_Positive;
-        if (val == "O-") return BloodType.O_Negative;
-        if (Enum.TryParse<BloodType>(val, out var result)) return result;
-        return null;
-    }
 
-    private string? FormatBloodType(BloodType? val)
-    {
-        if (!val.HasValue) return null;
-        return val.Value switch
-        {
-            BloodType.A_Positive => "A+",
-            BloodType.A_Negative => "A-",
-            BloodType.B_Positive => "B+",
-            BloodType.B_Negative => "B-",
-            BloodType.AB_Positive => "AB+",
-            BloodType.AB_Negative => "AB-",
-            BloodType.O_Positive => "O+",
-            BloodType.O_Negative => "O-",
-            _ => val.Value.ToString()
-        };
-    }
 }
