@@ -37,9 +37,7 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
             .ToListAsync();
     }
 
-    /// <summary>
-    /// تعارض لو: موعد موجود يبدأ قبل slotEnd وينتهي بعد slotStart
-    /// </summary>
+   
     public async Task<bool> HasConflictAsync(int doctorId, DateTime slotStart, int durationMinutes)
     {
         var slotEnd = slotStart.AddMinutes(durationMinutes);
@@ -50,4 +48,18 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
                         && a.AppointmentDate < slotEnd
                         && a.AppointmentDate.AddMinutes(a.DurationMinutes) > slotStart);
     }
+
+    public async Task<IEnumerable<Appointment>> GetByDoctorAsync(int doctorId)
+        => await _dbSet
+            .Where(a => a.DoctorId == doctorId)
+            .OrderByDescending(a => a.AppointmentDate)
+            .ToListAsync();
+
+    public async Task<IEnumerable<Appointment>> GetByDoctorAsync(int doctorId, int pageNumber, int pageSize)
+        => await _dbSet
+            .Where(a => a.DoctorId == doctorId)
+            .OrderByDescending(a => a.AppointmentDate)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 }

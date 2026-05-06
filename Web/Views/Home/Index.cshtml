@@ -104,10 +104,10 @@
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" class="text-sm font-bold text-slate-600 hover:text-sky-600 transition-colors hidden sm:block">
+                    <a asp-controller="Account" asp-action="LoginDoctor" class="text-sm font-bold text-slate-600 hover:text-sky-600 transition-colors hidden sm:block">
                         Staff Login
                     </a>
-                    <a asp-controller="Account" asp-action="PatientLogin" class="btn-primary px-6 py-2.5 rounded-full text-sm font-bold text-white flex items-center gap-2">
+                    <a asp-controller="Account" asp-action="Login" class="btn-primary px-6 py-2.5 rounded-full text-sm font-bold text-white flex items-center gap-2">
                         <span class="material-symbols-rounded text-[18px]">person</span>
                         Patient Portal
                     </a>
@@ -242,8 +242,8 @@
             <div>
                 <h4 class="text-white font-bold mb-6">Portals</h4>
                 <ul class="space-y-4 text-sm font-medium">
-                    <li><a asp-controller="Account" asp-action="PatientLogin" class="hover:text-white transition-colors">Patient Portal</a></li>
-                    <li><a asp-controller="Account" asp-action="Login" class="hover:text-white transition-colors">Staff Login</a></li>
+                    <li><a asp-controller="Account" asp-action="Login" class="hover:text-white transition-colors">Patient Portal</a></li>
+                    <li><a asp-controller="Account" asp-action="LoginDoctor" class="hover:text-white transition-colors">Staff Login</a></li>
                 </ul>
             </div>
         </div>

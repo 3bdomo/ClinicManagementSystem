@@ -8,6 +8,8 @@ namespace DAL.Interfaces
 {
     public interface IAppointmentRepository: IGenericRepository<Appointment>
     {
+        Task<IEnumerable<Appointment>> GetByDoctorAsync(int doctorId);
+        Task<IEnumerable<Appointment>> GetByDoctorAsync(int doctorId, int pageNumber, int pageSize);
         Task<IEnumerable<Appointment>> GetByDoctorAndDateAsync(int doctorId, DateTime date);
         Task<IEnumerable<Appointment>> GetByPatientAsync(int patientId);
         Task<IEnumerable<Appointment>> GetTodayAsync();

@@ -17,7 +17,7 @@ public static class BllServiceExtensions
 
         services.AddScoped<IDoctorService, DoctorService>();
 
-        //services.AddScoped<IAppointmentService, AppointmentService>();
+        services.AddScoped<IAppointmentService, AppointmentService>();
 
         services.AddScoped<IBillingService, BillingService>();
 
@@ -33,7 +33,7 @@ public static class BllServiceExtensions
 
         services.AddScoped<IPatientAccountService, PatientAccountService>();
 
-        //services.AddScoped <IDashboardService, DashboardService>();
+        services.AddScoped<IDashboardService, DashboardService>();
 
         services.AddScoped<IReceptionistService, ReceptionistService>();
 
