@@ -1,344 +1,60 @@
+@model ProcedureTypeFormViewModel
 @{
-    Layout = null;
     ViewData["Title"] = "Create Procedure Type";
 }
-<!DOCTYPE html>
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+            <div class="flex items-center gap-2 text-sm font-semibold text-sky-600">
+                <span class="material-symbols-outlined text-[20px]">playlist_add</span>
+                <span>Procedure catalog</span>
+            </div>
+            <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">Create Procedure Type</h2>
+        </div>
+        <a asp-action="ManageTypes" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Back to types
+        </a>
+    </div>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght%40400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "error-container": "#ffdad6",
-                        "secondary-container": "#8df5e4",
-                        "on-primary": "#ffffff",
-                        "inverse-on-surface": "#e8f1ff",
-                        "surface-container": "#e3efff",
-                        "surface-dim": "#ccdcf0",
-                        "on-secondary-fixed": "#00201c",
-                        "on-primary-fixed-variant": "#004493",
-                        "outline-variant": "#c1c6d6",
-                        "on-error-container": "#93000a",
-                        "surface-container-high": "#daeafe",
-                        "surface-container-low": "#edf4ff",
-                        "surface-container-lowest": "#ffffff",
-                        "tertiary": "#835400",
-                        "secondary-fixed": "#8df5e4",
-                        "on-error": "#ffffff",
-                        "on-tertiary-container": "#ffffff",
-                        "tertiary-fixed-dim": "#ffb957",
-                        "tertiary-fixed": "#ffddb5",
-                        "on-surface": "#0d1d2b",
-                        "tertiary-container": "#a46a00",
-                        "primary-fixed": "#d8e2ff",
-                        "surface-bright": "#f7f9ff",
-                        "on-primary-container": "#ffffff",
-                        "error": "#ba1a1a",
-                        "on-surface-variant": "#414754",
-                        "on-secondary-fixed-variant": "#005048",
-                        "on-secondary-container": "#007165",
-                        "surface-container-highest": "#d4e4f8",
-                        "secondary": "#006b5f",
-                        "primary-fixed-dim": "#adc7ff",
-                        "primary": "#005bbf",
-                        "on-secondary": "#ffffff",
-                        "surface": "#f7f9ff",
-                        "secondary-fixed-dim": "#70d8c8",
-                        "background": "#f7f9ff",
-                        "primary-container": "#1a73e8",
-                        "on-background": "#0d1d2b",
-                        "surface-variant": "#d4e4f8",
-                        "inverse-surface": "#233241",
-                        "outline": "#727785",
-                        "on-primary-fixed": "#001a41",
-                        "surface-tint": "#005bc0",
-                        "on-tertiary-fixed": "#2a1800",
-                        "on-tertiary-fixed-variant": "#643f00",
-                        "inverse-primary": "#adc7ff",
-                        "on-tertiary": "#ffffff"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "xs": "8px",
-                        "sm": "12px",
-                        "md": "16px",
-                        "xl": "32px",
-                        "xxl": "48px",
-                        "lg": "24px",
-                        "unit": "4px"
-                    },
-                    "fontFamily": {
-                        "h2": ["Inter"],
-                        "body-sm": ["Inter"],
-                        "body-md": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "label-sm": ["Inter"],
-                        "h3": ["Inter"],
-                        "label-md": ["Inter"],
-                        "h1": ["Inter"]
-                    },
-                    "fontSize": {
-                        "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
-                        "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
-                        "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
-                    }
-                }
-            }
-        }
-    </script>
-<style>
-        body { font-family: 'Inter', sans-serif; }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
-<title>Create Procedure Type - ClinicSystem</title><link href="/css/site.css" rel="stylesheet"/><link href="/css/dashboard.css" rel="stylesheet"/></head>
-<body class="bg-background text-on-background min-h-screen"><input id="CurrentMvcView" type="hidden" value="Views/Procedure/CreateType.cshtml"/>
-<!-- SideNavBar (Authority: JSON) -->
-<aside class="fixed left-0 top-0 h-full w-[240px] z-50 bg-slate-950 dark:bg-black border-r border-slate-800 flex flex-col py-6">
-<div class="px-6 mb-8">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 bg-primary-container rounded flex items-center justify-center">
-<span class="material-symbols-outlined text-white text-lg">medical_services</span>
+    <form asp-action="CreateType" method="post" class="space-y-6">
+        @Html.AntiForgeryToken()
+        <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="grid gap-5 md:grid-cols-2">
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Name">Type name</label>
+                    <input asp-for="Name" type="text" placeholder="e.g. Wound dressing"
+                           class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
+                    <span asp-validation-for="Name" class="mt-1 text-xs text-red-500"></span>
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="DefaultCost">Default cost (EGP)</label>
+                    <input asp-for="DefaultCost" type="number" step="0.01" placeholder="350.00"
+                           class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
+                    <span asp-validation-for="DefaultCost" class="mt-1 text-xs text-red-500"></span>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Description">Description</label>
+                    <textarea asp-for="Description" rows="3" placeholder="What this procedure type covers…"
+                              class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="flex items-center gap-3 text-sm font-semibold text-slate-700 cursor-pointer">
+                        <input asp-for="IsActive" type="checkbox"
+                               class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-600" />
+                        Active type (visible when adding procedures)
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-3 border-t border-slate-200 pt-5">
+            <a asp-action="ManageTypes" class="rounded-lg px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-100">Cancel</a>
+            <button type="submit"
+                    class="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-sky-700">
+                <span class="material-symbols-outlined text-[18px]">playlist_add</span>
+                Create type
+            </button>
+        </div>
+    </form>
 </div>
-<div>
-<h1 class="text-lg font-black text-white leading-none">ClinicSystem</h1>
-<p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Medical Management</p>
-</div>
-</div>
-</div>
-<nav class="flex-1 space-y-1">
-<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="/Home/Index">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span class="font-sans text-sm tracking-tight">Dashboard</span>
-</a>
-<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="/Patient/Index">
-<span class="material-symbols-outlined" data-icon="person">person</span>
-<span class="font-sans text-sm tracking-tight">Patients</span>
-</a>
-<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="/Appointment/Index">
-<span class="material-symbols-outlined" data-icon="event">event</span>
-<span class="font-sans text-sm tracking-tight">Appointments</span>
-</a>
-<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="/Procedure/ManageTypes">
-<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
-<span class="font-sans text-sm tracking-tight">Inventory</span>
-</a>
-<!-- Active State: Staff (Admin context) -->
-<a class="flex items-center gap-3 bg-blue-600/10 text-white border-l-4 border-blue-600 px-4 py-3 transition-transform scale-98 active:scale-95" href="#">
-<span class="material-symbols-outlined" data-icon="group">group</span>
-<span class="font-sans text-sm tracking-tight">Staff</span>
-</a>
-</nav>
-<div class="mt-auto pt-6 border-t border-slate-800 space-y-1">
-<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="/User/Index">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span class="font-sans text-sm tracking-tight">Settings</span>
-</a>
-<a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 transition-transform scale-98 active:scale-95" href="#">
-<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
-<span class="font-sans text-sm tracking-tight">Support</span>
-</a>
-</div>
-</aside>
-<!-- TopAppBar (Authority: JSON) -->
-<header class="fixed top-0 right-0 h-16 w-[calc(100%-240px)] z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-8">
-<div class="flex items-center flex-1 max-w-xl">
-<div class="relative w-full">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-<input class="w-full pl-10 pr-4 py-2 bg-slate-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20" placeholder="Search staff records..." type="text"/>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-all">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-</button>
-<div class="h-8 w-[1px] bg-slate-200"></div>
-<div class="flex items-center gap-3">
-<div class="text-right">
-<p class="text-sm font-medium text-slate-900">Admin User</p>
-<p class="text-[10px] text-slate-500 font-bold uppercase">Super Administrator</p>
-</div>
-<img alt="User avatar" class="w-10 h-10 rounded-full object-cover border border-slate-200" data-alt="A professional headshot of a hospital administrator in a clean office setting. The lighting is soft and natural, emphasizing a bright and professional atmosphere. The individual is wearing a modern charcoal suit with a crisp white shirt, looking confident and approachable. The background is slightly blurred showing a glimpse of a modern clinic corridor with glass partitions." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPQi2roNqf9ym7wUWoXlVo7SyogJL-uCN6tvyNp_c9zivKBWxwqhnv-wj-KLATsTp2KqFZOOi5tm9NdVptJoD4C11nJWXX-ZfN8Wo4bQpBE3AavAJONga9Pt3sWUVvrYcr_BhAMmSBbID49y9cYp0Svyd2Wtusjw6xR3tbeAiTdj2emFr7Fj2ES9mRVK3OaZ7rYo_242cq7mntsBEjYb8p54NWCpQtDkDXCz5q1LBB9Sh_Rgj0xa9KAxahJ97HJEIGqlNDc0LnVeI"/>
-</div>
-</div>
-</header>
-<!-- Main Canvas -->
-<main class="ml-[240px] pt-16 min-h-screen">
-<div class="p-xl max-w-6xl mx-auto">
-<!-- Page Header -->
-<div class="mb-xl">
-<div class="flex items-center gap-2 text-slate-500 mb-2">
-<span class="text-label-sm font-label-sm">Staff Management</span>
-<span class="material-symbols-outlined text-sm">chevron_right</span>
-<span class="text-label-sm font-label-sm text-primary">Add New Account</span>
-</div>
-<h2 class="text-h1 font-h1 text-on-surface">Add New Account</h2>
-<p class="text-body-lg font-body-lg text-on-surface-variant mt-1">Create a new staff or administrative account to grant access to the system.</p>
-</div>
-<form class="space-y-lg">
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
-<!-- Left Column: Account Information -->
-<div class="bg-white p-xl rounded-lg shadow-sm border border-slate-100">
-<div class="flex items-center gap-2 mb-xl">
-<span class="material-symbols-outlined text-primary">badge</span>
-<h3 class="text-h3 font-h3">Account Information</h3>
-</div>
-<div class="space-y-md">
-<div>
-<label class="block text-label-md font-label-md text-on-surface mb-xs">Full Name</label>
-<input class="w-full px-md py-sm rounded-lg border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all text-body-md font-body-md" placeholder="e.g. Dr. Sarah Jenkins" type="text"/>
-</div>
-<div>
-<label class="block text-label-md font-label-md text-on-surface mb-xs">Email Address</label>
-<input class="w-full px-md py-sm rounded-lg border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all text-body-md font-body-md" placeholder="sarah.j&#64;clinicsystem.com" type="email"/>
-</div>
-<div>
-<label class="block text-label-md font-label-md text-on-surface mb-xs">Role</label>
-<select class="w-full px-md py-sm rounded-lg border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all text-body-md font-body-md appearance-none">
-<option>Select a role...</option>
-<option value="doctor">Doctor</option>
-<option value="admin">Admin</option>
-<option value="receptionist">Receptionist</option>
-</select>
-</div>
-<div class="pt-sm">
-<div class="flex items-center justify-between p-md bg-surface-container-lowest border border-slate-100 rounded-lg">
-<div>
-<p class="text-label-md font-label-md text-on-surface">Account Status</p>
-<p class="text-body-sm font-body-sm text-on-surface-variant">Grant immediate system access</p>
-</div>
-<label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox" value=""/>
-<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-</label>
-</div>
-</div>
-</div>
-</div>
-<!-- Right Column: Security & Permissions -->
-<div class="bg-white p-xl rounded-lg shadow-sm border border-slate-100">
-<div class="flex items-center gap-2 mb-xl">
-<span class="material-symbols-outlined text-primary">security</span>
-<h3 class="text-h3 font-h3">Security &amp; Permissions</h3>
-</div>
-<div class="space-y-md">
-<div class="relative">
-<label class="block text-label-md font-label-md text-on-surface mb-xs">Initial Password</label>
-<div class="relative">
-<input class="w-full px-md py-sm rounded-lg border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all text-body-md font-body-md" placeholder="••••••••" type="password"/>
-<button class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary" type="button">
-<span class="material-symbols-outlined text-[20px]">visibility</span>
-</button>
-</div>
-</div>
-<div>
-<label class="block text-label-md font-label-md text-on-surface mb-xs">Confirm Password</label>
-<input class="w-full px-md py-sm rounded-lg border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all text-body-md font-body-md" placeholder="••••••••" type="password"/>
-</div>
-<div class="pt-sm">
-<label class="block text-label-md font-label-md text-on-surface mb-md">Permission Groups</label>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
-<label class="flex items-center gap-3 p-md border border-slate-100 rounded-lg hover:bg-slate-50 cursor-pointer transition-all group">
-<input class="rounded border-slate-300 text-primary focus:ring-primary/20" type="checkbox"/>
-<span class="text-body-md font-body-md text-on-surface group-hover:text-primary">Patient Records</span>
-</label>
-<label class="flex items-center gap-3 p-md border border-slate-100 rounded-lg hover:bg-slate-50 cursor-pointer transition-all group">
-<input class="rounded border-slate-300 text-primary focus:ring-primary/20" type="checkbox"/>
-<span class="text-body-md font-body-md text-on-surface group-hover:text-primary">Billing</span>
-</label>
-<label class="flex items-center gap-3 p-md border border-slate-100 rounded-lg hover:bg-slate-50 cursor-pointer transition-all group">
-<input class="rounded border-slate-300 text-primary focus:ring-primary/20" type="checkbox"/>
-<span class="text-body-md font-body-md text-on-surface group-hover:text-primary">Scheduling</span>
-</label>
-<label class="flex items-center gap-3 p-md border border-slate-100 rounded-lg hover:bg-slate-50 cursor-pointer transition-all group">
-<input class="rounded border-slate-300 text-primary focus:ring-primary/20" type="checkbox"/>
-<span class="text-body-md font-body-md text-on-surface group-hover:text-primary">System Settings</span>
-</label>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Conditional Section: Doctor Details -->
-<div class="bg-primary-container/5 p-xl rounded-lg border-2 border-dashed border-primary/20">
-<div class="flex items-center gap-3 mb-xl">
-<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-<span class="material-symbols-outlined text-primary">stethoscope</span>
-</div>
-<div>
-<h3 class="text-h3 font-h3 text-primary">Doctor Profile Details</h3>
-<p class="text-body-sm font-body-sm text-slate-600">This section is active because the selected role is 'Doctor'</p>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-<div>
-<label class="block text-label-md font-label-md text-on-surface mb-xs">Specialization</label>
-<input class="w-full px-md py-sm rounded-lg border-outline-variant bg-white focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all text-body-md font-body-md" placeholder="e.g. Cardiology" type="text"/>
-</div>
-<div>
-<label class="block text-label-md font-label-md text-on-surface mb-xs">License Number</label>
-<input class="w-full px-md py-sm rounded-lg border-outline-variant bg-white focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all text-body-md font-body-md" placeholder="MED-992348" type="text"/>
-</div>
-<div>
-<label class="block text-label-md font-label-md text-on-surface mb-xs">Consultation Fee ($)</label>
-<input class="w-full px-md py-sm rounded-lg border-outline-variant bg-white focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all text-body-md font-body-md" placeholder="150" type="number"/>
-</div>
-</div>
-</div>
-<!-- Footer Actions -->
-<div class="flex items-center justify-end gap-md pt-xl border-t border-slate-200">
-<button class="px-xl py-md rounded-lg text-label-md font-label-md text-primary hover:bg-primary/5 border border-transparent transition-all" type="button">
-                        Cancel
-                    </button>
-<button class="px-xl py-md rounded-lg bg-primary text-white text-label-md font-label-md shadow-lg shadow-primary/20 hover:bg-primary/90 active:scale-95 transition-all flex items-center gap-2" type="submit">
-<span class="material-symbols-outlined text-md">person_add</span>
-                        Create Account
-                    </button>
-</div>
-</form>
-<!-- Extra UX Hint: Professional Bento Info -->
-<div class="mt-xxl grid grid-cols-1 md:grid-cols-3 gap-lg opacity-80">
-<div class="p-md bg-surface-container-low rounded-lg flex items-start gap-3">
-<span class="material-symbols-outlined text-secondary">info</span>
-<div>
-<p class="text-label-sm font-label-sm">Automatic Invitation</p>
-<p class="text-body-sm font-body-sm text-on-surface-variant">An email invitation will be sent automatically with login credentials.</p>
-</div>
-</div>
-<div class="p-md bg-surface-container-low rounded-lg flex items-start gap-3">
-<span class="material-symbols-outlined text-secondary">history</span>
-<div>
-<p class="text-label-sm font-label-sm">Audit Trail</p>
-<p class="text-body-sm font-body-sm text-on-surface-variant">All account creations are logged for security and compliance audits.</p>
-</div>
-</div>
-<div class="p-md bg-surface-container-low rounded-lg flex items-start gap-3">
-<span class="material-symbols-outlined text-secondary">vpn_key</span>
-<div>
-<p class="text-label-sm font-label-sm">Security Policy</p>
-<p class="text-body-sm font-body-sm text-on-surface-variant">Users will be prompted to change their password on first login.</p>
-</div>
-</div>
-</div>
-</div>
-</main>
-<script src="/js/site.js"></script><script src="/js/schedule-form.js"></script><script src="/js/slot-picker.js"></script><script src="/js/invoice-builder.js"></script><script src="/js/appointment-calendar.js"></script></body></html>

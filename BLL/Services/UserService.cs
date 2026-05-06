@@ -31,7 +31,7 @@ public class UserService:IUserService
         var user=_unitOfWork.Users.GetByIdAsync(id);
         if (user.Result != null)
         {
-            return Task.FromResult(OperationResult<UserDto>.Success(_mapper.Map<UserDto>(user)));
+            return Task.FromResult(OperationResult<UserDto>.Success(_mapper.Map<UserDto>(user.Result)));
         }
         return Task.FromResult(OperationResult<UserDto>.Failure("User not found"));
     }
