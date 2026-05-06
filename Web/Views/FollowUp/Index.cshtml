@@ -1,6 +1,10 @@
 @model FollowUpListViewModel
 @{
     ViewData["Title"] = "Follow Ups";
+    var records = Model?.MedicalRecords ?? Enumerable.Empty<MedicalRecordRowViewModel>();
+    var dateFrom = Model?.DateFrom;
+    var dateTo = Model?.DateTo;
+    var total = Model?.TotalCount ?? records.Count();
 }
 <div class="space-y-6">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -10,7 +14,7 @@
                 <span>Medical records</span>
             </div>
             <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">Follow Ups</h2>
-            <p class="mt-1 text-sm text-slate-500">@Model.TotalCount pending follow-up(s)</p>
+            <p class="mt-1 text-sm text-slate-500">@total pending follow-up(s)</p>
         </div>
     </div>
 
@@ -18,13 +22,13 @@
     <form asp-action="Index" method="get" class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <div class="grid gap-4 md:grid-cols-3 items-end">
             <div>
-                <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="DateFrom">From date</label>
-                <input asp-for="DateFrom" type="date"
+                <label class="mb-2 block text-sm font-semibold text-slate-700" for="DateFrom">From date</label>
+                <input id="DateFrom" name="DateFrom" value="@(dateFrom.HasValue? dateFrom.Value.ToString("yyyy-MM-dd") : string.Empty)" type="date"
                        class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
             </div>
             <div>
-                <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="DateTo">To date</label>
-                <input asp-for="DateTo" type="date"
+                <label class="mb-2 block text-sm font-semibold text-slate-700" for="DateTo">To date</label>
+                <input id="DateTo" name="DateTo" value="@(dateTo.HasValue? dateTo.Value.ToString("yyyy-MM-dd") : string.Empty)" type="date"
                        class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
             </div>
             <div class="flex gap-2">
@@ -53,7 +57,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
-                @if (!Model.MedicalRecords.Any())
+                @if (!records.Any())
                 {
                     <tr>
                         <td colspan="6" class="px-4 py-12 text-center text-sm text-slate-400">
@@ -62,7 +66,7 @@
                         </td>
                     </tr>
                 }
-                @foreach (var record in Model.MedicalRecords)
+                @foreach (var record in records)
                 {
                     var isOverdue = record.FollowUpDate.HasValue && record.FollowUpDate.Value < DateTime.Now;
                     var isToday = record.FollowUpDate.HasValue && record.FollowUpDate.Value.Date == DateTime.Today;

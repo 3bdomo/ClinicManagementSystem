@@ -1,9 +1,20 @@
-<div class="rounded-xl border border-outline-variant bg-white p-4 text-sm text-slate-600">
-    <h4 class="font-black text-slate-900 mb-2">Audit Info</h4>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <p><strong>Created By:</strong> System Admin</p>
-        <p><strong>Created At:</strong> @DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm")</p>
-        <p><strong>Updated By:</strong> System Admin</p>
-        <p><strong>Updated At:</strong> @DateTime.Now.ToString("yyyy-MM-dd HH:mm")</p>
+@model Web.ViewModel.AuditInfoViewModel
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+    <div class="flex justify-between border-b border-slate-50 pb-1">
+        <span class="font-bold text-slate-500">Created By</span>
+        <span class="font-semibold text-slate-900">@(Model?.CreatedByName ?? "System")</span>
+    </div>
+    <div class="flex justify-between border-b border-slate-50 pb-1">
+        <span class="font-bold text-slate-500">Created At</span>
+        <span class="font-semibold text-slate-900">@(Model?.CreatedAt.ToString("yyyy-MM-dd HH:mm") ?? "—")</span>
+    </div>
+    <div class="flex justify-between border-b border-slate-50 pb-1">
+        <span class="font-bold text-slate-500">Updated By</span>
+        <span class="font-semibold text-slate-900">@(Model?.UpdatedByName ?? "—")</span>
+    </div>
+    <div class="flex justify-between border-b border-slate-50 pb-1">
+        <span class="font-bold text-slate-500">Updated At</span>
+        <span class="font-semibold text-slate-900">@(Model?.UpdatedAt?.ToString("yyyy-MM-dd HH:mm") ?? "—")</span>
     </div>
 </div>

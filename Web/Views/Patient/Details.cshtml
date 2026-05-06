@@ -113,7 +113,10 @@
                     <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Unpaid Invoices</p>
                 </div>
             </div>
-            @await Component.InvokeAsync("AuditInfo", Model.AuditInfo)
+            <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 class="text-lg font-black mb-4">Audit information</h3>
+                @await Html.PartialAsync("_AuditInfo", Model.AuditInfo)
+            </div>
         </div>
     </div>
 
