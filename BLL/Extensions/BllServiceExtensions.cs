@@ -38,10 +38,7 @@ public static class BllServiceExtensions
         services.AddScoped<IReceptionistService, ReceptionistService>();
 
         services.AddScoped<IUserService, UserService>();
-
-
-
-
+        services.AddScoped<IProcedureService, ProcedureService>();
 
         return services;
     }
