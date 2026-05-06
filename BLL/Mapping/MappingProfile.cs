@@ -153,6 +153,9 @@ public class MappingProfile : Profile
         CreateMap<ProcedureTypeDto, ProcedureType>()
             .ForMember(dest => dest.Procedures, opt => opt.Ignore());
 
+        CreateMap<CreateProcedureTypeDto, ProcedureType>()
+            .ForMember(dest => dest.Procedures, opt => opt.Ignore());
+
         CreateMap<Procedure, ProcedureDto>()
             .ForMember(dest => dest.ProcedureTypeName,
                        opt => opt.MapFrom(src => src.ProcedureType != null
