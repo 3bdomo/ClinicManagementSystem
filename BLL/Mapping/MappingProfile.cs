@@ -2,6 +2,7 @@ using AutoMapper;
 using BLL.DTOs;
 using BLL.DTOs.Auth;
 using BLL.DTOs.Patient;
+using BLL.DTOs.Receptionist;
 using BLL.DTOs.Shared;
 using BLL.DTOs.User;
 using ClinicSystem.DAL.Models;
@@ -302,5 +303,15 @@ public class MappingProfile : Profile
         CreateMap<Procedure, AuditInfoDto>()
             .ForMember(dest => dest.CreatedByName, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedByName, opt => opt.Ignore());
+
+
+    
+        CreateMap<Receptionist, ReceptionistDto>()
+            .ForMember(dest => dest.PhoneNumber,
+                       opt => opt.MapFrom(src => src.Phone))
+            .ForMember(dest => dest.Email,
+                       opt => opt.MapFrom(src => src.ApplicationUser != null
+                                                 ? src.ApplicationUser.Email
+                                                 : null));
     }
 }

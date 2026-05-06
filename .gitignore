@@ -94,3 +94,4 @@ node_modules/
 secrets.json
 appsettings.Development.json
 appsettings.Local.json
+/MODELS_AND_SERVICES.md
