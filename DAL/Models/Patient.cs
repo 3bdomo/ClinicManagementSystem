@@ -1,4 +1,4 @@
-﻿using Common.Interfaces;
+using Common.Interfaces;
 using Common.Enums;
 
 namespace ClinicSystem.DAL.Models;

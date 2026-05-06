@@ -58,12 +58,8 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2" asp-for="BloodType">Blood type</label>
-                    <select asp-for="BloodType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600">
+                    <select asp-for="BloodType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" asp-items="Html.GetEnumSelectList<Common.Enums.BloodType>()">
                         <option value="">Unknown</option>
-                        <option>A+</option><option>A-</option>
-                        <option>B+</option><option>B-</option>
-                        <option>AB+</option><option>AB-</option>
-                        <option>O+</option><option>O-</option>
                     </select>
                 </div>
                 <div class="md:col-span-2">

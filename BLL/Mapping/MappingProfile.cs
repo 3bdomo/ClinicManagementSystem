@@ -55,16 +55,11 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Patient, opt => opt.Ignore())
             .ForMember(dest => dest.Receptionist, opt => opt.Ignore());
 
-        // CreateMap<Patient, PatientHistoryDto>()
-        //     .ForMember(dest => dest.Patient,
-        //                opt => opt.MapFrom(src => src))
-        //     .ForMember(dest => dest.Appointments,
-        //                opt => opt.MapFrom(src => src.Appointments))
-        //     .ForMember(dest => dest.MedicalRecords,
-        //                opt => opt.MapFrom(src => src.MedicalRecords))
-        //     .ForMember(dest => dest.Invoices,
-        //                opt => opt.MapFrom(src => src.Invoices));
-        //
+        CreateMap<Patient, PatientHistoryDto>()
+            .ForMember(dest => dest.Patient,
+                       opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.Appointments,
+                       opt => opt.MapFrom(src => src.Appointments));
         // CreateMap<Doctor, DoctorDto>();
         //
         // CreateMap<DoctorDto, Doctor>()
