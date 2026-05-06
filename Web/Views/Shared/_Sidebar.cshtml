@@ -13,13 +13,17 @@
     @* Navigation *@
     <nav class="flex-1 overflow-y-auto space-y-1 px-2">
 
-        @* Dashboard - visible to all authenticated users *@
         @if (User.Identity?.IsAuthenticated ?? false)
         {
             <a class="clinic-nav-link" asp-controller="Home" asp-action="Dashboard">
                 <span class="material-symbols-outlined">dashboard</span>Dashboard
             </a>
         }
+
+        <p class="mt-4 mb-1 px-3 text-[10px] font-black uppercase tracking-widest text-blue-500">AI Features 🔬</p>
+        <a class="clinic-nav-link" asp-controller="LabAnalyzer" asp-action="Index">
+            <span class="material-symbols-outlined text-blue-400">science</span>محلل التحاليل الطبية
+        </a>
 
         @* ═══ ADMIN ═══ *@
         @if (User.IsInRole("Admin"))
