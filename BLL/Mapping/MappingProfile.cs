@@ -2,6 +2,7 @@ using AutoMapper;
 using BLL.DTOs;
 using BLL.DTOs.Auth;
 using BLL.DTOs.Patient;
+using BLL.DTOs.Procedure;
 using BLL.DTOs.Receptionist;
 using BLL.DTOs.Shared;
 using BLL.DTOs.User;
@@ -144,24 +145,24 @@ public class MappingProfile : Profile
         //     .ForMember(dest => dest.MedicalRecord, opt => opt.Ignore())
         //     .ForMember(dest => dest.UploadedAt, opt => opt.Ignore());
         //
-        // CreateMap<ProcedureType, ProcedureTypeDto>();
-        //
-        // CreateMap<ProcedureTypeDto, ProcedureType>()
-        //     .ForMember(dest => dest.Procedures, opt => opt.Ignore());
-        //
-        // CreateMap<Procedure, ProcedureDto>()
-        //     .ForMember(dest => dest.ProcedureTypeName,
-        //                opt => opt.MapFrom(src => src.ProcedureType != null
-        //                                          ? src.ProcedureType.Name
-        //                                          : string.Empty));
+        CreateMap<ProcedureType, ProcedureTypeDto>();
 
-        // CreateMap<ProcedureDto, Procedure>()
-        //     .ForMember(dest => dest.MedicalRecord, opt => opt.Ignore())
-        //     .ForMember(dest => dest.ProcedureType, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
+        CreateMap<ProcedureTypeDto, ProcedureType>()
+            .ForMember(dest => dest.Procedures, opt => opt.Ignore());
+
+        CreateMap<Procedure, ProcedureDto>()
+            .ForMember(dest => dest.ProcedureTypeName,
+                       opt => opt.MapFrom(src => src.ProcedureType != null
+                                                 ? src.ProcedureType.Name
+                                                 : string.Empty));
+
+        CreateMap<ProcedureDto, Procedure>()
+            .ForMember(dest => dest.MedicalRecord, opt => opt.Ignore())
+            .ForMember(dest => dest.ProcedureType, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
         //
         // CreateMap<Invoice, InvoiceDto>()
         //     .ForMember(dest => dest.PatientName,
