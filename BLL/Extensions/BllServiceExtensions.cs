@@ -11,7 +11,7 @@ public static class BllServiceExtensions
     public static IServiceCollection AddBllServices(this IServiceCollection services)
     {
        
-        services.AddAutoMapper(typeof(MappingProfile).Assembly);
+       
 
         services.AddScoped<IPatientService, PatientService>();
 

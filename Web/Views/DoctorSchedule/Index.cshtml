@@ -1,475 +1,127 @@
+@model DoctorScheduleListViewModel
 @{
-    Layout = null;
     ViewData["Title"] = "Doctor Schedules";
 }
-<!DOCTYPE html>
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+            <div class="flex items-center gap-2 text-sm font-semibold text-sky-600">
+                <span class="material-symbols-outlined text-[20px]">calendar_month</span>
+                <span>Doctor schedules</span>
+            </div>
+            <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">Doctor Schedules</h2>
+            <p class="mt-1 text-sm text-slate-500">@Model.Schedules.Count() schedule(s) found</p>
+        </div>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-sky-700">
+                <span class="material-symbols-outlined text-[18px]">calendar_add_on</span>
+                New schedule
+            </a>
+        }
+    </div>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Doctor Schedules - ClinicSystem</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght%40400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .ios-switch:checked + div {
-            background-color: #1a73e8;
-        }
-        .ios-switch:checked + div span {
-            transform: translateX(100%);
-        }
-    </style>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-tertiary-fixed-variant": "#643f00",
-                        "on-secondary": "#ffffff",
-                        "on-background": "#0d1d2b",
-                        "surface-container-lowest": "#ffffff",
-                        "on-primary": "#ffffff",
-                        "secondary": "#006b5f",
-                        "primary-container": "#1a73e8",
-                        "primary-fixed": "#d8e2ff",
-                        "on-tertiary": "#ffffff",
-                        "outline": "#727785",
-                        "surface-container": "#e3efff",
-                        "surface-dim": "#ccdcf0",
-                        "on-secondary-fixed": "#00201c",
-                        "on-primary-fixed-variant": "#004493",
-                        "on-surface-variant": "#414754",
-                        "background": "#f7f9ff",
-                        "tertiary-fixed": "#ffddb5",
-                        "secondary-fixed-dim": "#70d8c8",
-                        "primary": "#005bbf",
-                        "on-error": "#ffffff",
-                        "secondary-fixed": "#8df5e4",
-                        "on-tertiary-container": "#ffffff",
-                        "inverse-on-surface": "#e8f1ff",
-                        "inverse-surface": "#233241",
-                        "surface-variant": "#d4e4f8",
-                        "surface": "#f7f9ff",
-                        "on-primary-container": "#ffffff",
-                        "outline-variant": "#c1c6d6",
-                        "on-secondary-fixed-variant": "#005048",
-                        "inverse-primary": "#adc7ff",
-                        "primary-fixed-dim": "#adc7ff",
-                        "surface-container-high": "#daeafe",
-                        "error-container": "#ffdad6",
-                        "surface-tint": "#005bc0",
-                        "surface-container-low": "#edf4ff",
-                        "on-surface": "#0d1d2b",
-                        "error": "#ba1a1a",
-                        "secondary-container": "#8df5e4",
-                        "tertiary-container": "#a46a00",
-                        "on-error-container": "#93000a",
-                        "tertiary-fixed-dim": "#ffb957",
-                        "tertiary": "#835400",
-                        "on-primary-fixed": "#001a41",
-                        "on-secondary-container": "#007165",
-                        "surface-container-highest": "#d4e4f8",
-                        "on-tertiary-fixed": "#2a1800",
-                        "surface-bright": "#f7f9ff"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "h2": ["Inter"],
-                        "body-sm": ["Inter"],
-                        "h3": ["Inter"],
-                        "h1": ["Inter"],
-                        "label-sm": ["Inter"],
-                        "label-md": ["Inter"],
-                        "body-md": ["Inter"],
-                        "body-lg": ["Inter"]
-                    },
-                    "fontSize": {
-                        "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                        "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
-                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
-                    }
+    <form method="get" asp-action="Index" class="grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-3 md:items-end">
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700" for="DoctorId">Doctor</label>
+            <select id="DoctorId" name="DoctorId" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600">
+                <option value="">All doctors</option>
+                @foreach (var d in Model.Doctors)
+                {
+                    <option value="@d.Value" selected="@(d.Value == Model.DoctorId?.ToString())">@d.Text</option>
                 }
-            }
+            </select>
+        </div>
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700" for="ScheduleType">Type</label>
+            <select id="ScheduleType" name="ScheduleType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600">
+                <option value="">All types</option>
+                @foreach (var t in Html.GetEnumSelectList<Common.Enums.ScheduleType>())
+                {
+                    <option value="@t.Value" selected="@(t.Value == Model.ScheduleType?.ToString())">@t.Text</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800">
+            <span class="material-symbols-outlined text-[18px]">filter_list</span>
+            Filter
+        </button>
+    </form>
+
+    <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+        @if (Model.Schedules.Any())
+        {
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Doctor</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Type</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Day / Date</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Time</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Slot</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Status</th>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th class="px-4 py-3"></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach (var s in Model.Schedules)
+                    {
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-4 py-4 text-sm font-semibold text-slate-900">@s.DoctorName</td>
+                            <td class="px-4 py-4 text-sm text-slate-700">@s.ScheduleType</td>
+                            <td class="px-4 py-4 text-sm text-slate-700">
+                                @if (s.DayOfWeek.HasValue)
+                                {
+                                    @s.DayOfWeek.Value.ToString()
+                                }
+                                else if (s.SpecificDate.HasValue)
+                                {
+                                    @s.SpecificDate.Value.ToString("yyyy-MM-dd")
+                                }
+                                else
+                                {
+                                    <span class="text-slate-400">—</span>
+                                }
+                            </td>
+                            <td class="px-4 py-4 text-sm text-slate-700">@s.StartTime.ToString("HH:mm") – @s.EndTime.ToString("HH:mm")</td>
+                            <td class="px-4 py-4 text-sm text-slate-600">@s.SlotMinutes min</td>
+                            <td class="px-4 py-4">
+                                @if (s.IsActive)
+                                {
+                                    <span class="inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-500">Inactive</span>
+                                }
+                            </td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td class="px-4 py-4 text-right">
+                                    <a asp-action="Edit" asp-route-id="@s.Id"
+                                       class="text-sm font-bold text-sky-600 hover:underline">Edit</a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
         }
-    </script>
-<link href="/css/site.css" rel="stylesheet"/><link href="/css/dashboard.css" rel="stylesheet"/></head>
-<body class="bg-background font-body-md text-on-background min-h-screen"><input id="CurrentMvcView" type="hidden" value="Views/DoctorSchedule/Index.cshtml"/>
-<!-- SideNavBar (Shared Component) -->
-<nav class="bg-slate-950 fixed left-0 top-0 h-full w-[240px] z-50 border-r border-slate-800 flex flex-col h-full py-6">
-<div class="px-6 mb-8">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-<span class="material-symbols-outlined text-white text-xl">medical_services</span>
+        else
+        {
+            <div class="p-10 text-center">
+                <span class="material-symbols-outlined text-5xl text-slate-300">calendar_month</span>
+                <p class="mt-3 text-sm font-semibold text-slate-500">No schedules found for the selected filters.</p>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Create" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-bold text-white">
+                        Create first schedule
+                    </a>
+                }
+            </div>
+        }
+    </div>
 </div>
-<div>
-<h1 class="text-lg font-black text-white leading-none">ClinicSystem</h1>
-<p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Medical Management</p>
-</div>
-</div>
-</div>
-<div class="flex-1 space-y-1">
-<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-900 transition-transform scale-98 active:scale-95" href="/Home/Index">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-sans text-sm tracking-tight">Dashboard</span>
-</a>
-<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-900 transition-transform scale-98 active:scale-95" href="/Patient/Index">
-<span class="material-symbols-outlined">person</span>
-<span class="font-sans text-sm tracking-tight">Patients</span>
-</a>
-<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-900 transition-transform scale-98 active:scale-95" href="/Appointment/Index">
-<span class="material-symbols-outlined">event</span>
-<span class="font-sans text-sm tracking-tight">Appointments</span>
-</a>
-<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-900 transition-transform scale-98 active:scale-95" href="/Procedure/ManageTypes">
-<span class="material-symbols-outlined">inventory_2</span>
-<span class="font-sans text-sm tracking-tight">Inventory</span>
-</a>
-<a class="bg-blue-600/10 text-white border-l-4 border-blue-600 px-4 py-3 flex items-center gap-3 transition-transform scale-98 active:scale-95" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
-<span class="font-sans text-sm tracking-tight">Staff</span>
-</a>
-</div>
-<div class="mt-auto border-t border-slate-800 pt-4 space-y-1">
-<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-900 transition-transform scale-98 active:scale-95" href="/User/Index">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-sans text-sm tracking-tight">Settings</span>
-</a>
-<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-900 transition-transform scale-98 active:scale-95" href="#">
-<span class="material-symbols-outlined">help_outline</span>
-<span class="font-sans text-sm tracking-tight">Support</span>
-</a>
-</div>
-</nav>
-<!-- TopAppBar (Shared Component) -->
-<header class="bg-white fixed top-0 right-0 h-16 w-[calc(100%-240px)] z-40 border-b border-slate-200 shadow-sm flex justify-between items-center px-8">
-<div class="flex items-center flex-1 max-w-xl">
-<div class="relative w-full">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-<input class="w-full bg-slate-50 border-none rounded-lg py-2 pl-10 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Search for doctors, schedules..." type="text"/>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-50 transition-all duration-200">
-<span class="material-symbols-outlined text-slate-600">notifications</span>
-</button>
-<div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
-<div class="flex items-center gap-3">
-<div class="text-right">
-<p class="text-sm font-medium text-slate-900 leading-none">Admin User</p>
-<p class="text-[10px] text-slate-500 mt-1 uppercase tracking-tighter">Chief Administrator</p>
-</div>
-<img alt="User avatar" class="w-10 h-10 rounded-full border border-slate-200 object-cover" data-alt="A professional headshot of a modern medical administrator in a bright, high-key office setting. The lighting is soft and flattering, highlighting a friendly but authoritative expression. The individual is wearing professional attire, and the background is a clean, blurred medical office with blue and white tones that match the clinic's corporate branding." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt7Rl70KR9zu5EXck0Ugkl9KaSAlVti-PVV5JJyJ8ezo96kJmRMrjXP-bit5tFX_5iOTC9uExPJ6MaVlARzAP5ENAnVljSWbA2_8ZcuhmpLKRz4AN2qQhyU6nK0-xvK5lmAPsEsFdqb29pd9LvHoNhDOUpkfd2oulGLJ3W1el48JehRDXQ6kr5rup0uK-NaqYjIC_uDx4mrTZ4LHX7_9P04SwumRB2kUuO5ypCnIIq3UmKEGWpo0kuvkCytedWcBwLx8wcVgsj7qU"/>
-</div>
-</div>
-</header>
-<!-- Main Canvas -->
-<main class="pl-[240px] pt-16 min-h-screen">
-<div class="p-8">
-<!-- Page Header -->
-<div class="flex justify-between items-end mb-8">
-<div>
-<h2 class="font-h2 text-h2 text-on-background">Doctor Schedules</h2>
-<p class="text-on-surface-variant font-body-md mt-1">Manage weekly shifts and specialized procedure slots for the medical team.</p>
-</div>
-<button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg flex items-center gap-2 font-label-md shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
-<span class="material-symbols-outlined text-xl">add</span>
-                    Add Schedule
-                </button>
-</div>
-<!-- Dashboard Content (Bento Grid Style for Filter & Stats) -->
-<div class="grid grid-cols-12 gap-6 mb-8">
-<!-- Filter Section -->
-<div class="col-span-12 lg:col-span-8 bg-white p-6 rounded-xl border border-outline-variant shadow-sm flex items-center gap-4">
-<div class="flex-1">
-<label class="block font-label-sm text-on-surface-variant mb-1.5 uppercase tracking-wider">Search Doctor</label>
-<div class="relative">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">person_search</span>
-<input class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg text-sm focus:ring-primary focus:border-primary" placeholder="Dr. Smith, Dr. Jenkins..." type="text"/>
-</div>
-</div>
-<div class="w-48">
-<label class="block font-label-sm text-on-surface-variant mb-1.5 uppercase tracking-wider">Type</label>
-<select class="w-full py-2 border border-outline-variant rounded-lg text-sm focus:ring-primary focus:border-primary">
-<option>All Types</option>
-<option>Consultation</option>
-<option>Surgery</option>
-</select>
-</div>
-<div class="flex items-end h-full pt-6">
-<button class="bg-surface-container text-on-surface p-2 rounded-lg hover:bg-surface-container-high transition-all">
-<span class="material-symbols-outlined">filter_list</span>
-</button>
-</div>
-</div>
-<!-- Stats Summary -->
-<div class="col-span-12 lg:col-span-4 bg-primary-container p-6 rounded-xl border border-primary/10 shadow-sm text-on-primary flex items-center justify-between">
-<div>
-<p class="text-primary-fixed/80 text-sm font-medium uppercase tracking-widest">Active Slots Today</p>
-<p class="text-4xl font-bold mt-1">42</p>
-</div>
-<div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined text-3xl">calendar_today</span>
-</div>
-</div>
-</div>
-<!-- Schedule Table -->
-<div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden">
-<table class="w-full text-left border-collapse">
-<thead class="bg-background border-b border-outline-variant">
-<tr>
-<th class="px-6 py-4 font-label-md text-on-surface-variant uppercase tracking-wider">Doctor</th>
-<th class="px-6 py-4 font-label-md text-on-surface-variant uppercase tracking-wider">Type</th>
-<th class="px-6 py-4 font-label-md text-on-surface-variant uppercase tracking-wider">Day/Date</th>
-<th class="px-6 py-4 font-label-md text-on-surface-variant uppercase tracking-wider">Time Range</th>
-<th class="px-6 py-4 font-label-md text-on-surface-variant uppercase tracking-wider">Slot</th>
-<th class="px-6 py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-center">Status</th>
-<th class="px-6 py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-outline-variant">
-<!-- Row 1 -->
-<tr class="hover:bg-slate-50 transition-colors">
-<td class="px-6 py-4">
-<div class="flex items-center gap-3">
-<img class="w-10 h-10 rounded-full object-cover border border-slate-100" data-alt="A medium shot of a professional male doctor in his 40s wearing a crisp white medical coat and stethoscope around his neck. The lighting is clean and clinical with soft shadows, creating a trustworthy and competent persona. The background is a modern, minimalist healthcare clinic with glass partitions and soft teal accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACzHfaa-SpOY5y0xbYvOUPMeVbGoYmQ8rzXHl7q6Mdy04ircsSBGi3-P9q5hloBe6b2Simi1UIxqZ0PNT9pLnlwSpt11zr_gbn295btiw0WwXhZe3gZ-c0Fk0FkKMk7G2bn_t3c0qXQ7arQcgoew-XrzZu6qNr3FeQt4bh5VQdVhC3T3XpcAsclxcSvzg4EZy-wt7Rvy2ON4aByi87C5FNZE410tbfCUGud9UaqvOlip_eH0YVgmrjnrjQa3jJxR0Ts84kNWmnE8Q"/>
-<div>
-<p class="font-semibold text-on-surface">Dr. Sarah Mitchell</p>
-<p class="text-xs text-on-surface-variant">Cardiology</p>
-</div>
-</div>
-</td>
-<td class="px-6 py-4">
-<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-xs font-bold rounded-full uppercase">Consultation</span>
-</td>
-<td class="px-6 py-4 text-sm font-medium text-on-surface">Every Monday</td>
-<td class="px-6 py-4">
-<div class="flex items-center gap-2 text-sm text-on-surface">
-<span class="material-symbols-outlined text-xs text-primary">schedule</span>
-                                    09:00 AM - 02:00 PM
-                                </div>
-</td>
-<td class="px-6 py-4 text-sm text-on-surface">20 mins</td>
-<td class="px-6 py-4">
-<div class="flex justify-center">
-<label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only ios-switch" type="checkbox"/>
-<div class="w-11 h-6 bg-slate-200 rounded-full transition-colors">
-<span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"></span>
-</div>
-</label>
-</div>
-</td>
-<td class="px-6 py-4 text-right">
-<div class="flex justify-end gap-2">
-<button class="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-all"><span class="material-symbols-outlined text-lg">edit</span></button>
-<button class="p-2 hover:bg-error/10 rounded-lg text-error transition-all"><span class="material-symbols-outlined text-lg">delete</span></button>
-</div>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="hover:bg-slate-50 transition-colors">
-<td class="px-6 py-4">
-<div class="flex items-center gap-3">
-<img class="w-10 h-10 rounded-full object-cover border border-slate-100" data-alt="Close up of a confident female physician in her 30s, smiling warmly. She is wearing professional blue scrubs and a laboratory coat. The environment is a bright medical setting with natural light streaming from a window, creating a serene and helpful atmosphere. The color scheme focuses on soft whites and clinical blues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtV-18HVYz-6pqJU3wKLuEEpprSV_mgxtO27WndEcKidgoG22A12oH1eV997cJewZ23VlIkKvSrhIE4D0wIKLkDm39l1w42g-FZOGQhy0asj1KZkfMIDEybSGKThn6CMVktq9vyAjtTfl8_ovcSONF-Lsy8JjOF6Eez58tjCzK23Ulm-vCkda8CTd47-J46dORwBEhBBnYD26BY3C0kys6VJe5xZt8FqxDxAHL0avOEwZYD61XXZXAi1L2Q2VC4JkI-ZZ4A3bhEd8"/>
-<div>
-<p class="font-semibold text-on-surface">Dr. James Wilson</p>
-<p class="text-xs text-on-surface-variant">General Surgery</p>
-</div>
-</div>
-</td>
-<td class="px-6 py-4">
-<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container text-xs font-bold rounded-full uppercase">Surgery</span>
-</td>
-<td class="px-6 py-4 text-sm font-medium text-on-surface">Oct 24, 2023</td>
-<td class="px-6 py-4">
-<div class="flex items-center gap-2 text-sm text-on-surface">
-<span class="material-symbols-outlined text-xs text-primary">schedule</span>
-                                    08:00 AM - 12:00 PM
-                                </div>
-</td>
-<td class="px-6 py-4 text-sm text-on-surface">60 mins</td>
-<td class="px-6 py-4">
-<div class="flex justify-center">
-<label class="relative inline-flex items-center cursor-pointer">
-<input class="sr-only ios-switch" type="checkbox"/>
-<div class="w-11 h-6 bg-slate-200 rounded-full transition-colors">
-<span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"></span>
-</div>
-</label>
-</div>
-</td>
-<td class="px-6 py-4 text-right">
-<div class="flex justify-end gap-2">
-<button class="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-all"><span class="material-symbols-outlined text-lg">edit</span></button>
-<button class="p-2 hover:bg-error/10 rounded-lg text-error transition-all"><span class="material-symbols-outlined text-lg">delete</span></button>
-</div>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="hover:bg-slate-50 transition-colors">
-<td class="px-6 py-4">
-<div class="flex items-center gap-3">
-<img class="w-10 h-10 rounded-full object-cover border border-slate-100" data-alt="A portrait of a senior female doctor with silver hair, exuding wisdom and calm experience. She is dressed in a professional charcoal grey suit under a white coat. The lighting is soft and even, highlighting her kind eyes. The background shows a modern hospital hallway with clean lines and high-quality architectural textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASjRAHlPE7w97CW6ITCsbh3XuEcdbawnY3xVLMIwbpXEqShr1fiOHpX1uU0URo-G8FhKPFWFv0VuZUNlOzRa8RCz05LXSG-5R5jB_2QlmEaBk8ye05PbqMsE1L8q634G7mUb91I2JF6FOkfNIEVHzt-9nBP7AYs8qL9Ee-8DqgKKUr0d5AbGGXqhJC82So0G2TsQHeUCJdgrVy8e50QWBd0QE9wCY8cRqNiha3O7WYAXva9KWvgpZoR8Yt7hm5pKLfv2sK1v2Z2Yo"/>
-<div>
-<p class="font-semibold text-on-surface">Dr. Linda Chen</p>
-<p class="text-xs text-on-surface-variant">Pediatrics</p>
-</div>
-</div>
-</td>
-<td class="px-6 py-4">
-<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-xs font-bold rounded-full uppercase">Consultation</span>
-</td>
-<td class="px-6 py-4 text-sm font-medium text-on-surface">Tue, Wed, Fri</td>
-<td class="px-6 py-4">
-<div class="flex items-center gap-2 text-sm text-on-surface">
-<span class="material-symbols-outlined text-xs text-primary">schedule</span>
-                                    02:00 PM - 06:00 PM
-                                </div>
-</td>
-<td class="px-6 py-4 text-sm text-on-surface">15 mins</td>
-<td class="px-6 py-4">
-<div class="flex justify-center">
-<label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only ios-switch" type="checkbox"/>
-<div class="w-11 h-6 bg-slate-200 rounded-full transition-colors">
-<span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"></span>
-</div>
-</label>
-</div>
-</td>
-<td class="px-6 py-4 text-right">
-<div class="flex justify-end gap-2">
-<button class="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-all"><span class="material-symbols-outlined text-lg">edit</span></button>
-<button class="p-2 hover:bg-error/10 rounded-lg text-error transition-all"><span class="material-symbols-outlined text-lg">delete</span></button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="px-6 py-4 bg-slate-50 border-t border-outline-variant flex justify-between items-center">
-<p class="text-xs text-on-surface-variant">Showing 3 of 12 doctor schedules</p>
-<div class="flex gap-2">
-<button class="px-3 py-1 border border-outline-variant rounded bg-white text-xs hover:bg-slate-50 transition-all">Previous</button>
-<button class="px-3 py-1 border border-outline-variant rounded bg-white text-xs hover:bg-slate-50 transition-all">Next</button>
-</div>
-</div>
-</div>
-</div>
-</main>
-<!-- Slide-over Backdrop (Overlay) -->
-<div class="fixed inset-0 bg-slate-900/60 z-[60] flex justify-end">
-<!-- Slide-over Form Container -->
-<div class="w-[480px] bg-white h-full shadow-2xl flex flex-col transform transition-transform duration-300">
-<!-- Form Header -->
-<div class="px-8 py-6 border-b border-outline-variant flex justify-between items-center">
-<div>
-<h3 class="font-h3 text-h3 text-on-background leading-none">Add Schedule</h3>
-<p class="text-on-surface-variant font-body-sm mt-1">Create a new availability pattern for a practitioner.</p>
-</div>
-<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 transition-all">
-<span class="material-symbols-outlined">close</span>
-</button>
-</div>
-<!-- Form Content -->
-<div class="flex-1 overflow-y-auto px-8 py-8 space-y-6">
-<!-- Doctor Selection -->
-<div class="space-y-1.5">
-<label class="block font-label-md text-on-surface">Doctor</label>
-<div class="relative">
-<select class="w-full h-11 pl-4 pr-10 border border-outline-variant rounded-lg text-body-md appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
-<option>Select a doctor...</option>
-<option>Dr. Sarah Mitchell</option>
-<option>Dr. James Wilson</option>
-<option>Dr. Linda Chen</option>
-</select>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
-</div>
-</div>
-<!-- Schedule Type & Pattern Grid -->
-<div class="grid grid-cols-2 gap-4">
-<div class="space-y-1.5">
-<label class="block font-label-md text-on-surface">Type</label>
-<select class="w-full h-11 px-4 border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
-<option>Consultation</option>
-<option>Surgery</option>
-<option>Telehealth</option>
-</select>
-</div>
-<div class="space-y-1.5">
-<label class="block font-label-md text-on-surface">Pattern</label>
-<select class="w-full h-11 px-4 border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
-<option>Weekly Recurring</option>
-<option>One-time Event</option>
-</select>
-</div>
-</div>
-<!-- Days of Week Selection -->
-<div class="space-y-3">
-<label class="block font-label-md text-on-surface">Repeat on</label>
-<div class="flex flex-wrap gap-2">
-<button class="w-10 h-10 rounded-lg border border-primary bg-primary text-white font-bold text-xs">M</button>
-<button class="w-10 h-10 rounded-lg border border-outline-variant hover:border-primary hover:text-primary transition-all font-bold text-xs">T</button>
-<button class="w-10 h-10 rounded-lg border border-outline-variant hover:border-primary hover:text-primary transition-all font-bold text-xs">W</button>
-<button class="w-10 h-10 rounded-lg border border-outline-variant hover:border-primary hover:text-primary transition-all font-bold text-xs">T</button>
-<button class="w-10 h-10 rounded-lg border border-outline-variant hover:border-primary hover:text-primary transition-all font-bold text-xs">F</button>
-<button class="w-10 h-10 rounded-lg border border-outline-variant hover:border-primary hover:text-primary transition-all font-bold text-xs opacity-50">S</button>
-<button class="w-10 h-10 rounded-lg border border-outline-variant hover:border-primary hover:text-primary transition-all font-bold text-xs opacity-50">S</button>
-</div>
-</div>
-<!-- Time & Duration Grid -->
-<div class="grid grid-cols-2 gap-4 pt-2">
-<div class="space-y-1.5">
-<label class="block font-label-md text-on-surface">Start Time</label>
-<input class="w-full h-11 px-4 border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" type="time" value="09:00"/>
-</div>
-<div class="space-y-1.5">
-<label class="block font-label-md text-on-surface">End Time</label>
-<input class="w-full h-11 px-4 border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" type="time" value="17:00"/>
-</div>
-</div>
-<div class="space-y-1.5">
-<label class="block font-label-md text-on-surface">Slot Duration (Minutes)</label>
-<div class="flex items-center gap-4">
-<input class="flex-1 accent-primary" max="120" min="5" step="5" type="range"/>
-<span class="w-16 h-11 flex items-center justify-center border border-outline-variant rounded-lg font-bold text-primary">20</span>
-</div>
-</div>
-<!-- Advanced Options -->
-<div class="pt-4 border-t border-slate-100">
-<div class="flex items-center justify-between py-2">
-<div>
-<p class="font-label-md text-on-surface">Set as Active</p>
-<p class="text-xs text-on-surface-variant">Schedule will be live immediately.</p>
-</div>
-<label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only ios-switch" type="checkbox"/>
-<div class="w-11 h-6 bg-slate-200 rounded-full transition-colors">
-<span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"></span>
-</div>
-</label>
-</div>
-</div>
-</div>
-<!-- Form Footer -->
-<div class="px-8 py-6 border-t border-outline-variant bg-slate-50 flex gap-4">
-<button class="flex-1 h-11 border border-outline-variant rounded-lg font-label-md text-on-surface hover:bg-white transition-all">Cancel</button>
-<button class="flex-1 h-11 bg-primary text-on-primary rounded-lg font-label-md shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">Save Schedule</button>
-</div>
-</div>
-</div>
-<script src="/js/site.js"></script><script src="/js/schedule-form.js"></script><script src="/js/slot-picker.js"></script><script src="/js/invoice-builder.js"></script><script src="/js/appointment-calendar.js"></script></body></html>

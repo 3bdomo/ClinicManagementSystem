@@ -4,6 +4,7 @@ using ClinicSystem.DAL.Models;
 using Common.Interfaces;
 using DAL.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Web.Mapping;
 using Web.Middleware;
 using Serilog;
 using Web.Services;
@@ -54,6 +55,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddBllServices();
+builder.Services.AddAutoMapper(
+    typeof(ClinicSystem.BLL.Mapping.MappingProfile).Assembly,  // BLL profiles
+    typeof(WebMappingProfile).Assembly                          // Web profiles
+);
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
