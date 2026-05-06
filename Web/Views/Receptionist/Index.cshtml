@@ -1,0 +1,236 @@
+﻿@model Web.ViewModels.Receptionist.ReceptionistListViewModel
+@{
+    ViewData["Title"] = "Receptionists";
+    var culture = System.Globalization.CultureInfo.InvariantCulture;
+}
+
+@* ── Stats ──────────────────────────────────────────────────── *@
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-5
+                flex items-center gap-4">
+        <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center
+                    justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-blue-600">group</span>
+        </div>
+        <div>
+            <p class="text-2xl font-black text-slate-900 leading-none">
+                @Model.TotalCount
+            </p>
+            <p class="text-xs text-slate-500 mt-1">Total Receptionists</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-5
+                flex items-center gap-4">
+        <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center
+                    justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-emerald-600">
+                check_circle
+            </span>
+        </div>
+        <div>
+            <p class="text-2xl font-black text-slate-900 leading-none">
+                @Model.ActiveCount
+            </p>
+            <p class="text-xs text-slate-500 mt-1">Active</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-5
+                flex items-center gap-4">
+        <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center
+                    justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-amber-600">cancel</span>
+        </div>
+        <div>
+            <p class="text-2xl font-black text-slate-900 leading-none">
+                @Model.InactiveCount
+            </p>
+            <p class="text-xs text-slate-500 mt-1">Inactive</p>
+        </div>
+    </div>
+
+</div>
+
+@* ── Header ──────────────────────────────────────────────────── *@
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+    <p class="text-sm text-slate-500">Manage front desk employees</p>
+    <a asp-controller="User" asp-action="Create"
+       asp-route-role="Receptionist"
+       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl
+              bg-blue-600 text-white text-sm font-bold
+              hover:bg-blue-700 transition-colors whitespace-nowrap">
+        <span class="material-symbols-outlined text-[18px]">person_add</span>
+        Add Receptionist
+    </a>
+</div>
+
+@* ── Table — overflow-x-auto handles small screens ───────────── *@
+<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm" style="min-width:640px">
+            <thead>
+                <tr class="border-b border-slate-100 bg-slate-50">
+                    <th class="text-left px-4 py-3 text-xs font-black
+                               uppercase tracking-wider text-slate-500">
+                        Name
+                    </th>
+                    <th class="text-left px-4 py-3 text-xs font-black
+                               uppercase tracking-wider text-slate-500">
+                        Email
+                    </th>
+                    <th class="text-left px-4 py-3 text-xs font-black
+                               uppercase tracking-wider text-slate-500">
+                        Phone
+                    </th>
+                    <th class="text-left px-4 py-3 text-xs font-black
+                               uppercase tracking-wider text-slate-500">
+                        Status
+                    </th>
+                    <th class="text-left px-4 py-3 text-xs font-black
+                               uppercase tracking-wider text-slate-500
+                               whitespace-nowrap">
+                        Joined
+                    </th>
+                    <th class="px-4 py-3" style="width:210px"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+
+                @if (!Model.Receptionists.Any())
+                {
+                    <tr>
+                        <td colspan="6"
+                            class="px-5 py-12 text-center text-slate-400">
+                            <span class="material-symbols-outlined block mb-2"
+                                  style="font-size:36px;opacity:.25">
+                                group_off
+                            </span>
+                            No receptionists found.
+                            <a asp-controller="User" asp-action="Create"
+                               asp-route-role="Receptionist"
+                               class="text-blue-600 font-semibold ml-1">
+                                Add one?
+                            </a>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var r in Model.Receptionists)
+                    {
+                        // Initials from first two words
+                        var initials = string.Concat(
+                        r.FullName
+                        .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                        .Take(2).Select(w => w[0])
+                        ).ToUpper();
+
+                        // Pre-build classes — Tailwind CDN needs static strings
+                        // Dynamic ternary in class="" breaks with CDN
+                        var badgeClasses = r.IsActive
+                        ? "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700"
+                        : "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500";
+
+                        var dotClasses = r.IsActive
+                        ? "w-1.5 h-1.5 rounded-full flex-shrink-0 bg-emerald-500"
+                        : "w-1.5 h-1.5 rounded-full flex-shrink-0 bg-slate-400";
+
+                        var toggleClasses = r.IsActive
+                        ? "px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors border border-red-200 text-red-600 hover:bg-red-50"
+                        : "px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors border border-emerald-200 text-emerald-600 hover:bg-emerald-50";
+
+                        <tr class="hover:bg-slate-50 transition-colors">
+
+                            @* Name + avatar — truncate long names *@
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-9 h-9 rounded-full bg-blue-600
+                                                        text-white font-bold text-xs
+                                                        flex items-center justify-center
+                                                        flex-shrink-0">
+                                        @initials
+                                    </div>
+                                    <span class="font-semibold text-slate-900
+                                                         truncate"
+                                          style="max-width:130px"
+                                          title="@r.FullName">
+                                        @r.FullName
+                                    </span>
+                                </div>
+                            </td>
+
+                            @* Email — truncate if long *@
+                            <td class="px-4 py-3 text-slate-500">
+                                <span class="block truncate"
+                                      style="max-width:150px"
+                                      title="@(r.Email ?? string.Empty)">
+                                    @(r.Email ?? "—")
+                                </span>
+                            </td>
+
+                            @* Phone — nowrap *@
+                            <td class="px-4 py-3 text-slate-500 whitespace-nowrap">
+                                @(r.PhoneNumber ?? "—")
+                            </td>
+
+                            @* Status badge — dot always same line as text *@
+                            <td class="px-4 py-3">
+                                <span class="@badgeClasses">
+                                    <span class="@dotClasses"></span>
+                                    @(r.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </td>
+
+                            @* Date — InvariantCulture = English always *@
+                            <td class="px-4 py-3 text-slate-400 text-xs whitespace-nowrap">
+                                @r.CreatedAt.ToString("MMM dd, yyyy", culture)
+                            </td>
+
+                            @* Actions — flex-nowrap keeps all 3 on one line *@
+                            <td class="px-4 py-3">
+                                <div class="flex items-center justify-end gap-1.5"
+                                     style="flex-wrap:nowrap">
+                                    <a asp-action="Details" asp-route-id="@r.Id"
+                                       class="px-2.5 py-1.5 rounded-lg text-xs
+                                                      font-semibold whitespace-nowrap
+                                                      border border-slate-200
+                                                      text-slate-600
+                                                      hover:bg-slate-50
+                                                      transition-colors">
+                                        Details
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@r.Id"
+                                       class="px-2.5 py-1.5 rounded-lg text-xs
+                                                      font-semibold whitespace-nowrap
+                                                      border border-blue-200
+                                                      text-blue-600
+                                                      hover:bg-blue-50
+                                                      transition-colors">
+                                        Edit
+                                    </a>
+                                    <form asp-action="ToggleActive"
+                                          asp-route-id="@r.Id"
+                                          method="post"
+                                          style="display:inline;margin:0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden"
+                                               name="returnTo" value="Index" />
+                                        <button type="submit"
+                                                class="@toggleClasses"
+                                                style="min-width:90px">
+                                            @(r.IsActive ? "Deactivate" : "Activate")
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

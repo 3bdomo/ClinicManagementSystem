@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ClinicDbContext))]
-    [Migration("20260505184544_Init")]
-    partial class Init
+    [Migration("20260506005605_Intitit")]
+    partial class Intitit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
