@@ -236,24 +236,59 @@ public class BillingController : Controller
 
     }
 
+    // GET /Billing/DailyReport
+    [HttpGet]
+    public async Task<IActionResult> DailyReport()
+    {
+        // Use a range that covers today in both local and UTC to avoid empty reports
+        var start = DateTime.Today.AddDays(-1); // Start from yesterday to be safe
+        var end = DateTime.Today.AddDays(1).AddTicks(-1);
+
+        var result = await _billingService.GetStatisticsByDateRangeAsync(start, end);
+        var stats = result.IsSuccess ? result.Data : new BillingStatisticsDto();
+
+        var vm = new DailyReportViewModel
+        {
+            SelectedDate = start,
+            TotalRevenue = stats.TotalRevenue,
+            TotalInvoices = stats.TotalInvoices,
+            PaidCount = stats.PaidInvoices,
+            UnpaidCount = stats.UnpaidInvoices,
+            UnpaidAmount = stats.UnpaidRevenue
+        };
+
+        ViewBag.From = start;
+        ViewBag.To = end;
+        return View(vm);
+    }
+
     // POST /Billing/DailyReport
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DailyReport(DateTime? from, DateTime? to)
     {
-        var start = from ?? DateTime.Today;
+        var start = from ?? DateTime.Today.AddDays(-1);
         var end = to ?? DateTime.Today.AddDays(1).AddTicks(-1);
 
         var result = await _billingService.GetStatisticsByDateRangeAsync(start, end);
-        if (!result.IsSuccess)
+        var stats = result.IsSuccess ? result.Data : new BillingStatisticsDto();
+
+        var vm = new DailyReportViewModel
         {
+            SelectedDate = start,
+            TotalRevenue = stats.TotalRevenue,
+            TotalInvoices = stats.TotalInvoices,
+            PaidCount = stats.PaidInvoices,
+            UnpaidCount = stats.UnpaidInvoices,
+            UnpaidAmount = stats.UnpaidRevenue
+        };
+
+        if (!result.IsSuccess)
             TempData["Error"] = result.Message;
-            return View(new BillingStatisticsDto());
-        }
 
         ViewBag.From = start;
         ViewBag.To = end;
-        return View(result.Data);
+        return View(vm);
     }
 
     //Get/Billing/ByPatient/5
