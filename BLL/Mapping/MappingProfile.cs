@@ -1,15 +1,16 @@
 using AutoMapper;
 using BLL.DTOs;
+using BLL.DTOs.Appointment;
 using BLL.DTOs.Auth;
+using BLL.DTOs.Doctor;
+using BLL.DTOs.MedicalRecord;
 using BLL.DTOs.Patient;
 using BLL.DTOs.Procedure;
 using BLL.DTOs.Receptionist;
 using BLL.DTOs.Shared;
 using BLL.DTOs.User;
 using ClinicSystem.DAL.Models;
-using BLL.DTOs.Doctor;
-using BLL.DTOs.Appointment;
-using BLL.DTOs.MedicalRecord;
+using Common.Enums;
 
 namespace ClinicSystem.BLL.Mapping;
 
@@ -403,5 +404,79 @@ public class MappingProfile : Profile
                        opt => opt.MapFrom(src => src.ApplicationUser != null
                                                  ? src.ApplicationUser.Email
                                                  : null));
+
+
+
+
+        CreateMap<Appointment, AppointmentDto>()
+            .ForMember(dest => dest.DoctorName,
+                opt => opt.MapFrom(src => src.Doctor != null
+                    ? src.Doctor.FullName
+                    : null))
+            .ForMember(dest => dest.PatientName,
+                opt => opt.MapFrom(src => src.Patient != null
+                    ? src.Patient.FullName
+                    : null))
+            .ForMember(dest => dest.DoctorSpecialization,
+                opt => opt.MapFrom(src => src.Doctor != null
+                    ? src.Doctor.Specialization
+                    : (Specialization?)null))
+            .ForMember(dest => dest.HasMedicalRecord,
+                opt => opt.MapFrom(src => src.MedicalRecord != null))
+            .ForMember(dest => dest.HasInvoice,
+                opt => opt.MapFrom(src => src.Invoice != null))
+            .ForMember(dest => dest.MedicalRecordId,
+                opt => opt.MapFrom(src => src.MedicalRecord != null
+                    ? src.MedicalRecord.Id
+                    : (int?)null))
+            .ForMember(dest => dest.InvoiceId,
+                opt => opt.MapFrom(src => src.Invoice != null
+                    ? src.Invoice.Id
+                    : (int?)null));
+
+        CreateMap<Appointment, AppointmentHistoryDto>()
+            .ForMember(dest => dest.DoctorName,
+                opt => opt.MapFrom(src => src.Doctor != null
+                    ? src.Doctor.FullName
+                    : null))
+            .ForMember(dest => dest.DoctorSpecialization,
+                opt => opt.MapFrom(src => src.Doctor != null
+                    ? src.Doctor.Specialization
+                    : (Specialization?)null))
+            .ForMember(dest => dest.HasMedicalRecord,
+                opt => opt.MapFrom(src => src.MedicalRecord != null))
+            .ForMember(dest => dest.HasInvoice,
+                opt => opt.MapFrom(src => src.Invoice != null));
+
+        CreateMap<CreateAppointmentDto, Appointment>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => AppointmentStatus.Waiting))
+            .ForMember(dest => dest.CancellationReason, opt => opt.Ignore())
+            .ForMember(dest => dest.Patient, opt => opt.Ignore())
+            .ForMember(dest => dest.Doctor, opt => opt.Ignore())
+            .ForMember(dest => dest.DoctorSchedule, opt => opt.Ignore())
+            .ForMember(dest => dest.MedicalRecord, opt => opt.Ignore())
+            .ForMember(dest => dest.Invoice, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
+
+        /*
+         * Kept for compatibility if any old code still maps AppointmentDto to Appointment.
+         * Main Create flow should use CreateAppointmentDto.
+         */
+        CreateMap<AppointmentDto, Appointment>()
+            .ForMember(dest => dest.Doctor, opt => opt.Ignore())
+            .ForMember(dest => dest.Patient, opt => opt.Ignore())
+            .ForMember(dest => dest.DoctorSchedule, opt => opt.Ignore())
+            .ForMember(dest => dest.MedicalRecord, opt => opt.Ignore())
+            .ForMember(dest => dest.Invoice, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
+
+
     }
 }

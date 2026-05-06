@@ -1,46 +1,32 @@
-<header class="h-20 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-30">
+<header class="h-20 bg-white/80 backdrop-blur border-b border-outline-variant flex items-center justify-between px-8 sticky top-0 z-30">
     <div>
         <p class="text-sm text-slate-500">ClinicSystem</p>
         <h2 class="text-2xl font-black tracking-tight">@ViewData["Title"]</h2>
     </div>
     <div class="flex items-center gap-3">
 
-       
-        @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+        @if (User.IsInRole("Admin") || User.IsInRole("Receptionist") || User.IsInRole("Patient"))
         {
-            <a class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold flex items-center gap-2"
-               asp-controller="Appointment" asp-action="Book">
-                <span class="material-symbols-outlined text-[18px]">add</span>
+            <a class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold"
+               asp-controller="Appointment"
+               asp-action="BookStep1">
                 New Appointment
             </a>
         }
 
-
-        @if (User.IsInRole("Doctor"))
-        {
-            <a class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold flex items-center gap-2"
-               asp-controller="Appointment" asp-action="Index">
-                <span class="material-symbols-outlined text-[18px]">event</span>
-                My Appointments
-            </a>
-        }
-
-    
         @if (User.IsInRole("Patient"))
         {
-            <a class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold flex items-center gap-2"
-               asp-controller="Appointment" asp-action="BookSlot">
-                <span class="material-symbols-outlined text-[18px]">event_available</span>
-                Book Appointment
+            <a class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center"
+               asp-controller="Patient"
+               asp-action="MyProfile">
+                <span class="material-symbols-outlined">account_circle</span>
             </a>
         }
-
-  
-        @if (User.IsInRole("Patient"))
+        else
         {
-            <a class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors"
-               asp-controller="Patient" asp-action="MyProfile"
-               title="My Profile">
+            <a class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center"
+               asp-controller="Home"
+               asp-action="Dashboard">
                 <span class="material-symbols-outlined">account_circle</span>
             </a>
         }

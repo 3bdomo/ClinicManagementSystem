@@ -132,5 +132,8 @@ namespace BLL.Services
             return OperationResult<int>.Success(patient.Id);
         }
 
+
+
+
     }
 }
