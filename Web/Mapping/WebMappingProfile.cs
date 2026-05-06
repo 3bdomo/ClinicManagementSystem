@@ -59,6 +59,11 @@ public class WebMappingProfile : Profile
             .ForMember(dest => dest.HasInvoice,        opt => opt.Ignore());
 
         CreateMap<AuditInfoDto, AuditInfoViewModel>();
+
+        CreateMap<BLL.DTOs.Procedure.ProcedureTypeDto, ProcedureTypeFormViewModel>();
+        CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.ProcedureTypeDto>();
+        CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.CreateProcedureTypeDto>();
+        CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.UpdateProcedureTypeDto>();
     }
 
     private BloodType? ParseBloodType(string? val)
