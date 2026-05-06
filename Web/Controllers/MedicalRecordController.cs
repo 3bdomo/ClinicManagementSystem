@@ -2,14 +2,20 @@ using BLL.DTOs.MedicalRecord;
 using BLL.Interfaces;
 using ClinicSystem.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Common.Enums;
+using Web.ViewModel;
+using System.Linq;
 
 public class MedicalRecordController : Controller
 {
     private readonly IMedicalRecordService _medicalRecordService;
+    private readonly IAppointmentService _appointmentService;
 
-    public MedicalRecordController(IMedicalRecordService medicalRecordService)
+    public MedicalRecordController(IMedicalRecordService medicalRecordService, IAppointmentService appointmentService)
     {
         _medicalRecordService = medicalRecordService;
+        _appointmentService = appointmentService;
     }
 
     // GET /MedicalRecord/Index
@@ -40,30 +46,77 @@ public class MedicalRecordController : Controller
         return View(result.Data);
     }
     
-    // GET /MedicalRecord/Create?PatientId=5
-    public IActionResult Create(int? patientId)
+    // GET /MedicalRecord/Create?patientId=5
+    public async Task<IActionResult> Create(int? patientId)
     {
-        var dto= new MedicalRecordDto()
+        var vm = new MedicalRecordFormViewModel
         {
-            PatientId = patientId ?? 0,
-            VisitedDate = DateTime.Now
+            PatientId = patientId,
+            Appointments = await GetPatientAppointmentsAsync(patientId)
         };
-        return View(dto);
+        return View(vm);
     }
-    //Post /MedicalRecord/Create
+    //POST /MedicalRecord/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateMedicalRecordDto dto)
+    public async Task<IActionResult> Create(MedicalRecordFormViewModel vm)
     {
-        if(!ModelState.IsValid)return View(dto);
+        if (!ModelState.IsValid)
+        {
+            vm.Appointments = await GetPatientAppointmentsAsync(vm.PatientId);
+            return View(vm);
+        }
+
+        var appointmentResult = await _appointmentService.GetByIdAsync(vm.AppointmentId);
+        if (!appointmentResult.IsSuccess)
+        {
+            ModelState.AddModelError(string.Empty, "Appointment not found.");
+            vm.Appointments = await GetPatientAppointmentsAsync(vm.PatientId);
+            return View(vm);
+        }
+
+        var appointment = appointmentResult.Data;
+
+        var dto = new CreateMedicalRecordDto
+        {
+            AppointmentId = vm.AppointmentId,
+            PatientId = appointment.PatientId,
+            DoctorId = appointment.DoctorId,
+            Diagnosis = vm.Diagnosis,
+            Notes = vm.Notes,
+            VisitedDate = appointment.AppointmentDate,
+            FollowUpDate = vm.FollowUpDate ?? DateTime.Now.AddDays(7) // Default or required?
+        };
+
         var result = await _medicalRecordService.CreateAsync(dto);
         if (!result.IsSuccess)
         {
             ModelState.AddModelError(string.Empty, result.Message);
-            return View(dto);
+            vm.Appointments = await GetPatientAppointmentsAsync(vm.PatientId);
+            return View(vm);
         }
         TempData["Success"] = "Medical record created successfully.";
-        return RedirectToAction((nameof(Details)), new { id = result.Data });
+        return RedirectToAction(nameof(Details), new { id = result.Data });
+    }
+
+    private async Task<List<SelectListItem>> GetPatientAppointmentsAsync(int? patientId)
+    {
+        var appointments = new List<SelectListItem>();
+        if (patientId.HasValue)
+        {
+            var history = await _appointmentService.GetPatientHistoryAsync(patientId.Value);
+            if (history.IsSuccess)
+            {
+                appointments = history.Data
+                    .Where(a => !a.HasMedicalRecord && a.Status == AppointmentStatus.Completed)
+                    .Select(a => new SelectListItem
+                    {
+                        Text = $"{a.AppointmentDate:yyyy-MM-dd HH:mm} - {a.DoctorName}",
+                        Value = a.Id.ToString()
+                    }).ToList();
+            }
+        }
+        return appointments;
     }
     
     // GET /MedicalRecord/Edit/5

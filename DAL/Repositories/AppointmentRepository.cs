@@ -11,6 +11,17 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
     public AppointmentRepository(ClinicDbContext context) : base(context)
     {
     }
+    
+    public new async Task<IEnumerable<Appointment>> GetAllAsync()
+    {
+        return await _dbSet
+            .AsNoTracking()
+            .Include(a => a.Patient)
+            .Include(a => a.Doctor)
+            .Include(a => a.Invoice)
+            .OrderByDescending(a => a.AppointmentDate)
+            .ToListAsync();
+    }
 
     // ─────────────────────────────────────────────
     // Helper: get start/end of a day

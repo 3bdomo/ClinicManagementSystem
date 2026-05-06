@@ -111,6 +111,11 @@
                                    class="inline-flex items-center gap-1 rounded-lg border border-amber-300 px-3 py-1.5 text-xs font-bold text-amber-700 hover:bg-amber-50">
                                     <span class="material-symbols-outlined text-[14px]">lock_reset</span> Reset Password
                                 </a>
+                                <form asp-action="Delete" asp-route-id="@user.Id" method="post" onsubmit="return confirm('Delete user @user.FullName? This will also soft-delete their profile.')">
+                                    <button type="submit" class="inline-flex items-center gap-1 rounded-lg border border-red-300 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50">
+                                        <span class="material-symbols-outlined text-[14px]">delete</span> Delete
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BLL.DTOs.Patient;
 using BLL.Interfaces;
 using Common.Results;

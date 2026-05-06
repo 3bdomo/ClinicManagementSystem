@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BLL.DTOs.Appointment;
 using BLL.DTOs.Patient;
 using BLL.DTOs.Doctor;
@@ -16,6 +16,7 @@ public class WebMappingProfile : Profile
     {
 
         CreateMap<UserDto, UserRowViewModel>();
+        CreateMap<AuditInfoDto, AuditInfoViewModel>();
 
 
         CreateMap<CreateUserViewModel, CreateUserDto>();
@@ -43,14 +44,14 @@ public class WebMappingProfile : Profile
             .ForMember(dest => dest.Appointments,   opt => opt.MapFrom(src => src.Appointments))
             .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
             .ForMember(dest => dest.Invoices,       opt => opt.Ignore())
-            .ForMember(dest => dest.AuditInfo,      opt => opt.Ignore());
+            .ForMember(dest => dest.AuditInfo,      opt => opt.MapFrom(src => src.AuditInfo));
 
         CreateMap<PatientDto, PatientDetailsViewModel>()
             .ForMember(dest => dest.Patient,        opt => opt.MapFrom(src => src))
             .ForMember(dest => dest.Appointments,   opt => opt.Ignore())
             .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
             .ForMember(dest => dest.Invoices,       opt => opt.Ignore())
-            .ForMember(dest => dest.AuditInfo,      opt => opt.Ignore());
+            .ForMember(dest => dest.AuditInfo,      opt => opt.MapFrom(src => new AuditInfoViewModel { CreatedAt = src.CreatedAt, CreatedByName = src.CreatedBy }));
 
 
         CreateMap<AppointmentDto, AppointmentRowViewModel>();

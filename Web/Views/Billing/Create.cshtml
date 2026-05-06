@@ -11,6 +11,10 @@
         <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">Create Invoice</h2>
     </div>
     <form asp-action="Create" method="post" class="space-y-6">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="rounded-lg bg-red-50 p-4 text-sm text-red-600 shadow-sm mb-6"></div>
+        }
         <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
             <div class="grid gap-5 md:grid-cols-2">
                 <div class="md:col-span-2">
@@ -38,41 +42,61 @@
         </div>
 
         <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-            <div class="mb-4 flex items-center justify-between gap-3">
-                <h3 class="text-lg font-black">Invoice items</h3>
-                <button id="addInvoiceItem" type="button"
-                        class="inline-flex items-center gap-2 rounded-lg border border-sky-600 px-4 py-2 text-sm font-bold text-sky-600 hover:bg-sky-50">
-                    <span class="material-symbols-outlined text-[18px]">add</span>
-                    Add item
-                </button>
-            </div>
-            <div id="invoiceItems" class="space-y-3">
-                <div class="invoice-row grid gap-3 md:grid-cols-4 items-end p-3 rounded-lg bg-slate-50">
-                    <div>
-                        <label class="mb-2 block text-sm font-semibold text-slate-700">Description</label>
-                        <input name="Items[0].Description" type="text" placeholder="Consultation fee"
-                               class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
-                    </div>
-                    <div>
-                        <label class="mb-2 block text-sm font-semibold text-slate-700">Quantity</label>
-                        <input name="Items[0].Quantity" type="number" value="1" min="1"
-                               class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
-                    </div>
-                    <div>
-                        <label class="mb-2 block text-sm font-semibold text-slate-700">Unit price (EGP)</label>
-                        <input name="Items[0].UnitPrice" type="number" step="0.01" placeholder="0.00"
-                               class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
-                    </div>
-                    <div>
-                        <label class="mb-2 block text-sm font-semibold text-slate-700">Type</label>
-                        <select name="Items[0].ItemType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600">
-                            <option value="0">Consultation</option>
-                            <option value="1">Procedure</option>
-                            <option value="2">Lab</option>
-                            <option value="3">Other</option>
+            <div class="mb-4 flex items-end justify-between gap-3">
+                <div class="flex-1">
+                    <h3 class="text-lg font-black">Invoice items</h3>
+                    <p class="text-xs text-slate-500">Add consultation fees, procedures, or other items.</p>
+                </div>
+                <div class="flex items-end gap-2">
+                    <div class="w-64">
+                        <label class="mb-1 block text-[10px] font-bold uppercase text-slate-400">Procedure Template</label>
+                        <select id="ProcedureTemplate" asp-items="Model.ProcedureTypes"
+                                class="w-full rounded-lg border-slate-300 text-sm focus:border-sky-600 focus:ring-sky-600">
+                            <option value="">Quick select...</option>
                         </select>
                     </div>
+                    <button id="addInvoiceItem" type="button"
+                            class="inline-flex items-center gap-2 rounded-lg bg-sky-50 px-4 py-2.5 text-sm font-bold text-sky-600 hover:bg-sky-100">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                        Add item
+                    </button>
                 </div>
+            </div>
+            <div id="invoiceItems" class="space-y-3">
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    <div class="invoice-row grid gap-3 md:grid-cols-4 items-end p-3 rounded-lg bg-slate-50 transition-all hover:bg-slate-100">
+                        <div>
+                            <label class="mb-2 block text-sm font-semibold text-slate-700">Description</label>
+                            <input name="Items[@i].Description" value="@Model.Items[i].Description" type="text" 
+                                   class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" required />
+                        </div>
+                        <div>
+                            <label class="mb-2 block text-sm font-semibold text-slate-700">Quantity</label>
+                            <input name="Items[@i].Quantity" type="number" value="@Model.Items[i].Quantity" min="1"
+                                   class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" required />
+                        </div>
+                        <div>
+                            <label class="mb-2 block text-sm font-semibold text-slate-700">Unit price (EGP)</label>
+                            <input name="Items[@i].UnitPrice" value="@Model.Items[i].UnitPrice" type="number" step="0.01"
+                                   class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" required />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1">
+                                <label class="mb-2 block text-sm font-semibold text-slate-700">Type</label>
+                                <select name="Items[@i].ItemType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600">
+                                    <option value="0" selected="@(Model.Items[i].ItemType == InvoiceItemType.Consultation)">Consultation</option>
+                                    <option value="1" selected="@(Model.Items[i].ItemType == InvoiceItemType.Procedure)">Procedure</option>
+                                    <option value="2" selected="@(Model.Items[i].ItemType == InvoiceItemType.Lab)">Lab</option>
+                                    <option value="3" selected="@(Model.Items[i].ItemType == InvoiceItemType.Other)">Other</option>
+                                </select>
+                            </div>
+                            <button type="button" onclick="this.closest('.invoice-row').remove(); reindexItems();" class="mt-7 text-red-500 hover:text-red-700">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 
@@ -89,35 +113,94 @@
 
 @section Scripts {
     <script>
-        // Auto-fill patient/doctor from appointment option text (format: "DATE - PatientName | DoctorName")
         const apptSelect = document.getElementById('AppointmentId');
+        const itemsContainer = document.getElementById('invoiceItems');
+        const templateSelect = document.getElementById('ProcedureTemplate');
+        let itemIndex = 1;
+
+        // Auto-fill patient/doctor from appointment selection
         apptSelect?.addEventListener('change', () => {
             const text = apptSelect.selectedOptions[0]?.text ?? '';
+            if (!text || text.includes('Select appointment')) return;
+            
             const parts = text.split(' | ');
+            // Extract "Sara Tarek" from "2026-05-06 10:00 - Sara Tarek"
             const patientPart = parts[0]?.split(' - ')[1]?.trim() ?? '';
-            const doctorPart = parts[1]?.trim() ?? '';
+            // Extract "Dr. Ahmed Ali" from "Dr. Ahmed Ali (Status: ...)"
+            const doctorPart = parts[1]?.split(' (')[0]?.trim() ?? '';
+            
             document.getElementById('PatientNameDisplay').value = patientPart;
             document.getElementById('DoctorNameDisplay').value = doctorPart;
+            
+            // Auto-add consultation row if empty
+            if (itemsContainer.children.length === 0) {
+                addItemRow('Consultation Fee', '', 0);
+            }
         });
 
-        let itemIndex = 1;
-        document.getElementById('addInvoiceItem')?.addEventListener('click', () => {
-            const row = document.createElement('div');
-            row.className = 'invoice-row grid gap-3 md:grid-cols-4 items-end p-3 rounded-lg bg-slate-50';
-            row.innerHTML = `
-                <div><label class="mb-2 block text-sm font-semibold text-slate-700">Description</label>
-                    <input name="Items[${itemIndex}].Description" type="text" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
-                <div><label class="mb-2 block text-sm font-semibold text-slate-700">Quantity</label>
-                    <input name="Items[${itemIndex}].Quantity" type="number" value="1" min="1" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
-                <div><label class="mb-2 block text-sm font-semibold text-slate-700">Unit price (EGP)</label>
-                    <input name="Items[${itemIndex}].UnitPrice" type="number" step="0.01" placeholder="0.00" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" /></div>
-                <div><label class="mb-2 block text-sm font-semibold text-slate-700">Type</label>
-                    <select name="Items[${itemIndex}].ItemType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600">
-                        <option value="0">Consultation</option><option value="1">Procedure</option>
-                        <option value="2">Lab</option><option value="3">Other</option>
-                    </select></div>`;
-            document.getElementById('invoiceItems').appendChild(row);
-            itemIndex++;
+        // Quick add from template
+        templateSelect?.addEventListener('change', (e) => {
+            if (!e.target.value) return;
+            const name = e.target.selectedOptions[0].text.split(' (')[0];
+            const price = e.target.value;
+            addItemRow(name, price, 1); // 1 = Procedure
+            e.target.value = '';
         });
+
+        document.getElementById('addInvoiceItem')?.addEventListener('click', () => addItemRow());
+
+        // Initialize with one row if none exist
+        if (itemsContainer.children.length === 0) {
+            addItemRow();
+        }
+
+        function addItemRow(desc = '', price = '', type = 0) {
+            const index = itemsContainer.children.length;
+            const row = document.createElement('div');
+            row.className = 'invoice-row grid gap-3 md:grid-cols-4 items-end p-3 rounded-lg bg-slate-50 transition-all hover:bg-slate-100';
+            row.innerHTML = `
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700">Description</label>
+                    <input name="Items[${index}].Description" value="${desc}" type="text" placeholder="Consultation fee"
+                           class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" required />
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700">Quantity</label>
+                    <input name="Items[${index}].Quantity" type="number" value="1" min="1"
+                           class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" required />
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700">Unit price (EGP)</label>
+                    <input name="Items[${index}].UnitPrice" value="${price}" type="number" step="0.01" placeholder="0.00"
+                           class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" required />
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="flex-1">
+                        <label class="mb-2 block text-sm font-semibold text-slate-700">Type</label>
+                        <select name="Items[${index}].ItemType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600">
+                            <option value="0" ${type == 0 ? 'selected' : ''}>Consultation</option>
+                            <option value="1" ${type == 1 ? 'selected' : ''}>Procedure</option>
+                            <option value="2" ${type == 2 ? 'selected' : ''}>Lab</option>
+                            <option value="3" ${type == 3 ? 'selected' : ''}>Other</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="this.closest('.invoice-row').remove(); reindexItems();" class="mt-7 text-red-500 hover:text-red-700">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
+                </div>`;
+            itemsContainer.appendChild(row);
+        }
+
+        function reindexItems() {
+            const rows = itemsContainer.querySelectorAll('.invoice-row');
+            rows.forEach((row, index) => {
+                row.querySelectorAll('input, select').forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        input.setAttribute('name', name.replace(/\[\d+\]/, `[${index}]`));
+                    }
+                });
+            });
+        }
     </script>
 }

@@ -23,7 +23,7 @@ namespace BLL.Services
 
         public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetAllAsync()
         {
-            var appointments = await _unitOfWork.Appointments.GetAllAsync(1, int.MaxValue);
+            var appointments = await _unitOfWork.Appointments.GetAllAsync();
 
             var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
 

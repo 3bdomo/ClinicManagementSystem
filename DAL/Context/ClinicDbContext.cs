@@ -39,15 +39,28 @@ public class ClinicDbContext : IdentityDbContext<ApplicationUser>
         var userId = _currentUserService.UserId ?? "System";
         var now    = DateTime.UtcNow;
 
+        // 1. Handle Soft Deletes first so other loops see the modified state
+        foreach (var entry in ChangeTracker.Entries<ISoftDeletable>())
+        {
+            if (entry.State == EntityState.Deleted || 
+                (entry.State == EntityState.Modified && entry.Entity.IsDeleted && (bool)entry.OriginalValues["IsDeleted"] == false))
+            {
+                entry.State             = EntityState.Modified;
+                entry.Entity.IsDeleted  = true;
+                entry.Entity.DeletedAt ??= now;
+                entry.Entity.DeletedBy ??= userId;
+            }
+        }
+
         foreach (var entry in ChangeTracker.Entries<IAuditable>())
         {
             bool isSoftDeleting = entry.Entity is ISoftDeletable sd
                                   && sd.IsDeleted
-                                  && entry.OriginalValues.GetValue<bool>("IsDeleted") == false;
+                                  && (bool)entry.OriginalValues["IsDeleted"] == false;
 
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedAt = now;
+                entry.Entity.CreatedAt = entry.Entity.CreatedAt == default ? now : entry.Entity.CreatedAt;
                 entry.Entity.CreatedBy = userId;
             }
 
@@ -56,17 +69,6 @@ public class ClinicDbContext : IdentityDbContext<ApplicationUser>
             {
                 entry.Entity.UpdatedAt = now;
                 entry.Entity.UpdatedBy = userId;
-            }
-        }
-
-        foreach (var entry in ChangeTracker.Entries<ISoftDeletable>())
-        {
-            if (entry.State == EntityState.Deleted)
-            {
-                entry.State             = EntityState.Modified;
-                entry.Entity.IsDeleted  = true;
-                entry.Entity.DeletedAt  = now;
-                entry.Entity.DeletedBy  = userId;
             }
         }
 

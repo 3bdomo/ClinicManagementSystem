@@ -18,7 +18,7 @@ public static class DbSeeder
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
         // Ensure database is created/migrated
-        await context.Database.MigrateAsync();
+        // await context.Database.MigrateAsync();
 
         // 1. Seed Roles
         string[] roles = { "Admin", "Doctor", "Receptionist", "Patient" };
@@ -188,6 +188,19 @@ public static class DbSeeder
                     Status = AppointmentStatus.Completed,
                     CreatedAt = DateTime.UtcNow
                 });
+                
+                context.Appointments.Add(new Appointment
+                {
+                    PatientId = patient.Id,
+                    DoctorId = doctor.Id,
+                    DoctorScheduleId = schedule?.Id,
+                    AppointmentDate = DateTime.Today.AddHours(14), // Today at 2 PM
+                    DurationMinutes = 30,
+                    AppointmentType = AppointmentType.Consultation,
+                    Status = AppointmentStatus.Completed,
+                    CreatedAt = DateTime.UtcNow
+                });
+                
                 await context.SaveChangesAsync();
             }
 

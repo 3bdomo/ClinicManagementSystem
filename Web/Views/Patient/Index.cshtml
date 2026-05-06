@@ -93,6 +93,11 @@
                                            class="rounded-lg px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-100">
                                             Edit
                                         </a>
+                                        <form asp-action="Delete" asp-route-id="@p.Id" method="post" onsubmit="return confirm('Delete patient @p.FullName? This will also remove their portal account.')">
+                                            <button type="submit" class="rounded-lg px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50">
+                                                Delete
+                                            </button>
+                                        </form>
                                     }
                                 </div>
                             </td>

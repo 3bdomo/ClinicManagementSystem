@@ -22,35 +22,33 @@ public class UserService : IUserService
         _userManager = userManager;
     }
 
-    public Task<OperationResult<IEnumerable<UserDto>>> GetAllAsync()
+    public async Task<OperationResult<IEnumerable<UserDto>>> GetAllAsync()
     {
-        var users = _unitOfWork.Users.GetAllAsync();
-        return Task.FromResult(OperationResult<IEnumerable<UserDto>>.Success(
-            users.Result.Select(u => _mapper.Map<UserDto>(u))));
+        var users = await _unitOfWork.Users.GetAllAsync();
+        return OperationResult<IEnumerable<UserDto>>.Success(
+            users.Select(u => _mapper.Map<UserDto>(u)));
     }
 
-    public Task<OperationResult<UserDto>> GetByIdAsync(string id)
+    public async Task<OperationResult<UserDto>> GetByIdAsync(string id)
     {
-        var user = _unitOfWork.Users.GetByIdAsync(id);
-        if (user.Result != null)
-            return Task.FromResult(OperationResult<UserDto>.Success(_mapper.Map<UserDto>(user.Result)));
+        var user = await _unitOfWork.Users.GetByIdAsync(id);
+        if (user != null)
+            return OperationResult<UserDto>.Success(_mapper.Map<UserDto>(user));
 
-        return Task.FromResult(OperationResult<UserDto>.Failure("User not found"));
+        return OperationResult<UserDto>.Failure("User not found");
     }
 
-    public Task<OperationResult<IEnumerable<UserDto>>> GetByRoleAsync(UserRole role)
+    public async Task<OperationResult<IEnumerable<UserDto>>> GetByRoleAsync(UserRole role)
     {
-        var users = _unitOfWork.Users.GetByRoleAsync(role);
-        return Task.FromResult(OperationResult<IEnumerable<UserDto>>.Success(
-            users.Result.Select(u => _mapper.Map<UserDto>(u))));
+        var users = await _unitOfWork.Users.GetByRoleAsync(role);
+        return OperationResult<IEnumerable<UserDto>>.Success(
+            users.Select(u => _mapper.Map<UserDto>(u)));
     }
 
     public async Task<OperationResult<string>> CreateAsync(CreateUserDto dto)
     {
-
         var appUser = _mapper.Map<ApplicationUser>(dto);
         appUser.UserRole = dto.UserRole;
-
         
         var identityResult = await _userManager.CreateAsync(appUser, dto.Password);
         if (!identityResult.Succeeded)
@@ -58,11 +56,9 @@ public class UserService : IUserService
             var errors = string.Join("; ", identityResult.Errors.Select(e => e.Description));
             return OperationResult<string>.Failure(errors);
         }
-
         
         var roleName = dto.UserRole.ToString();
         await _userManager.AddToRoleAsync(appUser, roleName);
-
         
         if (dto.UserRole == UserRole.Doctor)
         {
@@ -80,34 +76,52 @@ public class UserService : IUserService
             await _unitOfWork.Receptionists.AddAsync(receptionist);
             await _unitOfWork.SaveChangesAsync();
         }
+        else if (dto.UserRole == UserRole.Patient)
+        {
+            var patient = new Patient
+            {
+                ApplicationUserId = appUser.Id,
+                FullName = appUser.FullName,
+                Phone = appUser.PhoneNumber ?? string.Empty,
+                NationalId = dto.NationalId ?? string.Empty,
+                DateOfBirth = dto.DateOfBirth ?? DateOnly.FromDateTime(DateTime.Today.AddYears(-20)),
+                Gender = dto.Gender ?? Gender.Male,
+                Address = dto.Address,
+                BloodType = dto.BloodType,
+                EmergencyContact = dto.EmergencyContact
+            };
+            await _unitOfWork.Patients.AddAsync(patient);
+            await _unitOfWork.SaveChangesAsync();
+        }
 
         return OperationResult<string>.Success("User created successfully");
     }
 
-    public Task<OperationResult> UpdateAsync(UpdateUserDto dto)
+    public async Task<OperationResult> UpdateAsync(UpdateUserDto dto)
     {
-        var user = _unitOfWork.Users.GetByIdAsync(dto.Id).Result;
+        var user = await _unitOfWork.Users.GetByIdAsync(dto.Id);
         if (user == null)
-            return Task.FromResult(OperationResult.Failure("User not found"));
+            return OperationResult.Failure("User not found");
 
         user.FullName = dto.FullName;
         user.PhoneNumber = dto.PhoneNumber;
         user.IsActive = dto.IsActive;
-        _unitOfWork.Users.UpdateAsync(user);
-        _ = _unitOfWork.SaveChangesAsync();
-        return Task.FromResult(OperationResult.Success("User updated successfully"));
+        
+        await _unitOfWork.Users.UpdateAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+        return OperationResult.Success("User updated successfully");
     }
 
-    public Task<OperationResult> ToggleActiveAsync(string id)
+    public async Task<OperationResult> ToggleActiveAsync(string id)
     {
-        var user = _unitOfWork.Users.GetByIdAsync(id).Result;
+        var user = await _unitOfWork.Users.GetByIdAsync(id);
         if (user == null)
-            return Task.FromResult(OperationResult.Failure("User not found"));
+            return OperationResult.Failure("User not found");
 
         user.IsActive = !user.IsActive;
-        _unitOfWork.Users.UpdateAsync(user);
-        _ = _unitOfWork.SaveChangesAsync();
-        return Task.FromResult(OperationResult.Success("User status toggled successfully"));
+        await _unitOfWork.Users.UpdateAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+        return OperationResult.Success("User status toggled successfully");
     }
 
     public async Task<OperationResult> ResetPasswordAsync(string id, string newPassword)
@@ -127,14 +141,35 @@ public class UserService : IUserService
         return OperationResult.Success("Password reset successfully");
     }
 
-    public Task<OperationResult> DeleteAsync(string id)
+    public async Task<OperationResult> DeleteAsync(string id)
     {
-        var user = _unitOfWork.Users.GetByIdAsync(id).Result;
+        var user = await _unitOfWork.Users.GetByIdAsync(id);
         if (user == null)
-            return Task.FromResult(OperationResult.Failure("User not found"));
+            return OperationResult.Failure("User not found");
 
-        _unitOfWork.Users.DeleteAsync(user);
-        _ = _unitOfWork.SaveChangesAsync();
-        return Task.FromResult(OperationResult.Success("User deleted successfully"));
+        // Soft-delete linked profiles if they exist
+        if (user.Patient != null)
+        {
+            user.Patient.IsDeleted = true;
+            user.Patient.DeletedAt = DateTime.UtcNow;
+            _unitOfWork.Patients.Update(user.Patient);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        
+        if (user.Doctor != null)
+        {
+            _unitOfWork.Doctors.Delete(user.Doctor);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        if (user.Receptionist != null)
+        {
+            _unitOfWork.Receptionists.Delete(user.Receptionist);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        await _unitOfWork.Users.DeleteAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+        return OperationResult.Success("User and linked profiles deleted successfully");
     }
 }

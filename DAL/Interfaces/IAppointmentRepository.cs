@@ -1,4 +1,4 @@
-﻿using ClinicSystem.DAL.Models;
+using ClinicSystem.DAL.Models;
 using Common.Enums;
 
 namespace DAL.Interfaces;
@@ -8,6 +8,7 @@ public interface IAppointmentRepository : IGenericRepository<Appointment>
     Task<IEnumerable<Appointment>> GetByDoctorAndDateAsync(int doctorId, DateTime date);
     Task<IEnumerable<Appointment>> GetByPatientAsync(int patientId);
     Task<IEnumerable<Appointment>> GetTodayAsync();
+    new Task<IEnumerable<Appointment>> GetAllAsync();
 
     Task<bool> HasConflictAsync(int doctorId, DateTime slotStart, int durationMinutes);
 
