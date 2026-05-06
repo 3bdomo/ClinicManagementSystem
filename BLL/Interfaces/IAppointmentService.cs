@@ -6,7 +6,6 @@ namespace BLL.Interfaces
 {
     public interface IAppointmentService
     {
-        // ─── Read ───────────────────────────────────────────
         Task<OperationResult<IEnumerable<AppointmentDto>>> GetAllAsync();
         Task<OperationResult<IEnumerable<AppointmentDto>>> GetAllAsync(int pageNumber, int pageSize);
         Task<OperationResult<AppointmentDto>> GetByIdAsync(int id);
@@ -25,17 +24,15 @@ namespace BLL.Interfaces
             int pageNumber,
             int pageSize);
 
-        // ─── Write ──────────────────────────────────────────
         Task<OperationResult<int>> CreateAsync(CreateAppointmentDto dto);
         Task<OperationResult> UpdateAsync(UpdateAppointmentDto dto);
         Task<OperationResult> DeleteAsync(int id);
 
-        // ─── Status Management ──────────────────────────────
         Task<OperationResult> StartAppointmentAsync(int id);
         Task<OperationResult> CompleteAppointmentAsync(int id);
         Task<OperationResult> CancelAppointmentAsync(int id, string? cancellationReason = null);
 
-        // ─── Helpers ────────────────────────────────────────
+        
         Task<bool> IsTimeSlotAvailableAsync(
             int doctorId,
             DateTime appointmentDate,

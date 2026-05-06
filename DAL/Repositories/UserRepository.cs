@@ -23,7 +23,7 @@ internal class UserRepository : GenericRepository<ApplicationUser>, IUserReposit
         return await _dbSet.Include(u => u.Doctor)
                            .Include(u => u.Patient)
                            .Include(u => u.Receptionist)
-                           //.Include(u => u.Admin)
+                           
                            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
@@ -60,7 +60,7 @@ internal class UserRepository : GenericRepository<ApplicationUser>, IUserReposit
             var existingUser = await GetByEmailAsync(user.Email);
             if (existingUser != null)
             {
-                return null; // Email already exists
+                return null; 
             }
         }
         user.CreatedAt = DateTime.UtcNow;

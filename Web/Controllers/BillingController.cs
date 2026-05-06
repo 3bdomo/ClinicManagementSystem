@@ -33,7 +33,7 @@ public class BillingController : Controller
 
         var invoices = result.Data;
 
-        // Manual filtering since service doesn't have a Search method yet
+        
         if (status.HasValue)
             invoices = invoices.Where(i => i.Status == status.Value);
         
@@ -62,7 +62,7 @@ public class BillingController : Controller
         return View(vm);
     }
 
-    // GET /Billing/Details/5
+    
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null) return BadRequest();
@@ -90,7 +90,7 @@ public class BillingController : Controller
         return View(vm);
     }
 
-    // GET /Billing/Create
+    
     public async Task<IActionResult> Create()
     {
         var vm = new InvoiceFormViewModel();
@@ -133,7 +133,7 @@ public class BillingController : Controller
         }
     }
 
-    // POST /Billing/Create
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(InvoiceFormViewModel vm)
@@ -177,7 +177,7 @@ public class BillingController : Controller
         return RedirectToAction(nameof(Details), new { id = result.Data });
     }
 
-    //Get/Billing/Edit/5
+    
     public async Task<IActionResult> Edit(int? id)
     {
         if (id is null) return BadRequest();
@@ -205,7 +205,7 @@ public class BillingController : Controller
         return View(dto);
     }
 
-    //Post/Billing/Edit/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, UpdateInvoiceDto dto)
@@ -225,7 +225,7 @@ public class BillingController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
 
-    // POST /Billing/Delete/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
@@ -236,12 +236,12 @@ public class BillingController : Controller
 
     }
 
-    // GET /Billing/DailyReport
+    
     [HttpGet]
     public async Task<IActionResult> DailyReport()
     {
-        // Use a range that covers today in both local and UTC to avoid empty reports
-        var start = DateTime.Today.AddDays(-1); // Start from yesterday to be safe
+        
+        var start = DateTime.Today.AddDays(-1); 
         var end = DateTime.Today.AddDays(1).AddTicks(-1);
 
         var result = await _billingService.GetStatisticsByDateRangeAsync(start, end);
@@ -262,7 +262,7 @@ public class BillingController : Controller
         return View(vm);
     }
 
-    // POST /Billing/DailyReport
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DailyReport(DateTime? from, DateTime? to)
@@ -291,7 +291,7 @@ public class BillingController : Controller
         return View(vm);
     }
 
-    //Get/Billing/ByPatient/5
+    
     public async Task<IActionResult> ByPatient(int patientId)
     {
         var result = await _billingService.GetByPatientAsync(patientId);
@@ -304,7 +304,7 @@ public class BillingController : Controller
         return View(result.Data);
     }
     
-    //Get/Billing/Unpaid
+    
     public async Task<IActionResult> Unpaid()
     {
         var result = await _billingService.GetUnpaidAsync();
@@ -317,8 +317,8 @@ public class BillingController : Controller
         return View(result.Data);
     }
     
-    // Status Action
-    // GET /Billing/MarkAsPaid/5
+    
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> MarkAsPaid(int id)
@@ -328,7 +328,7 @@ public class BillingController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
     
-    // GET /Billing/MarkAsPartiallyPaid/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> MarkAsPartiallyPaid(int id)
@@ -338,7 +338,7 @@ public class BillingController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
     
-    // GET /Billing/GetStatistics  (AJAX)
+    
     [HttpGet]
     public async Task<IActionResult> GetStatistics()
     {
@@ -349,7 +349,7 @@ public class BillingController : Controller
         return Json(new { success = true, data = result.Data });
     }
     
-    // GET /Billing/GetTotalRevenue  (AJAX)
+    
     [HttpPost]
     public async Task<IActionResult> GetTotalRevenue()
     {

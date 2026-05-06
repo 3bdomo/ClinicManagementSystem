@@ -13,12 +13,12 @@ public class Receptionist : IAuditable
 
     public bool IsActive { get; set; } = true;
 
-    // IAuditable
+    
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    // Navigation Properties
+    
     public ApplicationUser ApplicationUser { get; set; } = null!;
 }

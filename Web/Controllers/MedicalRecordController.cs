@@ -18,7 +18,7 @@ public class MedicalRecordController : Controller
         _appointmentService = appointmentService;
     }
 
-    // GET /MedicalRecord/Index
+    
     public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
     {
         var result = await _medicalRecordService.GetAllAsync(pageNumber, pageSize);
@@ -33,7 +33,7 @@ public class MedicalRecordController : Controller
         return View(result.Data);
     }
     
-    // GET /MedicalRecord/Details/5
+    
     public async Task<IActionResult> Details(int? id)
     {
         if (id is null) return BadRequest();
@@ -46,7 +46,7 @@ public class MedicalRecordController : Controller
         return View(result.Data);
     }
     
-    // GET /MedicalRecord/Create?patientId=5
+    
     public async Task<IActionResult> Create(int? patientId)
     {
         var vm = new MedicalRecordFormViewModel
@@ -56,7 +56,7 @@ public class MedicalRecordController : Controller
         };
         return View(vm);
     }
-    //POST /MedicalRecord/Create
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(MedicalRecordFormViewModel vm)
@@ -85,7 +85,7 @@ public class MedicalRecordController : Controller
             Diagnosis = vm.Diagnosis,
             Notes = vm.Notes,
             VisitedDate = appointment.AppointmentDate,
-            FollowUpDate = vm.FollowUpDate ?? DateTime.Now.AddDays(7) // Default or required?
+            FollowUpDate = vm.FollowUpDate ?? DateTime.Now.AddDays(7) 
         };
 
         var result = await _medicalRecordService.CreateAsync(dto);
@@ -119,7 +119,7 @@ public class MedicalRecordController : Controller
         return appointments;
     }
     
-    // GET /MedicalRecord/Edit/5
+    
     public async Task<IActionResult> Edit(int? id)
     {
         if (id is null) return BadRequest();
@@ -139,7 +139,7 @@ public class MedicalRecordController : Controller
         return View(dto);
     }
     
-    // POST /MedicalRecord/Edit/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int? id,UpdateMedicalRecordDto dto)
@@ -157,7 +157,7 @@ public class MedicalRecordController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
     
-    // POST /MedicalRecord/Delete/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
@@ -166,7 +166,7 @@ public class MedicalRecordController : Controller
         TempData[ result.IsSuccess ?"Success" : "Error"]= result.Message;
         return RedirectToAction(nameof(Index));
     }
-    //Get/MedicalRecord/ByPatient/5
+    
     public async Task<IActionResult> ByPatient(int patientId)
     {
         var result = await _medicalRecordService.GetByPatientAsync(patientId);
@@ -179,7 +179,7 @@ public class MedicalRecordController : Controller
         return View(result.Data);
     }
     
-    //Get/MedicalRecord/ByAppointment/5
+    
     public async Task<IActionResult> ByAppointment(int appointmentId)
     {
         var result = await _medicalRecordService.GetByAppointmentAsync(appointmentId);
@@ -191,7 +191,7 @@ public class MedicalRecordController : Controller
         return RedirectToAction(nameof(Details), new { id = result.Data.Id });
     }
     
-    //Get/MedicalRecord/FollowUp/5
+    
     public async Task<IActionResult> FollowUp(DateTime? from, DateTime? to)
     {
         var startDate = from ?? DateTime.Now;
@@ -207,7 +207,7 @@ public class MedicalRecordController : Controller
         return View(result.Data);
     }
     
-    //GET /MedicalRecord/PatientStatistics/5
+    
     public async Task<IActionResult> PatientStatistics(int patientId)
     {
         var result = await _medicalRecordService.GetPatientStatisticsAsync(patientId);
@@ -218,7 +218,7 @@ public class MedicalRecordController : Controller
         }
         return View(result.Data);
     }
-    // GET /MedicalRecord/GetByPatient/5  (AJAX)
+    
     public async Task<IActionResult> GetByPatient(int patientId)
     {
         var result = await _medicalRecordService.GetByPatientAsync(patientId);

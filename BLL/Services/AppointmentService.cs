@@ -19,7 +19,6 @@ namespace BLL.Services
             _mapper = mapper;
         }
 
-        // ─────────────────────── READ ───────────────────────
 
         public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetAllAsync()
         {
@@ -130,7 +129,6 @@ namespace BLL.Services
             return OperationResult<IEnumerable<AppointmentDto>>.Success(dtos);
         }
 
-        // ─────────────────────── CREATE ───────────────────────
 
         public async Task<OperationResult<int>> CreateAsync(CreateAppointmentDto dto)
         {
@@ -158,11 +156,11 @@ namespace BLL.Services
                 return OperationResult<int>.Failure(
                     "Selected slot is outside doctor's active schedule.");
 
-            /*
-             * Source of truth:
-             * DurationMinutes and DoctorScheduleId come from DoctorSchedule,
-             * not from the client.
-             */
+          
+            
+            
+            
+            
             dto.DurationMinutes = schedule.SlotMinutes;
             dto.DoctorScheduleId = schedule.Id;
 
@@ -196,7 +194,6 @@ namespace BLL.Services
                 "Appointment booked successfully.");
         }
 
-        // ─────────────────────── UPDATE ───────────────────────
 
         public async Task<OperationResult> UpdateAsync(UpdateAppointmentDto dto)
         {
@@ -266,7 +263,6 @@ namespace BLL.Services
             return OperationResult.Success("Appointment updated successfully.");
         }
 
-        // ─────────────────────── DELETE ───────────────────────
 
         public async Task<OperationResult> DeleteAsync(int id)
         {
@@ -288,7 +284,6 @@ namespace BLL.Services
             return OperationResult.Success("Appointment deleted.");
         }
 
-        // ─────────────────────── STATUS ───────────────────────
 
         public async Task<OperationResult> StartAppointmentAsync(int id)
         {
@@ -354,7 +349,6 @@ namespace BLL.Services
             return OperationResult.Success("Appointment cancelled successfully.");
         }
 
-        // ─────────────────────── HELPERS ───────────────────────
 
         public async Task<bool> IsTimeSlotAvailableAsync(
             int doctorId,

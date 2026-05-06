@@ -57,9 +57,9 @@ public class WebMappingProfile : Profile
 
         CreateMap<AppointmentDto, AppointmentRowViewModel>();
 
-        // ─────────────────────────────────────────────
-        // Appointment Web mappings
-        // ─────────────────────────────────────────────
+        
+        
+        
 
         CreateMap<AppointmentDto, AppointmentDetailsViewModel>()
             .ForMember(dest => dest.CanEdit, opt => opt.Ignore())
@@ -125,7 +125,7 @@ public class WebMappingProfile : Profile
         CreateMap<DoctorScheduleDto, DoctorScheduleFormViewModel>();
         CreateMap<DoctorScheduleFormViewModel, DoctorScheduleDto>();
 
-        // Invoice mappings
+        
         CreateMap<InvoiceDto, InvoiceRowViewModel>();
         CreateMap<InvoiceDto, InvoiceDetailsViewModel>();
         CreateMap<InvoiceItemDto, InvoiceItemDetailViewModel>();

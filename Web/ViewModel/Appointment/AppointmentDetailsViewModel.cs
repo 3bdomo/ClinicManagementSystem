@@ -32,7 +32,7 @@ namespace Web.ViewModels.Appointment
         public bool CanStart { get; set; }
         public bool CanComplete { get; set; }
 
-        // Admin only — hard delete for data entry mistakes
+        
         public bool CanDelete { get; set; }
     }
 }

@@ -15,8 +15,6 @@ public  class DoctorScheduleDto
     public int SlotMinutes { get; set; }
     public bool IsActive { get; set; }
     public string? Notes { get; set; }
-
-    //////
-    ///
+    
 
 }

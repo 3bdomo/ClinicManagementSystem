@@ -14,7 +14,7 @@ public class ApplicationUser : IdentityUser, IAuditable
     public DateTime? UpdatedAt { get; set; }
     public string? UpdatedBy { get; set; }
 
-    // Navigation Properties
+    
     public Doctor? Doctor { get; set; }
     public Patient? Patient { get; set; }
     public Receptionist? Receptionist { get; set; } 

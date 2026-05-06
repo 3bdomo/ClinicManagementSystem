@@ -39,7 +39,7 @@ public class ClinicDbContext : IdentityDbContext<ApplicationUser>
         var userId = _currentUserService.UserId ?? "System";
         var now    = DateTime.UtcNow;
 
-        // 1. Handle Soft Deletes first so other loops see the modified state
+        
         foreach (var entry in ChangeTracker.Entries<ISoftDeletable>())
         {
             if (entry.State == EntityState.Deleted || 

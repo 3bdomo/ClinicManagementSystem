@@ -18,7 +18,7 @@ namespace BLL.Services
             _mapper = mapper;
         }
 
-        //  Procedures 
+       
 
         public async Task<OperationResult<IEnumerable<ProcedureDto>>> GetAllAsync()
         {
@@ -50,7 +50,6 @@ namespace BLL.Services
 
             var procedure = _mapper.Map<Procedure>(dto);
 
-            // Use procedure type default cost if cost is 0
             if (procedure.Cost == 0)
                 procedure.Cost = procedureType.DefaultCost;
 
@@ -116,7 +115,7 @@ namespace BLL.Services
             return OperationResult<IEnumerable<ProcedureDto>>.Success(_mapper.Map<IEnumerable<ProcedureDto>>(procedures));
         }
 
-        //Procedure Types
+        
 
         public async Task<OperationResult<IEnumerable<ProcedureTypeDto>>> GetAllTypesAsync()
         {

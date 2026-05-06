@@ -16,11 +16,7 @@ namespace BLL.DTOs.Appointment
         [Required(ErrorMessage = "Appointment date is required.")]
         public DateTime AppointmentDate { get; set; }
 
-        /*
-         * The service will override this value from DoctorSchedule.SlotMinutes
-         * to prevent client-side tampering.
-         * Still kept here because the UI sends selected slot duration.
-         */
+       
         [Required(ErrorMessage = "Duration is required.")]
         [Range(1, 480, ErrorMessage = "Duration must be greater than zero.")]
         public int DurationMinutes { get; set; }

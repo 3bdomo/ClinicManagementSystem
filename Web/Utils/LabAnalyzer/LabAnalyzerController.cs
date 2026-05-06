@@ -10,7 +10,7 @@ public class LabAnalyzerController : Controller
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _config;
 
-    // The system prompt for Gemini
+    
     private const string SystemPrompt = @"You are a world-class medical laboratory report AI interpreter with expertise in clinical pathology, hematology, biochemistry, microbiology, hormonal analysis, fertility testing, coagulation studies, and all other laboratory disciplines.
 
 You will receive an image of a lab report. The image may be handwritten or printed, in Arabic, English, or a mix of both, partially blurry or low resolution, from any country or laboratory system, any type of medical test.
@@ -107,7 +107,7 @@ Return your response STRICTLY as valid JSON with NO text before or after. Follow
 
         try
         {
-            // Convert image to base64
+            
             string base64Image;
             using (var ms = new MemoryStream())
             {
@@ -116,8 +116,8 @@ Return your response STRICTLY as valid JSON with NO text before or after. Follow
             }
 
             var apiKey = _config["GeminiApiKey"];
-            //-lite
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={apiKey}";
+            
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
             var requestBody = new
             {
                 contents = new[]
@@ -161,7 +161,7 @@ Return your response STRICTLY as valid JSON with NO text before or after. Follow
                 return View("Index", vm);
             }
 
-            // Parse Gemini response
+            
             var geminiResponse = JObject.Parse(responseStr);
             var textResult = geminiResponse["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.ToString();
 
@@ -171,7 +171,7 @@ Return your response STRICTLY as valid JSON with NO text before or after. Follow
                 return View("Index", vm);
             }
 
-            // Clean JSON if wrapped in markdown code blocks
+            
             textResult = textResult.Trim();
             if (textResult.StartsWith("```json"))
                 textResult = textResult[7..];

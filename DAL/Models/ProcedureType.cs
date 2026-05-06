@@ -8,6 +8,6 @@ public class ProcedureType
     public decimal DefaultCost { get; set; }
     public bool IsActive { get; set; } = true;
 
-    // Navigation Properties
+    
     public ICollection<Procedure> Procedures { get; set; } = new List<Procedure>();
 }

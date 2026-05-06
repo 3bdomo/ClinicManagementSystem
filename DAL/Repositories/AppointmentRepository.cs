@@ -23,9 +23,9 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
             .ToListAsync();
     }
 
-    // ─────────────────────────────────────────────
-    // Helper: get start/end of a day
-    // ─────────────────────────────────────────────
+    
+    
+    
     private static (DateTime Start, DateTime End) GetDayRange(DateTime date)
     {
         var start = date.Date;
@@ -33,13 +33,13 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
         return (start, end);
     }
 
-    // ─────────────────────────────────────────────
-    // Doctor appointments in specific day
-    // Used by:
-    // - Doctor day view
-    // - Slot conflict checks
-    // - Schedule availability calculations
-    // ─────────────────────────────────────────────
+    
+    
+    
+    
+    
+    
+    
     public async Task<IEnumerable<Appointment>> GetByDoctorAndDateAsync(int doctorId, DateTime date)
     {
         var (start, end) = GetDayRange(date);
@@ -57,10 +57,10 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
             .ToListAsync();
     }
 
-    // ─────────────────────────────────────────────
-    // Patient appointment history
-    // Used by Patient profile/history
-    // ─────────────────────────────────────────────
+    
+    
+    
+    
     public async Task<IEnumerable<Appointment>> GetByPatientAsync(int patientId)
     {
         return await _dbSet
@@ -73,10 +73,10 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
             .ToListAsync();
     }
 
-    // ─────────────────────────────────────────────
-    // Today's non-cancelled appointments
-    // Used by Dashboard
-    // ─────────────────────────────────────────────
+    
+    
+    
+    
     public async Task<IEnumerable<Appointment>> GetTodayAsync()
     {
         var (start, end) = GetDayRange(DateTime.Today);
@@ -92,12 +92,12 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
             .ToListAsync();
     }
 
-    // ─────────────────────────────────────────────
-    // Conflict check
-    // Overlap rule:
-    // existingStart < newEnd && existingEnd > newStart
-    // Cancelled / Completed appointments do not block slots
-    // ─────────────────────────────────────────────
+    
+    
+    
+    
+    
+    
     public async Task<bool> HasConflictAsync(
         int doctorId,
         DateTime slotStart,
@@ -114,10 +114,10 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
                         && a.AppointmentDate.AddMinutes(a.DurationMinutes) > slotStart);
     }
 
-    // ─────────────────────────────────────────────
-    // All appointments for doctor
-    // Used by doctor history / doctor dashboard
-    // ─────────────────────────────────────────────
+    
+    
+    
+    
     public async Task<IEnumerable<Appointment>> GetByDoctorAsync(int doctorId)
     {
         return await _dbSet
@@ -130,9 +130,9 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
             .ToListAsync();
     }
 
-    // ─────────────────────────────────────────────
-    // Paged doctor appointments
-    // ─────────────────────────────────────────────
+    
+    
+    
     public async Task<IEnumerable<Appointment>> GetByDoctorAsync(
         int doctorId,
         int pageNumber,
@@ -153,10 +153,10 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
             .ToListAsync();
     }
 
-    // ─────────────────────────────────────────────
-    // Full appointment details
-    // Used by Appointment Details page
-    // ─────────────────────────────────────────────
+    
+    
+    
+    
     public async Task<Appointment?> GetFullAsync(int id)
     {
         return await _dbSet
@@ -169,13 +169,13 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
             .FirstOrDefaultAsync(a => a.Id == id);
     }
 
-    // ─────────────────────────────────────────────
-    // All appointments in specific day
-    // Used by Admin/Receptionist Index day view
-    // Note:
-    // We do NOT exclude Cancelled here because Index may need
-    // to display/filter cancelled appointments.
-    // ─────────────────────────────────────────────
+    
+    
+    
+    
+    
+    
+    
     public async Task<IEnumerable<Appointment>> GetByDateAsync(DateTime date)
     {
         var (start, end) = GetDayRange(date);
@@ -193,10 +193,10 @@ internal class AppointmentRepository : GenericRepository<Appointment>, IAppointm
             .ToListAsync();
     }
 
-    // ─────────────────────────────────────────────
-    // Count today's non-cancelled appointments
-    // Used by dashboard stats
-    // ─────────────────────────────────────────────
+    
+    
+    
+    
     public async Task<int> GetTodayCountAsync()
     {
         var (start, end) = GetDayRange(DateTime.Today);

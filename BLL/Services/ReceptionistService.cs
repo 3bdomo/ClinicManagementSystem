@@ -20,9 +20,7 @@ public class ReceptionistService : IReceptionistService
         _mapper = mapper;
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // GET ALL
-    // ══════════════════════════════════════════════════════════════
+  
 
     public async Task<OperationResult<IEnumerable<ReceptionistDto>>> GetAllAsync()
     {
@@ -36,10 +34,7 @@ public class ReceptionistService : IReceptionistService
         return OperationResult<IEnumerable<ReceptionistDto>>.Success(dtos, message);
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // GET ACTIVE
-    // ══════════════════════════════════════════════════════════════
-
+  
     public async Task<OperationResult<IEnumerable<ReceptionistDto>>> GetActiveAsync()
     {
         var receptionists = await _uow.Receptionists.GetActiveAsync();
@@ -52,10 +47,7 @@ public class ReceptionistService : IReceptionistService
         return OperationResult<IEnumerable<ReceptionistDto>>.Success(dtos, message);
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // GET BY ID
-    // ══════════════════════════════════════════════════════════════
-
+ 
     public async Task<OperationResult<ReceptionistDto>> GetByIdAsync(int id)
     {
         if (id <= 0)
@@ -73,10 +65,7 @@ public class ReceptionistService : IReceptionistService
             "Receptionist retrieved successfully");
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // GET BY USER ID
-    // ══════════════════════════════════════════════════════════════
-
+   
     public async Task<OperationResult<ReceptionistDto>> GetByUserIdAsync(string userId)
     {
         if (string.IsNullOrWhiteSpace(userId))
@@ -93,16 +82,9 @@ public class ReceptionistService : IReceptionistService
             "Receptionist profile retrieved successfully");
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // UPDATE
-    // Phone exists in TWO places — keep both in sync:
-    //   1. Receptionists.Phone  (our domain table)
-    //   2. AspNetUsers.PhoneNumber  (Identity table)
-    // ══════════════════════════════════════════════════════════════
-
-    public async Task<OperationResult> UpdateAsync(UpdateReceptionistDto dto)
+   
+    public async Task<OperationResult> UpdateAsync(UpdateReceptionistDto? dto)
     {
-        // ── Input guards ──────────────────────────────────────────
         if (dto == null)
             return OperationResult.Failure("Update data is required");
 
@@ -125,39 +107,31 @@ public class ReceptionistService : IReceptionistService
             return OperationResult.Failure(
                 $"Full name must not exceed {MaxNameLength} characters");
 
-        // ── Load entity with ApplicationUser included ─────────────
-        // GetWithUserAsync does Include(r => r.ApplicationUser)
+        
         var receptionist = await _uow.Receptionists.GetWithUserAsync(dto.Id);
 
         if (receptionist == null)
             return OperationResult.Failure(
                 $"Receptionist with id {dto.Id} was not found");
 
-        // ── Update Receptionists table ────────────────────────────
         receptionist.FullName = trimmedName;
         receptionist.IsActive = dto.IsActive;
-        receptionist.Phone = trimmedPhone;   // Receptionists.Phone
+        receptionist.Phone = trimmedPhone;   
 
-        // ── Sync AspNetUsers table ────────────────────────────────
         receptionist.ApplicationUser!.FullName = trimmedName;
-        receptionist.ApplicationUser.PhoneNumber = trimmedPhone; // AspNetUsers.PhoneNumber
-
+        receptionist.ApplicationUser.PhoneNumber = trimmedPhone; 
         _uow.Receptionists.Update(receptionist);
         await _uow.SaveChangesAsync();
 
         return OperationResult.Success("Receptionist updated successfully");
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // TOGGLE ACTIVE
-    // ══════════════════════════════════════════════════════════════
 
     public async Task<OperationResult> ToggleActiveAsync(int id)
     {
         if (id <= 0)
             return OperationResult.Failure("Receptionist id must be a positive number");
 
-        // GetByIdAsync is enough here — no need to load ApplicationUser
         var receptionist = await _uow.Receptionists.GetByIdAsync(id);
 
         if (receptionist == null)

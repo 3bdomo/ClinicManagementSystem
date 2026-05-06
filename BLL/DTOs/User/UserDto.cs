@@ -21,12 +21,12 @@ public class CreateUserDto
     public string? PhoneNumber { get; set; }
     public UserRole UserRole { get; set; }
     
-    // Doctor fields
+    
     public Specialization? Specialization { get; set; }
     public decimal? ConsultationFee { get; set; }
     public string? Bio { get; set; }
 
-    // Patient fields
+    
     public string? NationalId { get; set; }
     public DateOnly? DateOfBirth { get; set; }
     public Gender? Gender { get; set; }

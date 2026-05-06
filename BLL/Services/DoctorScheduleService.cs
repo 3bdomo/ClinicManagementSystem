@@ -48,20 +48,15 @@ public class DoctorScheduleService : IDoctorScheduleService
 
     public async Task<OperationResult<int>> CreateAsync(DoctorScheduleDto dto)
     {
-        // 1. Time sanity check (also enforced via DB constraint, but validate here too)
         if (dto.StartTime >= dto.EndTime)
             return OperationResult<int>.Failure("Start time must be before end time");
-
-        // 2. XOR validation: must have exactly one of DayOfWeek or SpecificDate
         if (dto.DayOfWeek.HasValue == dto.SpecificDate.HasValue)
             return OperationResult<int>.Failure(
                 "Specify either a recurring weekday or a specific date — not both");
 
-        // 3. If one-time schedule: date must be in the future
         if (dto.SpecificDate.HasValue && dto.SpecificDate.Value < DateOnly.FromDateTime(DateTime.Today))
             return OperationResult<int>.Failure("Cannot create a schedule for a past date");
 
-        // 4. Conflict check — same doctor, same schedule type, overlapping time
         bool hasConflict = await _uow.DoctorSchedules.HasTimeConflictAsync(
             dto.DoctorId,
             dto.DayOfWeek,
@@ -75,7 +70,6 @@ public class DoctorScheduleService : IDoctorScheduleService
             return OperationResult<int>.Failure(
                 $"Another {dto.ScheduleType} schedule for this doctor conflicts with the given time");
 
-        // 5. Apply default SlotMinutes from config if not provided
         if (dto.SlotMinutes <= 0)
         {
             var configKey = dto.ScheduleType == ScheduleType.Surgery
@@ -166,19 +160,17 @@ public class DoctorScheduleService : IDoctorScheduleService
     public async Task<OperationResult<IEnumerable<TimeSlotDto>>> GetAvailableSlotsAsync(
         int doctorId, DateTime date, ScheduleType type)
     {
-        // 1. Check Doctor.IsAvailable
+       
         var doctor = await _uow.Doctors.GetByIdAsync(doctorId);
         if (doctor is null || !doctor.IsAvailable)
             return OperationResult<IEnumerable<TimeSlotDto>>.Failure("Doctor is not currently available");
 
-        // 2. Find active schedule for this doctor/date/type
         var schedule = await _uow.DoctorSchedules.GetScheduleForSlotAsync(doctorId, date, type);
 
         if (schedule is null || !schedule.IsActive)
             return OperationResult<IEnumerable<TimeSlotDto>>.Success(
                 Enumerable.Empty<TimeSlotDto>());
 
-        // 3. Generate all raw slots
         var slots = new List<TimeSlotDto>();
         var current = schedule.StartTime;
 
@@ -200,11 +192,9 @@ public class DoctorScheduleService : IDoctorScheduleService
             current = current.AddMinutes(schedule.SlotMinutes);
         }
 
-        // 4. Get booked appointments for this doctor on this date
         var booked = await _uow.Appointments.GetByDoctorAndDateAsync(doctorId, date.Date);
         booked = booked.Where(a => a.Status != AppointmentStatus.Cancelled).ToList();
 
-        // 5. Mark overlapping slots as unavailable
         foreach (var slot in slots)
         {
             foreach (var appt in booked)
@@ -220,7 +210,6 @@ public class DoctorScheduleService : IDoctorScheduleService
             }
         }
 
-        // 6. Return only available slots
         return OperationResult<IEnumerable<TimeSlotDto>>.Success(
             slots.Where(s => s.IsAvailable));
     }

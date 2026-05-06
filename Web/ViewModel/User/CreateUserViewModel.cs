@@ -16,7 +16,7 @@ public class CreateUserViewModel
     [Display(Name = "Consultation Fee (EGP)")] public decimal? ConsultationFee { get; set; }
     public string? Bio { get; set; }
 
-    // Patient Fields
+    
     [Display(Name = "National ID")] public string? NationalId { get; set; }
     [Display(Name = "Date of Birth")] [DataType(DataType.Date)] public DateOnly? DateOfBirth { get; set; }
     public Gender? Gender { get; set; }

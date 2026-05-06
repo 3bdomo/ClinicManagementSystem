@@ -35,12 +35,12 @@ namespace Web.Controllers
             _mapper = mapper;
         }
 
-        // ─────────────────────────────────────────────────────────
-        // INDEX
-        // Admin / Receptionist: see all appointments for selected day.
-        // Doctor: sees own appointments only.
-        // Patient: sees own appointments only.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
+        
+        
         [Authorize(Roles = "Admin,Receptionist,Doctor,Patient")]
         public async Task<IActionResult> Index(
             DateTime? date,
@@ -57,7 +57,7 @@ namespace Web.Controllers
             var dayRows = new List<AppointmentRowViewModel>();
             var busyDays = new List<DateTime>();
 
-            // Doctor view: only current doctor's appointments.
+            
             if (User.IsInRole(nameof(UserRole.Doctor)))
             {
                 var currentDoctorId = await GetCurrentDoctorIdAsync();
@@ -87,7 +87,7 @@ namespace Web.Controllers
                         .ToList();
                 }
             }
-            // Patient view: only current patient's appointments.
+            
             else if (User.IsInRole(nameof(UserRole.Patient)))
             {
                 var currentPatientId = await GetCurrentPatientIdAsync();
@@ -126,7 +126,7 @@ namespace Web.Controllers
                     .Distinct()
                     .ToList();
             }
-            // Admin / Receptionist view: all appointments for the selected date.
+            
             else
             {
                 var result = await _appointmentService.GetByDateAsync(selectedDate);
@@ -157,7 +157,7 @@ namespace Web.Controllers
                 }
             }
 
-            // Common filters for all roles.
+            
             if (status.HasValue)
                 dayRows = dayRows.Where(a => a.Status == status.Value).ToList();
 
@@ -168,7 +168,7 @@ namespace Web.Controllers
                 .OrderBy(a => a.AppointmentDate)
                 .ToList();
 
-            // Doctors dropdown only for Admin / Receptionist.
+            
             var doctors = new List<BLL.DTOs.Patient.DoctorDto>();
 
             if (User.IsInRole(nameof(UserRole.Admin)) ||
@@ -200,10 +200,10 @@ namespace Web.Controllers
             return View(vm);
         }
 
-        // ─────────────────────────────────────────────────────────
-        // DETAILS
-        // Shows appointment details and calculates available actions.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [Authorize(Roles = "Admin,Receptionist,Doctor,Patient")]
         public async Task<IActionResult> Details(int id)
         {
@@ -251,10 +251,10 @@ namespace Web.Controllers
             return View(vm);
         }
 
-        // ─────────────────────────────────────────────────────────
-        // BOOK STEP 1 - GET
-        // Select doctor, and patient if Admin/Receptionist.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [Authorize(Roles = "Admin,Receptionist,Patient")]
         public async Task<IActionResult> BookStep1(Specialization? specialization)
         {
@@ -262,10 +262,10 @@ namespace Web.Controllers
             return View(vm);
         }
 
-        // ─────────────────────────────────────────────────────────
-        // BOOK STEP 1 - POST
-        // Validates doctor/patient selection, then redirects to Step 2.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Receptionist,Patient")]
@@ -300,10 +300,10 @@ namespace Web.Controllers
             });
         }
 
-        // ─────────────────────────────────────────────────────────
-        // BOOK STEP 2 - GET
-        // Select date and schedule type.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [Authorize(Roles = "Admin,Receptionist,Patient")]
         public async Task<IActionResult> BookStep2(int doctorId, int? patientId)
         {
@@ -324,10 +324,10 @@ namespace Web.Controllers
             return View(vm);
         }
 
-        // ─────────────────────────────────────────────────────────
-        // BOOK STEP 2 - POST
-        // Validates selected date/type, then redirects to Step 3.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Receptionist,Patient")]
@@ -341,7 +341,7 @@ namespace Web.Controllers
 
             if (User.IsInRole(nameof(UserRole.Patient)))
             {
-                // Patient self-booking is consultation only.
+                
                 vm.SelectedScheduleType = ScheduleType.Consultation;
             }
 
@@ -371,10 +371,10 @@ namespace Web.Controllers
             });
         }
 
-        // ─────────────────────────────────────────────────────────
-        // BOOK STEP 3 - GET
-        // Shows available slots for the selected date/type.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [Authorize(Roles = "Admin,Receptionist,Patient")]
         public async Task<IActionResult> BookStep3(
             int doctorId,
@@ -408,10 +408,10 @@ namespace Web.Controllers
             return View(vm);
         }
 
-        // ─────────────────────────────────────────────────────────
-        // BOOK STEP 3 - POST
-        // Validates selected slot, then redirects to confirmation page.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Receptionist,Patient")]
@@ -495,10 +495,10 @@ namespace Web.Controllers
             });
         }
 
-        // ─────────────────────────────────────────────────────────
-        // BOOK CONFIRM - GET
-        // Shows final booking confirmation before saving.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [Authorize(Roles = "Admin,Receptionist,Patient")]
         public async Task<IActionResult> BookConfirm(
             int doctorId,
@@ -542,10 +542,10 @@ namespace Web.Controllers
             return View(vm);
         }
 
-        // ─────────────────────────────────────────────────────────
-        // BOOK CONFIRM - POST
-        // Saves appointment using CreateAppointmentDto.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Receptionist,Patient")]
@@ -583,10 +583,10 @@ namespace Web.Controllers
             return RedirectToAction(nameof(Details), new { id = result.Data });
         }
 
-        // ─────────────────────────────────────────────────────────
-        // EDIT - GET
-        // Admin/Receptionist can edit waiting appointments only.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [Authorize(Roles = "Admin,Receptionist")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -611,10 +611,10 @@ namespace Web.Controllers
             return View(vm);
         }
 
-        // ─────────────────────────────────────────────────────────
-        // EDIT - POST
-        // Updates appointment date/time and notes.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Receptionist")]
@@ -641,10 +641,10 @@ namespace Web.Controllers
             return RedirectToAction(nameof(Details), new { id = vm.Id });
         }
 
-        // ─────────────────────────────────────────────────────────
-        // CANCEL - GET
-        // Shows cancellation form.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [Authorize(Roles = "Admin,Receptionist,Patient")]
         public async Task<IActionResult> Cancel(int id)
         {
@@ -674,10 +674,10 @@ namespace Web.Controllers
             return View(vm);
         }
 
-        // ─────────────────────────────────────────────────────────
-        // CANCEL - POST
-        // Cancels appointment after ownership/role validation.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Receptionist,Patient")]
@@ -717,10 +717,10 @@ namespace Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ─────────────────────────────────────────────────────────
-        // START
-        // Doctor starts a waiting appointment.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Doctor")]
@@ -748,10 +748,10 @@ namespace Web.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
-        // ─────────────────────────────────────────────────────────
-        // COMPLETE
-        // Doctor completes an in-progress appointment.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Doctor")]
@@ -779,11 +779,11 @@ namespace Web.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
-        // ─────────────────────────────────────────────────────────
-        // DELETE
-        // Admin hard-deletes appointment for data entry mistakes.
-        // Service prevents deleting InProgress or Completed appointments.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -799,10 +799,10 @@ namespace Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ─────────────────────────────────────────────────────────
-        // AJAX: GET AVAILABLE SLOTS
-        // Used by Edit page or dynamic slot loading.
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
+        
         [HttpGet]
         [Authorize(Roles = "Admin,Receptionist,Patient")]
         public async Task<IActionResult> GetSlots(
@@ -844,11 +844,11 @@ namespace Web.Controllers
             });
         }
 
-        // ─────────────────────────────────────────────────────────
-        // PRIVATE HELPERS
-        // ─────────────────────────────────────────────────────────
+        
+        
+        
 
-        // Builds Step 1 view model with doctors and optional patients.
+        
         private async Task<BookStep1ViewModel> BuildBookStep1ViewModelAsync(
             Specialization? specialization)
         {
@@ -885,7 +885,7 @@ namespace Web.Controllers
             };
         }
 
-        // Builds Step 2 view model with doctor, patient and schedules.
+        
         private async Task<BookStep2ViewModel?> BuildBookStep2ViewModelAsync(
             int doctorId,
             int patientId)
@@ -916,7 +916,7 @@ namespace Web.Controllers
             };
         }
 
-        // Builds Step 3 view model with available slots.
+        
         private async Task<BookStep3ViewModel?> BuildBookStep3ViewModelAsync(
             int doctorId,
             int patientId,
@@ -960,7 +960,7 @@ namespace Web.Controllers
             };
         }
 
-        // Reloads display-only data for BookConfirm POST failures.
+        
         private async Task PopulateBookConfirmDisplayDataAsync(BookConfirmViewModel vm)
         {
             var doctorResult = await _doctorService.GetByIdAsync(vm.DoctorId);
@@ -979,7 +979,7 @@ namespace Web.Controllers
             }
         }
 
-        // Reloads display-only data for Edit POST failures.
+        
         private async Task ReloadEditDisplayDataAsync(EditAppointmentViewModel vm)
         {
             var result = await _appointmentService.GetByIdAsync(vm.Id);
@@ -999,7 +999,7 @@ namespace Web.Controllers
                 : ScheduleType.Consultation;
         }
 
-        // Gets current logged-in Doctor.Id.
+        
         private async Task<int?> GetCurrentDoctorIdAsync()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -1015,7 +1015,7 @@ namespace Web.Controllers
                 ?.Id;
         }
 
-        // Gets current logged-in Patient.Id.
+        
         private async Task<int?> GetCurrentPatientIdAsync()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -1031,7 +1031,7 @@ namespace Web.Controllers
             return result.Data;
         }
 
-        // Resolves patient id for booking based on role.
+        
         private async Task<int?> ResolvePatientIdForBookingAsync(int? postedPatientId)
         {
             if (User.IsInRole(nameof(UserRole.Patient)))
@@ -1044,7 +1044,7 @@ namespace Web.Controllers
             return null;
         }
 
-        // Ensures doctor/patient can only access their own appointments.
+        
         private async Task<bool> CanCurrentUserAccessAppointmentAsync(AppointmentDto appointment)
         {
             if (User.IsInRole(nameof(UserRole.Admin)) ||
@@ -1066,7 +1066,7 @@ namespace Web.Controllers
             return false;
         }
 
-        // Validates booking date rules.
+        
         private void ValidateBookingDate(DateTime? selectedDate)
         {
             if (!selectedDate.HasValue)
@@ -1094,7 +1094,7 @@ namespace Web.Controllers
             }
         }
 
-        // Converts ScheduleType to AppointmentType.
+        
         private static AppointmentType MapScheduleTypeToAppointmentType(ScheduleType scheduleType)
         {
             return scheduleType == ScheduleType.Surgery

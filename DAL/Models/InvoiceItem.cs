@@ -11,6 +11,6 @@ public class InvoiceItem
     public decimal UnitPrice { get; set; }
     public InvoiceItemType ItemType { get; set; }
 
-    // Navigation Properties
+    
     public Invoice Invoice { get; set; } = null!;
 }

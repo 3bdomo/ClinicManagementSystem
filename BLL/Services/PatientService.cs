@@ -44,7 +44,6 @@ namespace BLL.Services
 
         public async Task<OperationResult<IEnumerable<PatientDto>>> GetAllAsync()
         {
-            //Default to first page with a large page size 
             var patients = await _unitOfWork.Patients.GetAllAsync(1, 5000);
             var patientDtos = _mapper.Map<IEnumerable<PatientDto>>(patients);
             return OperationResult<IEnumerable<PatientDto>>.Success(patientDtos);
@@ -85,7 +84,6 @@ namespace BLL.Services
 
             var dto = _mapper.Map<PatientHistoryDto>(patient);
             
-            // Enrich Audit Info names
             if (dto.AuditInfo != null)
             {
                 if (!string.IsNullOrEmpty(dto.AuditInfo.CreatedBy))

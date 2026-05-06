@@ -147,7 +147,6 @@ public class UserService : IUserService
         if (user == null)
             return OperationResult.Failure("User not found");
 
-        // Soft-delete linked profiles if they exist
         if (user.Patient != null)
         {
             user.Patient.IsDeleted = true;
