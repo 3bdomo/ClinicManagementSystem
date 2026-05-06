@@ -5,7 +5,7 @@
     </div>
     <div class="flex items-center gap-3">
 
-        @* زرار New Appointment - يظهر فقط للأدمن والريسبشنست *@
+       
         @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
         {
             <a class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold flex items-center gap-2"
@@ -15,7 +15,7 @@
             </a>
         }
 
-        @* زرار Book للدكتور *@
+
         @if (User.IsInRole("Doctor"))
         {
             <a class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold flex items-center gap-2"
@@ -25,7 +25,7 @@
             </a>
         }
 
-        @* زرار Book Slot للمريض *@
+    
         @if (User.IsInRole("Patient"))
         {
             <a class="px-4 py-2 rounded-lg bg-blue-600 text-white font-bold flex items-center gap-2"
@@ -35,7 +35,7 @@
             </a>
         }
 
-        @* أيقونة الپروفايل - فقط للمريض *@
+  
         @if (User.IsInRole("Patient"))
         {
             <a class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors"
