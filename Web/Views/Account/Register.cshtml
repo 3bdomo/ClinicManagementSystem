@@ -81,7 +81,9 @@
                     </div>
                     <div>
                         <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="BloodType">Blood type (Optional)</label>
-                        <input asp-for="BloodType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
+                        <select asp-for="BloodType" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" asp-items="Html.GetEnumSelectList<Common.Enums.BloodType>()">
+                            <option value="">Select Blood Type...</option>
+                        </select>
                     </div>
                     <div>
                         <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="EmergencyContact">Emergency contact (Optional)</label>

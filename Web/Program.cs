@@ -60,6 +60,7 @@ builder.Services.AddAutoMapper(
     typeof(WebMappingProfile).Assembly                          // Web profiles
 );
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

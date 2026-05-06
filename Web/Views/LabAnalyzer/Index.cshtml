@@ -1,0 +1,614 @@
+@model Web.Utils.LabAnalyzer.LabReportViewModel
+@{
+    ViewData["Title"] = "محلل التحاليل الطبية";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --success: #0f9d58;
+            --danger: #d93025;
+            --warning: #f4b400;
+            --critical: #c62828;
+            --bg: #f0f4ff;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e2e8f0;
+            --gradient: linear-gradient(135deg, #1a73e8 0%, #0f4fc4 50%, #0a2d7e 100%);
+        }
+        
+        .lab-analyzer-wrapper {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            margin: -1.5rem; /* negate layout padding if needed */
+            padding-bottom: 3rem;
+        }
+
+        /* ── Header ── */
+        .header {
+            background: var(--gradient);
+            padding: 2rem 1rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .header-icon { font-size: 3.5rem; margin-bottom: .5rem; }
+        .header h1 { font-size: 2rem; font-weight: 900; margin-bottom: .3rem; }
+        .header p { font-size: 1rem; opacity: .85; }
+
+        /* ── Container ── */
+        .container-analyzer { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+
+        /* ── Upload Card ── */
+        .upload-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 30px rgba(26,115,232,.12);
+            margin-bottom: 2rem;
+        }
+        .upload-area {
+            border: 3px dashed #a0b4e8;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all .3s;
+            background: #f8faff;
+            position: relative;
+        }
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--primary);
+            background: #eef3ff;
+            transform: scale(1.01);
+        }
+        .upload-area input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+        }
+        .upload-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .upload-area h3 { font-size: 1.3rem; font-weight: 700; color: var(--primary); margin-bottom: .5rem; }
+        .upload-area p { color: var(--muted); font-size: .9rem; }
+
+        /* Preview */
+        #preview-container { display: none; margin-top: 1.5rem; text-align: center; }
+        #preview-img { max-height: 300px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); }
+
+        .btn-analyze {
+            display: block;
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 4px 15px rgba(26,115,232,.4);
+        }
+        .btn-analyze:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(26,115,232,.5); }
+        .btn-analyze:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+        /* ── Error ── */
+        .error-box {
+            background: #fef2f2;
+            border: 2px solid #fca5a5;
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            color: #b91c1c;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: .7rem;
+        }
+
+        /* ── Section Title ── */
+        .section-title {
+            display: flex; align-items: center; gap: .7rem;
+            font-size: 1.3rem; font-weight: 800;
+            color: var(--primary); margin-bottom: 1.2rem;
+            padding-bottom: .5rem;
+            border-bottom: 3px solid #e8f0fe;
+        }
+
+        /* ── Metadata Card ── */
+        .meta-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,.07);
+            margin-bottom: 1.5rem;
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .meta-item {
+            background: #f8faff;
+            border-radius: 12px;
+            padding: 1rem;
+            border-right: 4px solid var(--primary);
+        }
+        .meta-label { font-size: .75rem; color: var(--muted); font-weight: 600; margin-bottom: .2rem; }
+        .meta-value { font-size: .95rem; font-weight: 700; color: var(--text); }
+
+        /* ── Quality Badge ── */
+        .quality-badge {
+            display: inline-flex; align-items: center; gap: .4rem;
+            padding: .4rem .9rem;
+            border-radius: 999px;
+            font-size: .85rem;
+            font-weight: 700;
+        }
+        .quality-clear { background: #d1fae5; color: #065f46; }
+        .quality-partially_unclear { background: #fef3c7; color: #92400e; }
+        .quality-mostly_unclear { background: #fee2e2; color: #991b1b; }
+
+        /* ── Critical Flags ── */
+        .critical-banner {
+            background: linear-gradient(135deg, #c62828, #e53935);
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        @@keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(198,40,40,.4); }
+            50% { box-shadow: 0 0 0 10px rgba(198,40,40,0); }
+        }
+        .critical-banner h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: .8rem; }
+        .critical-item {
+            background: rgba(255,255,255,.15);
+            border-radius: 8px;
+            padding: .7rem 1rem;
+            margin-bottom: .5rem;
+            display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .urgency-badge {
+            padding: .2rem .7rem;
+            border-radius: 999px;
+            font-size: .75rem;
+            font-weight: 700;
+            background: white;
+        }
+        .urgency-immediate { color: #c62828; }
+        .urgency-soon { color: #e65100; }
+        .urgency-monitor { color: #1a73e8; }
+
+        /* ── Parameters Table ── */
+        .params-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,.07);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+        .analyzer-table { width: 100%; border-collapse: collapse; font-size: .9rem; text-align: right; }
+        .analyzer-table thead tr { background: var(--gradient); color: white; }
+        .analyzer-table thead th { padding: .9rem .8rem; font-weight: 700; }
+        .analyzer-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+        .analyzer-table tbody tr:hover { background: #f8faff; }
+        .analyzer-table tbody td { padding: .85rem .8rem; vertical-align: top; }
+
+        /* Status colors */
+        .status-normal { color: #065f46; background: #d1fae5; }
+        .status-high { color: #92400e; background: #fef3c7; }
+        .status-low { color: #1e40af; background: #dbeafe; }
+        .status-critical_high, .status-critical_low { color: white; background: #c62828; font-weight: 800; }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: .3rem;
+            padding: .25rem .7rem;
+            border-radius: 999px;
+            font-size: .8rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .inferred-badge {
+            display: inline-block;
+            background: #ede9fe; color: #5b21b6;
+            font-size: .7rem; padding: .1rem .4rem;
+            border-radius: 4px; margin-right: .3rem;
+        }
+        .sig-high { color: var(--danger); font-weight: 700; }
+        .sig-medium { color: var(--warning); font-weight: 600; }
+        .sig-low { color: var(--success); }
+
+        /* ── Patterns ── */
+        .patterns-card {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #a5d6a7;
+        }
+        .pattern-item {
+            display: flex; align-items: center; gap: .6rem;
+            padding: .5rem 0;
+            border-bottom: 1px solid #c8e6c9;
+            font-weight: 600;
+        }
+        .pattern-item:last-child { border-bottom: none; }
+
+        /* ── Summary ── */
+        .summary-card {
+            background: linear-gradient(135deg, #e3f2fd, #e8eaf6);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #90caf9;
+        }
+        .summary-text { font-size: 1rem; line-height: 2; color: #1a237e; font-weight: 500; }
+
+        /* ── Followup ── */
+        .followup-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,.07);
+            margin-bottom: 1.5rem;
+        }
+        .followup-item {
+            display: flex; gap: 1rem; align-items: flex-start;
+            padding: 1rem;
+            background: #fff8e1;
+            border-radius: 12px;
+            border-right: 4px solid var(--warning);
+            margin-bottom: .8rem;
+        }
+        .followup-icon { font-size: 1.5rem; }
+        .followup-name { font-weight: 700; font-size: 1rem; margin-bottom: .2rem; }
+        .followup-reason { font-size: .85rem; color: var(--muted); }
+
+        /* ── Disclaimer ── */
+        .disclaimer-box {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: .85rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        /* ── Loading Overlay ── */
+        .loading-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(10,45,126,.85);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            color: white;
+        }
+        .loading-overlay.active { display: flex; }
+        .spinner {
+            width: 80px; height: 80px;
+            border: 6px solid rgba(255,255,255,.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+        @@keyframes spin { to { transform: rotate(360deg); } }
+        .loading-overlay h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: .5rem; }
+        .loading-overlay p { opacity: .8; font-size: 1rem; }
+
+        /* ── Expand button for tooltip columns ── */
+        .tooltip-btn {
+            background: none; border: none;
+            color: var(--primary); cursor: pointer;
+            font-size: .8rem; text-decoration: underline;
+            font-family: 'Cairo', sans-serif;
+        }
+        .tooltip-content { display: none; margin-top: .4rem; font-size: .8rem; color: var(--muted); line-height: 1.6; }
+        .tooltip-content.open { display: block; }
+
+        @@media (max-width: 768px) {
+            .header h1 { font-size: 1.4rem; }
+            .meta-grid { grid-template-columns: 1fr 1fr; }
+            .analyzer-table { font-size: .78rem; }
+            .analyzer-table thead th, .analyzer-table tbody td { padding: .6rem .5rem; }
+        }
+    </style>
+}
+
+<div class="lab-analyzer-wrapper" dir="rtl">
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+        <h2>🔬 جاري تحليل التقرير...</h2>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-icon">🔬</div>
+        <h1>محلل التحاليل الطبية بالذكاء الاصطناعي</h1>
+    </div>
+
+    <div class="container-analyzer">
+
+        <!-- Upload Form -->
+        <div class="upload-card">
+            <div class="section-title">
+                <span>📤</span> رفع صورة التحليل
+            </div>
+            <form method="post" action="/LabAnalyzer/Analyze" enctype="multipart/form-data" id="upload-form">
+                @Html.AntiForgeryToken()
+                <div class="upload-area" id="upload-area">
+                    <input type="file" name="image" id="file-input" accept="image/*" />
+                    <div class="upload-icon">🖼️</div>
+                    <h3> انقر للاختيار</h3>
+                    <p>يدعم JPG, PNG, WEBP • جميع التحاليل المختبرية</p>
+                </div>
+                <div id="preview-container">
+                    <img id="preview-img" src="#" alt="Preview" />
+                    <p style="margin-top:.7rem; color:var(--muted); font-size:.9rem" id="file-name"></p>
+                </div>
+                <button type="submit" class="btn-analyze" id="analyze-btn" disabled>
+                    🧬 تحليل التقرير 
+                </button>
+            </form>
+        </div>
+
+        @if (Model.ErrorMessage != null)
+        {
+            <div class="error-box">
+                <span style="font-size:1.5rem">⚠️</span>
+                <span>@Model.ErrorMessage</span>
+            </div>
+        }
+
+        @if (Model.HasResult)
+        {
+            var r = Model.Result!;
+            var meta = r.report_metadata;
+
+            <!-- ══ METADATA ══ -->
+            <div class="meta-card">
+                <div class="section-title"><span>📋</span> بيانات التقرير</div>
+                <div class="meta-grid">
+                    @MetaItem("🏥", "المختبر", meta?.lab_name)
+                    @MetaItem("👤", "اسم المريض", meta?.patient_name)
+                    @MetaItem("🎂", "العمر", meta?.patient_age)
+                    @MetaItem("⚧", "الجنس", meta?.patient_gender == "male" ? "ذكر" : meta?.patient_gender == "female" ? "أنثى" : meta?.patient_gender)
+                    @MetaItem("📅", "تاريخ العينة", meta?.sample_date)
+                    @MetaItem("🖨️", "تاريخ الطباعة", meta?.print_date)
+                    @MetaItem("👨‍⚕️", "الطبيب المحيل", meta?.referring_doctor)
+                    @MetaItem("🧪", "نوع التحليل", $"{meta?.test_type_arabic} ({meta?.test_type})")
+                    @MetaItem("🩸", "نوع العينة", meta?.sample_type)
+                </div>
+                @if (meta?.image_quality != null)
+                {
+                    <div style="margin-top:1rem">
+                        <span class="quality-badge quality-@(meta.image_quality)">
+                            @(meta.image_quality == "clear" ? "✅ جودة الصورة ممتازة" :
+                              meta.image_quality == "partially_unclear" ? "⚠️ جودة الصورة متوسطة" : "❌ جودة الصورة ضعيفة")
+                        </span>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(meta?.inferred_fields_note))
+                {
+                    <div style="margin-top:.8rem; background:#faf5ff; border-radius:8px; padding:.8rem 1rem; color:#5b21b6; font-size:.85rem; border-right:3px solid #7c3aed">
+                        <strong>🔍 ملاحظة:</strong> @meta.inferred_fields_note
+                    </div>
+                }
+            </div>
+
+            <!-- ══ CRITICAL FLAGS ══ -->
+            @if (r.critical_flags != null && r.critical_flags.Count > 0)
+            {
+                <div class="critical-banner">
+                    <h3>🚨 تنبيهات حرجة تستوجب الانتباه الفوري</h3>
+                    @foreach (var flag in r.critical_flags)
+                    {
+                        var urgencyAr = flag.urgency == "immediate" ? "عاجل جداً" : flag.urgency == "soon" ? "قريباً" : "مراقبة";
+                        <div class="critical-item">
+                            <div>
+                                <strong>@flag.parameter</strong> — @flag.reason
+                            </div>
+                            <span class="urgency-badge urgency-@(flag.urgency)">@urgencyAr</span>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- ══ PARAMETERS TABLE ══ -->
+            @if (r.parameters != null && r.parameters.Count > 0)
+            {
+                <div class="params-card">
+                    <div class="section-title"><span>📊</span> نتائج المؤشرات التفصيلية</div>
+                    <table class="analyzer-table">
+                        <thead>
+                            <tr>
+                                <th>المؤشر</th>
+                                <th>النتيجة</th>
+                                <th>الوحدة</th>
+                                <th>المرجع</th>
+                                <th>الحالة</th>
+                                <th>الأهمية</th>
+                                <th>التفسير</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in r.parameters)
+                            {
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:800; font-size:1rem">@p.abbreviation</div>
+                                        <div style="color:var(--muted); font-size:.78rem">@p.full_name_arabic</div>
+                                        @if (p.inferred)
+                                        {
+                                            <span class="inferred-badge">مستنتج</span>
+                                        }
+                                    </td>
+                                    <td style="font-weight:800; font-size:1.05rem">@p.result</td>
+                                    <td style="color:var(--muted)">@p.unit</td>
+                                    <td>
+                                        @p.reference_range
+                                        @if (p.reference_source == "standard_medical_knowledge")
+                                        {
+                                            <div style="font-size:.7rem; color:#7c3aed">📚 معياري</div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="status-pill status-@(p.status)">@p.status_arabic</span>
+                                    </td>
+                                    <td>
+                                        <span class="@($"sig-{p.clinical_significance}")">
+                                            @(p.clinical_significance == "high" ? "🔴 عالية" :
+                                              p.clinical_significance == "medium" ? "🟡 متوسطة" : "🟢 منخفضة")
+                                        </span>
+                                    </td>
+                                    <td style="max-width:250px">
+                                        @if (!string.IsNullOrEmpty(p.interpretation))
+                                        {
+                                            <div style="font-size:.82rem; line-height:1.5">@p.interpretation</div>
+                                        }
+                                        @if (!string.IsNullOrEmpty(p.what_it_measures))
+                                        {
+                                            <button class="tooltip-btn" onclick="toggleInfo(this)" type="button">▼ ما يقيسه</button>
+                                            <div class="tooltip-content">@p.what_it_measures</div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <!-- ══ PATTERNS ══ -->
+            @if (r.patterns_detected != null && r.patterns_detected.Count > 0)
+            {
+                <div class="patterns-card">
+                    <div class="section-title"><span>🧩</span> الأنماط السريرية المكتشفة</div>
+                    @foreach (var pat in r.patterns_detected)
+                    {
+                        <div class="pattern-item">
+                            <span>🔎</span> @pat
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- ══ SUMMARY ══ -->
+            @if (!string.IsNullOrEmpty(r.overall_summary))
+            {
+                <div class="summary-card">
+                    <div class="section-title"><span>📝</span> الملخص الشامل</div>
+                    <div class="summary-text">@r.overall_summary</div>
+                </div>
+            }
+
+            <!-- ══ FOLLOWUP TESTS ══ -->
+            @if (r.recommended_followup_tests != null && r.recommended_followup_tests.Count > 0)
+            {
+                <div class="followup-card">
+                    <div class="section-title"><span>🏥</span> التحاليل المقترحة للمتابعة</div>
+                    @foreach (var test in r.recommended_followup_tests)
+                    {
+                        <div class="followup-item">
+                            <div class="followup-icon">🧪</div>
+                            <div>
+                                <div class="followup-name">@test.test_name</div>
+                                <div class="followup-reason">@test.reason</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- ══ DISCLAIMER ══ -->
+            <div class="disclaimer-box">
+                ⚕️ <strong>تنبيه هام:</strong> @(r.disclaimer ?? "هذا التحليل للأغراض التثقيفية فقط ولا يُغني عن استشارة الطبيب المختص.")
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        // Drag & drop + preview
+        const fileInput = document.getElementById('file-input');
+        const uploadArea = document.getElementById('upload-area');
+        const previewContainer = document.getElementById('preview-container');
+        const previewImg = document.getElementById('preview-img');
+        const fileNameEl = document.getElementById('file-name');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const form = document.getElementById('upload-form');
+        const loading = document.getElementById('loading');
+
+        fileInput.addEventListener('change', handleFile);
+        uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files[0]) {
+                fileInput.files = e.dataTransfer.files;
+                handleFile();
+            }
+        });
+
+        function handleFile() {
+            const file = fileInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImg.src = e.target.result;
+                previewContainer.style.display = 'block';
+                fileNameEl.textContent = '📁 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+                analyzeBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        form.addEventListener('submit', () => {
+            loading.classList.add('active');
+            analyzeBtn.disabled = true;
+        });
+
+        function toggleInfo(btn) {
+            const content = btn.nextElementSibling;
+            content.classList.toggle('open');
+            btn.textContent = content.classList.contains('open') ? '▲ إخفاء' : '▼ ما يقيسه';
+        }
+    </script>
+}
+
+@functions {
+    string SafeValue(string? val) => string.IsNullOrWhiteSpace(val) ? "—" : val;
+
+    Microsoft.AspNetCore.Html.IHtmlContent MetaItem(string icon, string label, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value == "null") return new Microsoft.AspNetCore.Html.HtmlString("");
+        return new Microsoft.AspNetCore.Html.HtmlString($@"
+            <div class='meta-item'>
+                <div class='meta-label'>{icon} {label}</div>
+                <div class='meta-value'>{System.Net.WebUtility.HtmlEncode(value)}</div>
+            </div>");
+    }
+}
