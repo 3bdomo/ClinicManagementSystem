@@ -7,6 +7,7 @@ using BLL.DTOs.User;
 using Common.Enums;
 using Web.ViewModel;
 using Web.ViewModels.Appointment;
+using BLL.DTOs.Billing;
 
 namespace Web.Mapping;
 
@@ -123,6 +124,11 @@ public class WebMappingProfile : Profile
 
         CreateMap<DoctorScheduleDto, DoctorScheduleFormViewModel>();
         CreateMap<DoctorScheduleFormViewModel, DoctorScheduleDto>();
+
+        // Invoice mappings
+        CreateMap<InvoiceDto, InvoiceRowViewModel>();
+        CreateMap<InvoiceDto, InvoiceDetailsViewModel>();
+        CreateMap<InvoiceItemDto, InvoiceItemDetailViewModel>();
     }
 
 

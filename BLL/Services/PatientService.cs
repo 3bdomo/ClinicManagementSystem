@@ -83,8 +83,19 @@ namespace BLL.Services
             if (patient == null)
                 return OperationResult<PatientHistoryDto>.Failure("Patient history not found.");
 
-            var patientHistoryDto = _mapper.Map<PatientHistoryDto>(patient);
-            return OperationResult<PatientHistoryDto>.Success(patientHistoryDto);
+            var dto = _mapper.Map<PatientHistoryDto>(patient);
+            
+            // Enrich Audit Info names
+            if (dto.AuditInfo != null)
+            {
+                if (!string.IsNullOrEmpty(dto.AuditInfo.CreatedBy))
+                    dto.AuditInfo.CreatedByName = await _unitOfWork.Users.GetFullNameAsync(dto.AuditInfo.CreatedBy);
+                
+                if (!string.IsNullOrEmpty(dto.AuditInfo.UpdatedBy))
+                    dto.AuditInfo.UpdatedByName = await _unitOfWork.Users.GetFullNameAsync(dto.AuditInfo.UpdatedBy);
+            }
+
+            return OperationResult<PatientHistoryDto>.Success(dto);
         }
 
         public async Task<OperationResult> RestoreAsync(int id)

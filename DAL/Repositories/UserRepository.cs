@@ -69,19 +69,25 @@ internal class UserRepository : GenericRepository<ApplicationUser>, IUserReposit
         return result.Entity;
     }
 
-    public Task<ApplicationUser?> UpdateAsync(ApplicationUser user)
+    public async Task<ApplicationUser?> UpdateAsync(ApplicationUser user)
     {
-        var existingUser = _dbSet.Find(user.Id);
+        var existingUser = await _dbSet.FindAsync(user.Id);
         if(existingUser == null)
         {
-            return Task.FromResult<ApplicationUser?>(null);
+            return null;
         }
         existingUser.FullName = user.FullName;
         existingUser.PhoneNumber = user.PhoneNumber;
         existingUser.IsActive = user.IsActive;
         _dbSet.Update(existingUser);
-        _context.SaveChanges();
-        return Task.FromResult<ApplicationUser?>(existingUser);
+        await _context.SaveChangesAsync();
+        return existingUser;
+    }
+
+    public async Task<string?> GetFullNameAsync(string id)
+    {
+        return await _dbSet.Where(u => u.Id == id)
+                           .Select(u => u.FullName)
+                           .FirstOrDefaultAsync();
     }
 }
-
