@@ -1,0 +1,143 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var m = Model ?? new DashboardViewModel();
+}
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+            <div class="flex items-center gap-2 text-sm font-semibold text-sky-600">
+                <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                <span>Clinic overview</span>
+            </div>
+            <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">Dashboard</h2>
+            <p class="mt-1 text-sm text-slate-500">@DateTime.Today.ToString("dddd, MMMM d, yyyy")</p>
+        </div>
+        <div class="flex gap-3">
+            <a asp-controller="Appointment" asp-action="Book" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50">
+                <span class="material-symbols-outlined text-[18px]">event_available</span>
+                Book Appointment
+            </a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Billing" asp-action="DailyReport" class="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-bold text-white shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">summarize</span>
+                    Daily Report
+                </a>
+            }
+        </div>
+    </div>
+
+    @* Stats Cards *@
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div class="stat-card">
+            <span class="material-symbols-outlined text-sky-600">groups</span>
+            <p class="mt-4 text-sm font-bold text-slate-500">Total Patients</p>
+            <p class="mt-1 text-2xl font-black">@m.TotalPatients.ToString("N0")</p>
+            <a asp-controller="Patient" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
+                View all <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </a>
+        </div>
+        <div class="stat-card">
+            <span class="material-symbols-outlined text-sky-600">event</span>
+            <p class="mt-4 text-sm font-bold text-slate-500">Today's Appointments</p>
+            <p class="mt-1 text-2xl font-black">@m.TodayAppointments</p>
+            <a asp-controller="Appointment" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
+                View all <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </a>
+        </div>
+        <div class="stat-card">
+            <span class="material-symbols-outlined text-sky-600">payments</span>
+            <p class="mt-4 text-sm font-bold text-slate-500">Today's Revenue</p>
+            <p class="mt-1 text-2xl font-black">@m.TodayRevenue.ToString("N0") EGP</p>
+            @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+            {
+                <a asp-controller="Billing" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
+                    View billing <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </a>
+            }
+        </div>
+        <div class="stat-card">
+            <span class="material-symbols-outlined text-amber-500">receipt_long</span>
+            <p class="mt-4 text-sm font-bold text-slate-500">Pending Invoices</p>
+            <p class="mt-1 text-2xl font-black text-amber-600">@m.PendingInvoicesCount</p>
+            @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+            {
+                <a asp-controller="Billing" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
+                    View unpaid <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </a>
+            }
+        </div>
+        <div class="stat-card">
+            <span class="material-symbols-outlined text-emerald-500">notification_important</span>
+            <p class="mt-4 text-sm font-bold text-slate-500">Upcoming Follow-ups</p>
+            <p class="mt-1 text-2xl font-black text-emerald-600">@m.UpcomingFollowUps</p>
+            <a asp-controller="FollowUp" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
+                View all <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </a>
+        </div>
+    </div>
+
+    @* Recent Appointments Table *@
+    @if (m.RecentAppointments.Any())
+    {
+        <div class="rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+                <h3 class="text-lg font-black">Today's Appointments</h3>
+                <a asp-controller="Appointment" asp-action="Index" class="text-sm font-bold text-sky-600 hover:underline">View all</a>
+            </div>
+            <div class="overflow-hidden">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Patient</th>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Doctor</th>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Time</th>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Type</th>
+                            <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Status</th>
+                            <th class="px-4 py-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach (var appt in m.RecentAppointments)
+                        {
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-4 py-3 text-sm font-semibold text-slate-900">
+                                    <a asp-controller="Patient" asp-action="Details" asp-route-id="@appt.PatientId" class="hover:text-sky-600">
+                                        @appt.PatientName
+                                    </a>
+                                </td>
+                                <td class="px-4 py-3 text-sm text-slate-600">@appt.DoctorName</td>
+                                <td class="px-4 py-3 text-sm text-slate-600">@appt.AppointmentDate.ToString("HH:mm")</td>
+                                <td class="px-4 py-3 text-sm text-slate-600">@appt.AppointmentType</td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-bold
+                                        @(appt.Status == Common.Enums.AppointmentStatus.Completed ? "bg-emerald-50 text-emerald-700" :
+                                          appt.Status == Common.Enums.AppointmentStatus.InProgress ? "bg-blue-50 text-blue-700" :
+                                          appt.Status == Common.Enums.AppointmentStatus.Cancelled ? "bg-red-50 text-red-700" :
+                                          "bg-amber-50 text-amber-700")">
+                                        @appt.Status
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <a asp-controller="Appointment" asp-action="Index" class="text-sm font-bold text-sky-600 hover:underline">Manage</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="rounded-lg border border-slate-200 bg-white p-10 text-center shadow-sm">
+            <span class="material-symbols-outlined text-5xl text-slate-300">event_busy</span>
+            <p class="mt-3 text-sm font-semibold text-slate-500">No appointments today.</p>
+            <a asp-controller="Appointment" asp-action="Book" class="mt-4 inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-bold text-white">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                Book first appointment
+            </a>
+        </div>
+    }
+</div>
