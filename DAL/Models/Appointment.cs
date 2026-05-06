@@ -15,6 +15,9 @@ public class Appointment : IAuditable
     public AppointmentStatus Status { get; set; } = AppointmentStatus.Waiting;
     public string? Notes { get; set; }
 
+    // Stored separately from Notes — used for reporting and filtering
+    public string? CancellationReason { get; set; }
+
     // IAuditable
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }

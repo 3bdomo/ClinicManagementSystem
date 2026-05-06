@@ -20,5 +20,7 @@ namespace BLL.Interfaces
         Task<OperationResult<PatientHistoryDto>> GetFullHistoryAsync(int id);
         Task<OperationResult<IEnumerable<PatientDto>>> GetDeletedAsync();//Admin only
         Task<OperationResult> RestoreAsync(int id);     // Admin only
+
+        Task<OperationResult<int>> GetPatientIdByApplicationUserIdAsync(string applicationUserId);
     }
 }

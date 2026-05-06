@@ -1,58 +1,52 @@
 using BLL.DTOs.Appointment;
+using Common.Enums;
 using Common.Results;
 
 namespace BLL.Interfaces
 {
     public interface IAppointmentService
     {
-       
+        // ─── Read ───────────────────────────────────────────
         Task<OperationResult<IEnumerable<AppointmentDto>>> GetAllAsync();
         Task<OperationResult<IEnumerable<AppointmentDto>>> GetAllAsync(int pageNumber, int pageSize);
         Task<OperationResult<AppointmentDto>> GetByIdAsync(int id);
-        Task<OperationResult<int>> CreateAsync(AppointmentDto appointmentDto);
-        Task<OperationResult> UpdateAsync(AppointmentDto appointmentDto);
-        Task<OperationResult> DeleteAsync(int id);
-        Task<OperationResult<IEnumerable<AppointmentHistoryDto>>> GetPatientHistoryAsync(int patientId);
 
-        Task<OperationResult<IEnumerable<AppointmentHistoryDto>>> GetDoctorHistoryAsync(int doctorId, int pageNumber,
-            int pageSize);
+        Task<OperationResult<IEnumerable<AppointmentDto>>> GetByDateAsync(DateTime date);
 
         Task<OperationResult<IEnumerable<AppointmentDto>>> GetDoctorAppointmentsAsync(int doctorId);
+        Task<OperationResult<IEnumerable<AppointmentDto>>> GetDoctorAppointmentsByDateAsync(int doctorId, DateTime date);
 
-        Task<OperationResult<IEnumerable<AppointmentDto>>> GetDoctorAppointmentsByDateAsync(
+        Task<OperationResult<IEnumerable<AppointmentDto>>> GetAppointmentsByStatusAsync(AppointmentStatus status);
+        Task<OperationResult<IEnumerable<AppointmentDto>>> GetAppointmentsByTypeAsync(AppointmentType type);
+
+        Task<OperationResult<IEnumerable<AppointmentHistoryDto>>> GetPatientHistoryAsync(int patientId);
+        Task<OperationResult<IEnumerable<AppointmentHistoryDto>>> GetDoctorHistoryAsync(
             int doctorId,
-            DateTime date);
+            int pageNumber,
+            int pageSize);
 
-        Task<OperationResult<IEnumerable<AppointmentDto>>> GetAppointmentsByStatusAsync(
-            Common.Enums.AppointmentStatus status);
+        // ─── Write ──────────────────────────────────────────
+        Task<OperationResult<int>> CreateAsync(CreateAppointmentDto dto);
+        Task<OperationResult> UpdateAsync(UpdateAppointmentDto dto);
+        Task<OperationResult> DeleteAsync(int id);
 
-        Task<OperationResult<IEnumerable<AppointmentDto>>> GetAppointmentsByTypeAsync(
-            Common.Enums.AppointmentType type);
-
+        // ─── Status Management ──────────────────────────────
         Task<OperationResult> StartAppointmentAsync(int id);
         Task<OperationResult> CompleteAppointmentAsync(int id);
         Task<OperationResult> CancelAppointmentAsync(int id, string? cancellationReason = null);
 
+        // ─── Helpers ────────────────────────────────────────
         Task<bool> IsTimeSlotAvailableAsync(
             int doctorId,
             DateTime appointmentDate,
             int durationMinutes,
             int? excludeAppointmentId = null);
 
-        Task<OperationResult<IEnumerable<DateTime>>> GetAvailableSlotsAsync(
-            int doctorId,
-            DateTime date,
-            int slotDurationMinutes = 30);
-
-        Task<OperationResult<IEnumerable<AppointmentDto>>> GetDeletedAsync();
-        Task<OperationResult> RestoreAsync(int id);
-        Task<int> GetTodayAppointmentsCountAsync();
-
         Task<bool> HasConflictingAppointmentsAsync(
             int doctorId,
             DateTime startDate,
             DateTime endDate);
-        
+
+        Task<int> GetTodayAppointmentsCountAsync();
     }
 }
-

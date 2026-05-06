@@ -118,5 +118,19 @@ namespace BLL.Services
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success("Patient updated successfully.");
         }
+
+        public async Task<OperationResult<int>> GetPatientIdByApplicationUserIdAsync(string applicationUserId)
+        {
+            if (string.IsNullOrWhiteSpace(applicationUserId))
+                return OperationResult<int>.Failure("Invalid user id.");
+
+            var patient = await _unitOfWork.Patients.GetByUserIdAsync(applicationUserId);
+
+            if (patient == null)
+                return OperationResult<int>.Failure("Patient profile not found.");
+
+            return OperationResult<int>.Success(patient.Id);
+        }
+
     }
 }

@@ -1,17 +1,13 @@
 using Common.Enums;
 
-namespace BLL.DTOs.Appointment
+namespace Web.ViewModels.Appointment
 {
-    public class AppointmentDto
+    public class AppointmentDetailsViewModel
     {
         public int Id { get; set; }
 
-        public int DoctorId { get; set; }
-        public int PatientId { get; set; }
-        public int? DoctorScheduleId { get; set; }
-
-        public string? DoctorName { get; set; }
-        public string? PatientName { get; set; }
+        public string DoctorName { get; set; } = string.Empty;
+        public string PatientName { get; set; } = string.Empty;
         public Specialization? DoctorSpecialization { get; set; }
 
         public DateTime AppointmentDate { get; set; }
@@ -23,13 +19,20 @@ namespace BLL.DTOs.Appointment
         public string? Notes { get; set; }
         public string? CancellationReason { get; set; }
 
+        public string? CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+
         public bool HasMedicalRecord { get; set; }
         public bool HasInvoice { get; set; }
         public int? MedicalRecordId { get; set; }
         public int? InvoiceId { get; set; }
 
-        public string? CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public bool CanEdit { get; set; }
+        public bool CanCancel { get; set; }
+        public bool CanStart { get; set; }
+        public bool CanComplete { get; set; }
+
+        // Admin only — hard delete for data entry mistakes
+        public bool CanDelete { get; set; }
     }
 }
