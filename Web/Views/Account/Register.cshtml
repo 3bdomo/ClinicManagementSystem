@@ -71,9 +71,17 @@
                         <span asp-validation-for="Phone" class="text-xs text-red-500"></span>
                     </div>
                     <div>
-                        <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="DateOfBirth">Date of birth</label>
-                        <input asp-for="DateOfBirth" class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
-                        <span asp-validation-for="DateOfBirth" class="text-xs text-red-500"></span>
+                        <label class="mb-2 block text-sm font-semibold text-slate-700"
+                               asp-for="DateOfBirth">
+                            Date of birth
+                        </label>
+
+                        <input asp-for="DateOfBirth"
+                               type="date"
+                               class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
+
+                        <span asp-validation-for="DateOfBirth"
+                              class="text-xs text-red-500"></span>
                     </div>
                     <div>
                         <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Gender">Gender</label>
@@ -104,5 +112,10 @@
             </form>
         </div>
     </main>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 </body>
 </html>
+
+

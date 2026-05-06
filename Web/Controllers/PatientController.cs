@@ -175,7 +175,6 @@ namespace Web.Controllers
             var result = await _patientAccountService.GetMyProfileAsync(userId);
             if (result.IsSuccess)
             {
-                // We use PatientDetailsViewModel since MyProfile represents exactly that data
                 var vm = _mapper.Map<PatientDetailsViewModel>(result.Data);
                 return View(vm);
             }
