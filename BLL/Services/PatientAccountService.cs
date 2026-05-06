@@ -33,7 +33,7 @@ public class PatientAccountService:IPatientAccountService
                 Phone = dto.Phone,
                 Address = dto.Address,
                 BloodType = dto.BloodType,
-                
+                EmergencyContact = dto.EmergencyContact
             });
             _unitOfWork.SaveChangesAsync();
             Console.WriteLine("Patient registered successfully."+_unitOfWork.Patients.GetByNationalIdAsync(dto.NationalId).Result.FullName);
@@ -63,7 +63,12 @@ public class PatientAccountService:IPatientAccountService
             Id = patient.Id,
             FullName = patient.FullName,
             NationalId = patient.NationalId,
-            DateOfBirth = patient.DateOfBirth
+            DateOfBirth = patient.DateOfBirth,
+            Gender = patient.Gender,
+            Phone = patient.Phone,
+            Address = patient.Address,
+            BloodType = patient.BloodType,
+            EmergencyContact = patient.EmergencyContact
         };
         return Task.FromResult(OperationResult<PatientDto>.Success(patientDto));
     }

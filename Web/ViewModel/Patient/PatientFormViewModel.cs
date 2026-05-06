@@ -13,6 +13,6 @@ public class PatientFormViewModel
     [Required, StringLength(14, MinimumLength = 14)] public string NationalId { get; set; } = string.Empty;
     [Required] public string Phone { get; set; } = string.Empty;
     public string? Address { get; set; }
-    public BloodType? BloodType { get; set; }
+    public string? BloodType { get; set; }
     public string? EmergencyContact { get; set; }
 }

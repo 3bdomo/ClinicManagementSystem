@@ -15,6 +15,6 @@ public class RegisterViewModel
     [Required, DataType(DataType.Date)] public DateOnly DateOfBirth { get; set; }
     [Required] public Gender Gender { get; set; }
     public string? Address { get; set; }
-    public BloodType? BloodType { get; set; }
+    public string? BloodType { get; set; }
     public string? EmergencyContact { get; set; }
 }

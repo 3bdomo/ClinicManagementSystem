@@ -33,7 +33,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
             .ForMember(dest => dest.Invoices, opt => opt.Ignore())
             .ForMember(dest => dest.ApplicationUser, opt => opt.Ignore())
-            .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore());
+            .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore())
+            .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => src.BloodType));
 
         CreateMap<PatientRegisterDto, Patient>()
             .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore())
@@ -47,7 +48,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Appointments, opt => opt.Ignore())
             .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
             .ForMember(dest => dest.Invoices, opt => opt.Ignore())
-            .ForMember(dest => dest.ApplicationUser, opt => opt.Ignore());
+            .ForMember(dest => dest.ApplicationUser, opt => opt.Ignore())
+            .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => src.BloodType));
 
         CreateMap<PatientRegisterDto, ApplicationUser>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
@@ -248,7 +250,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Appointments, opt => opt.Ignore())
             .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
             .ForMember(dest => dest.Invoices, opt => opt.Ignore())
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => src.BloodType));
 
         CreateMap<PatientRegisterDto, Patient>()
             .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore())
@@ -263,7 +266,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Appointments, opt => opt.Ignore())
             .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
             .ForMember(dest => dest.Invoices, opt => opt.Ignore())
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => src.BloodType));
 
 
 
