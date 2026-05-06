@@ -1,0 +1,316 @@
+@model Web.ViewModels.Appointment.EditAppointmentViewModel
+@using Common.Enums
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Edit Appointment";
+    var culture = CultureInfo.InvariantCulture;
+}
+
+@* ── Page Header ─────────────────────────────────────────────── *@
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-black text-slate-900">Edit Appointment</h1>
+        <p class="text-sm text-slate-500 mt-1">
+            Modify date, time slot, or notes for this waiting appointment.
+        </p>
+    </div>
+    <a asp-action="Details" asp-route-id="@Model.Id"
+       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        Back to Details
+    </a>
+</div>
+
+<form asp-action="Edit" method="post" id="editForm">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="DoctorId" />
+    <input type="hidden" asp-for="DurationMinutes" id="DurationMinutes" />
+
+    <div asp-validation-summary="ModelOnly"
+         class="mb-5 p-4 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700 font-semibold"></div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+        @* ── Left: Summary card ──────────────────────────────── *@
+        <div class="xl:col-span-4 space-y-5">
+
+            <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                <h3 class="text-base font-black text-slate-900 mb-4">Appointment Info</h3>
+
+                <div class="space-y-3">
+
+                    <div class="rounded-xl bg-slate-50 border border-slate-100 p-4">
+                        <p class="text-xs font-black uppercase tracking-wider text-slate-400">Doctor</p>
+                        <p class="font-black text-slate-900 mt-1">@Model.DoctorName</p>
+                    </div>
+
+                    <div class="rounded-xl bg-slate-50 border border-slate-100 p-4">
+                        <p class="text-xs font-black uppercase tracking-wider text-slate-400">Patient</p>
+                        <p class="font-black text-slate-900 mt-1">@Model.PatientName</p>
+                    </div>
+
+                    <div class="rounded-xl border border-slate-200 p-4 space-y-2.5">
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-slate-500">Status</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-700">
+                                <span class="material-symbols-outlined text-[14px] mr-1">schedule</span>
+                                @Model.CurrentStatus
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-slate-500">Type</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-black
+                                @(Model.AppointmentType == AppointmentType.Surgery
+                                    ? "bg-purple-100 text-purple-700"
+                                    : "bg-blue-100 text-blue-700")">
+                                @Model.AppointmentType
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-slate-500">Schedule</span>
+                            <span class="text-sm font-black text-slate-900">@Model.ScheduleType</span>
+                        </div>
+
+                    </div>
+
+                    <div class="rounded-xl bg-amber-50 border border-amber-200 p-4">
+                        <div class="flex gap-2">
+                            <span class="material-symbols-outlined text-amber-500 text-[18px] mt-0.5">warning</span>
+                            <p class="text-xs text-amber-700 font-semibold">
+                                Only <strong>Waiting</strong> appointments can be edited.
+                                Changing the date will reload available slots via the selector below.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        @* ── Right: Edit form ────────────────────────────────── *@
+        <div class="xl:col-span-8 space-y-5">
+
+            @* Date + slot picker card *@
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+
+                <div class="p-6 border-b border-slate-100">
+                    <h3 class="text-base font-black text-slate-900">Date & Time Slot</h3>
+                    <p class="text-sm text-slate-500 mt-1">
+                        Pick a new date to load available slots, then select a slot.
+                    </p>
+                </div>
+
+                <div class="p-6 space-y-6">
+
+                    @* Date input *@
+                    <div>
+                        <label class="block text-sm font-black text-slate-700 mb-2">
+                            Appointment Date
+                            <span class="text-red-500 ml-0.5">*</span>
+                        </label>
+                        <input type="date"
+                               id="AppointmentDate"
+                               name="AppointmentDate"
+                               value="@Model.AppointmentDate.ToString("yyyy-MM-dd")"
+                               min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
+                        <span asp-validation-for="AppointmentDate"
+                              class="block mt-1.5 text-xs text-red-600"></span>
+                    </div>
+
+                    @* Slot picker *@
+                    <div id="slotSection">
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="text-sm font-black text-slate-700">
+                                Select Time Slot
+                                <span class="text-red-500 ml-0.5">*</span>
+                            </label>
+                            <span id="slotLoading"
+                                  class="hidden text-xs text-blue-600 font-semibold flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px] animate-spin">autorenew</span>
+                                Loading slots…
+                            </span>
+                        </div>
+
+                        @* Initial state: show current slot pre-selected *@
+                        <div id="slotGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                            <button type="button"
+                                    class="slot-btn py-4 rounded-xl border bg-blue-600 text-white border-blue-600 ring-2 ring-blue-600 ring-offset-2 text-sm font-black transition-all"
+                                    data-iso="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm:ss")"
+                                    data-minutes="@Model.DurationMinutes">
+                                @Model.AppointmentDate.ToString("hh:mm tt", culture)
+                            </button>
+                        </div>
+
+                        <div id="noSlots" class="hidden py-10 text-center text-slate-400">
+                            <span class="material-symbols-outlined block mb-2" style="font-size:36px;opacity:.25">event_busy</span>
+                            <p class="text-sm">No available slots for this date.</p>
+                        </div>
+
+                        <input type="hidden" id="SelectedSlotIso"
+                               value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm:ss")" />
+                        <span asp-validation-for="AppointmentDate"
+                              class="block mt-1.5 text-xs text-red-600" id="slotError"></span>
+                    </div>
+
+                </div>
+            </div>
+
+            @* Notes card *@
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+
+                <div class="p-6 border-b border-slate-100">
+                    <h3 class="text-base font-black text-slate-900">Notes</h3>
+                    <p class="text-sm text-slate-500 mt-1">Optional additional notes for this appointment.</p>
+                </div>
+
+                <div class="p-6">
+                    <textarea asp-for="Notes"
+                              rows="4"
+                              placeholder="Add any relevant notes…"
+                              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"></textarea>
+                    <span asp-validation-for="Notes" class="block mt-1.5 text-xs text-red-600"></span>
+                    <p class="text-xs text-slate-400 mt-2 text-right">
+                        <span id="notesCount">0</span> / 500
+                    </p>
+                </div>
+            </div>
+
+            @* Actions *@
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <a asp-action="Details" asp-route-id="@Model.Id"
+                   class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                    Discard Changes
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Save Changes
+                </button>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // ── Notes counter ──────────────────────────────────
+            const notesArea = document.querySelector("textarea[name='Notes']");
+            const notesCount = document.getElementById("notesCount");
+
+            function updateCount() {
+                notesCount.textContent = notesArea.value.length;
+            }
+            updateCount();
+            notesArea.addEventListener("input", updateCount);
+
+            // ── Slot picker ────────────────────────────────────
+            const dateInput     = document.getElementById("AppointmentDate");
+            const slotGrid      = document.getElementById("slotGrid");
+            const noSlots       = document.getElementById("noSlots");
+            const slotLoading   = document.getElementById("slotLoading");
+            const slotIsoInput  = document.getElementById("SelectedSlotIso");
+            const durationInput = document.getElementById("DurationMinutes");
+            const doctorId      = document.querySelector("input[name='DoctorId']").value;
+            const scheduleType  = "@Model.ScheduleType";
+
+            // Set current slot as selected on load (already pre-rendered).
+            wireSlotButtons();
+
+            dateInput.addEventListener("change", function () {
+                const date = this.value;
+                if (!date) return;
+
+                slotGrid.innerHTML = "";
+                noSlots.classList.add("hidden");
+                slotLoading.classList.remove("hidden");
+                slotIsoInput.value = "";
+                durationInput.value = "";
+
+                fetch(`/Appointment/GetSlots?doctorId=${doctorId}&date=${date}&scheduleType=${scheduleType}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        slotLoading.classList.add("hidden");
+
+                        if (!data.success || !data.slots || data.slots.length === 0) {
+                            noSlots.classList.remove("hidden");
+                            return;
+                        }
+
+                        data.slots.forEach(slot => {
+                            const btn = document.createElement("button");
+                            btn.type = "button";
+                            btn.className = "slot-btn py-4 rounded-xl border border-slate-200 text-slate-700 text-sm font-black hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all";
+                            btn.dataset.iso = slot.isoStart;
+                            btn.dataset.minutes = slot.minutes;
+                            btn.textContent = slot.start;
+                            slotGrid.appendChild(btn);
+                        });
+
+                        wireSlotButtons();
+                    })
+                    .catch(() => {
+                        slotLoading.classList.add("hidden");
+                        noSlots.classList.remove("hidden");
+                    });
+            });
+
+            function wireSlotButtons() {
+                document.querySelectorAll(".slot-btn").forEach(btn => {
+                    btn.addEventListener("click", function () {
+                        document.querySelectorAll(".slot-btn").forEach(b => {
+                            b.classList.remove("bg-blue-600", "text-white", "border-blue-600",
+                                               "ring-2", "ring-blue-600", "ring-offset-2");
+                            b.classList.add("border-slate-200", "text-slate-700");
+                        });
+                        this.classList.remove("border-slate-200", "text-slate-700");
+                        this.classList.add("bg-blue-600", "text-white", "border-blue-600",
+                                           "ring-2", "ring-blue-600", "ring-offset-2");
+
+                        slotIsoInput.value = this.dataset.iso;
+                        durationInput.value = this.dataset.minutes;
+
+                        // Sync the date input to the selected slot's date part.
+                        const slotDate = this.dataset.iso.substring(0, 10);
+                        if (dateInput.value !== slotDate) {
+                            dateInput.value = slotDate;
+                        }
+                    });
+                });
+            }
+
+            // ── Pre-select the current slot value ──────────────
+            if (slotIsoInput.value) {
+                const existing = document.querySelector(".slot-btn");
+                if (existing) {
+                    existing.classList.add("bg-blue-600", "text-white",
+                                          "border-blue-600", "ring-2",
+                                          "ring-blue-600", "ring-offset-2");
+                    existing.classList.remove("border-slate-200", "text-slate-700");
+                }
+            }
+
+            // ── Form submit: write slot ISO into AppointmentDate ─
+            document.getElementById("editForm").addEventListener("submit", function () {
+                const iso = slotIsoInput.value;
+                if (iso) {
+                    dateInput.value = iso; // full datetime for model binding
+                }
+            });
+
+        });
+    </script>
+}
