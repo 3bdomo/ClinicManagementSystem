@@ -341,6 +341,16 @@ public class MappingProfile : Profile
                 opt => opt.MapFrom(src => src.Doctor != null
                     ? src.Doctor.FullName
                     : string.Empty));
+          
+
+
+        CreateMap<DoctorScheduleDto, DoctorSchedule>()
+            .ForMember(dest => dest.Doctor, opt => opt.Ignore())
+            .ForMember(dest => dest.Appointments, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
 
         CreateMap<AppointmentDto, Appointment>()
             .ForMember(dest => dest.Patient, opt => opt.Ignore())
