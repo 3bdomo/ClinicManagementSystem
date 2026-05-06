@@ -198,6 +198,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true))
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
+            .ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.UserRole))
             .ForMember(dest => dest.Doctor, opt => opt.Ignore())
             .ForMember(dest => dest.Patient, opt => opt.Ignore())
             .ForMember(dest => dest.Receptionist, opt => opt.Ignore());
