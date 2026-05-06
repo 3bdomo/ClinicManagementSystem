@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Identity
 @{
     var pageTitle = ViewData["Title"]?.ToString() ?? "ClinicSystem";
 }
@@ -8,21 +9,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@pageTitle - ClinicSystem</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght%40400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL%40100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/dashboard.css" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
-    @await Html.PartialAsync("_Sidebar")
-    <main class="ml-[260px] min-h-screen">
-        @await Html.PartialAsync("_NavBar")
-        <section class="p-8">
-            @await Html.PartialAsync("_Alerts")
-            @RenderBody()
-        </section>
-    </main>
+
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        @* Sidebar ثابت على الشمال *@
+        @await Html.PartialAsync("_Sidebar")
+
+        <main class="ml-[260px] min-h-screen">
+            @* NavBar ثابت في الأعلى *@
+            @await Html.PartialAsync("_NavBar")
+
+            <section class="p-8">
+                @await Html.PartialAsync("_Alerts")
+                @RenderBody()
+            </section>
+        </main>
+    }
+    else
+    {
+        @* للغير مسجلين - بدون sidebar أو navbar *@
+        <main class="min-h-screen">
+            <section class="p-8">
+                @await Html.PartialAsync("_Alerts")
+                @RenderBody()
+            </section>
+        </main>
+    }
+
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/js/site.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
