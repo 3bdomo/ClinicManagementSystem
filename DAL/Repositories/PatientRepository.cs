@@ -33,6 +33,7 @@ internal class PatientRepository : GenericRepository<Patient>, IPatientRepositor
     public async Task<bool> RestoreAsync(int patientId)
     {
         var patient = await _dbSet
+            .Include(p => p.ApplicationUser)
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(p => p.Id == patientId && p.IsDeleted);
 
@@ -41,6 +42,14 @@ internal class PatientRepository : GenericRepository<Patient>, IPatientRepositor
         patient.IsDeleted  = false;
         patient.DeletedAt  = null;
         patient.DeletedBy  = null;
+        
+        if (patient.ApplicationUser != null && patient.ApplicationUser.IsDeleted)
+        {
+            patient.ApplicationUser.IsDeleted = false;
+            patient.ApplicationUser.DeletedAt = null;
+            patient.ApplicationUser.DeletedBy = null;
+        }
+
         return true;
     }
 

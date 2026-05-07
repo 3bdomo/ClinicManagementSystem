@@ -152,22 +152,22 @@ public class UserService : IUserService
             user.Patient.IsDeleted = true;
             user.Patient.DeletedAt = DateTime.UtcNow;
             _unitOfWork.Patients.Update(user.Patient);
-            await _unitOfWork.SaveChangesAsync();
         }
         
         if (user.Doctor != null)
         {
             _unitOfWork.Doctors.Delete(user.Doctor);
-            await _unitOfWork.SaveChangesAsync();
         }
 
         if (user.Receptionist != null)
         {
             _unitOfWork.Receptionists.Delete(user.Receptionist);
-            await _unitOfWork.SaveChangesAsync();
         }
 
-        await _unitOfWork.Users.DeleteAsync(user);
+        user.IsDeleted = true;
+        user.DeletedAt = DateTime.UtcNow;
+        await _unitOfWork.Users.UpdateAsync(user);
+        
         await _unitOfWork.SaveChangesAsync();
         return OperationResult.Success("User and linked profiles deleted successfully");
     }

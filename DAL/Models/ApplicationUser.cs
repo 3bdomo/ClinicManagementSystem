@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ClinicSystem.DAL.Models;
 
-public class ApplicationUser : IdentityUser, IAuditable
+public class ApplicationUser : IdentityUser, IAuditable, ISoftDeletable
 {
     public string FullName { get; set; } = string.Empty;
     public UserRole UserRole { get; set; }
@@ -18,4 +18,8 @@ public class ApplicationUser : IdentityUser, IAuditable
     public Doctor? Doctor { get; set; }
     public Patient? Patient { get; set; }
     public Receptionist? Receptionist { get; set; } 
+
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+    public string? DeletedBy { get; set; }
 }
