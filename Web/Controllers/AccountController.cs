@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Web.ViewModel;
-using Common.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
+using Common.Enums;
 
 namespace Web.Controllers;
 
@@ -19,14 +20,21 @@ public class AccountController : Controller
     }
 
     public IActionResult Login() => View();
-    public IActionResult Register() => View();
+    public IActionResult Register()
+    {
+        ViewBag.BloodTypes = GetBloodTypes();
+        return View();
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid)
+        {
+            ViewBag.BloodTypes = GetBloodTypes();
             return View(model);
+        }
 
         var dto = new RegisterDto
         {
@@ -38,14 +46,7 @@ public class AccountController : Controller
             DateOfBirth = model.DateOfBirth,
             Gender = model.Gender,
             Address = model.Address,
-            BloodType = model.BloodType.HasValue ? model.BloodType.Value switch
-            {
-                BloodType.A_Positive => "A+", BloodType.A_Negative => "A-",
-                BloodType.B_Positive => "B+", BloodType.B_Negative => "B-",
-                BloodType.AB_Positive => "AB+", BloodType.AB_Negative => "AB-",
-                BloodType.O_Positive => "O+", BloodType.O_Negative => "O-",
-                _ => model.BloodType.Value.ToString()
-            } : null,
+            BloodType = model.BloodType,
             EmergencyContact = model.EmergencyContact
         };
 
@@ -56,6 +57,7 @@ public class AccountController : Controller
         }
         
         ModelState.AddModelError(string.Empty, result.Message);
+        ViewBag.BloodTypes = GetBloodTypes();
         return View(model);
     }
 
@@ -68,6 +70,11 @@ public class AccountController : Controller
         var result = await _authService.LoginAsync(new LoginDto { Email = model.Email, Password = model.Password, RememberMe = model.RememberMe });
         if (result.IsSuccess)
         {
+            if (!result.Data.IsInRole(UserRole.Patient.ToString()))
+            {
+                ModelState.AddModelError(string.Empty, "Access denied. You do not have patient privileges.");
+                return View(model);
+            }
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, result.Data, new AuthenticationProperties
             {
                 IsPersistent = model.RememberMe
@@ -91,6 +98,12 @@ public class AccountController : Controller
         var result = await _authService.LoginAsync(new LoginDto { Email = model.Email, Password = model.Password, RememberMe = model.RememberMe });
         if (result.IsSuccess)
         {
+            if (!result.Data.IsInRole(UserRole.Doctor.ToString()) && !result.Data.IsInRole(UserRole.Receptionist.ToString()))
+            {
+                ModelState.AddModelError(string.Empty, "Access denied. You do not have doctor or receptionist privileges.");
+                return View(model);
+            }
+
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, result.Data, new AuthenticationProperties { IsPersistent = model.RememberMe });
             return RedirectToAction("Dashboard", "Home");
         }
@@ -144,4 +157,19 @@ public class AccountController : Controller
     }
     [HttpGet]
     public IActionResult AccessDenied() => View();
+
+    private List<SelectListItem> GetBloodTypes()
+    {
+        return new List<SelectListItem>
+        {
+            new SelectListItem { Text = "A+", Value = "A+" },
+            new SelectListItem { Text = "A-", Value = "A-" },
+            new SelectListItem { Text = "B+", Value = "B+" },
+            new SelectListItem { Text = "B-", Value = "B-" },
+            new SelectListItem { Text = "AB+", Value = "AB+" },
+            new SelectListItem { Text = "AB-", Value = "AB-" },
+            new SelectListItem { Text = "O+", Value = "O+" },
+            new SelectListItem { Text = "O-", Value = "O-" }
+        };
+    }
 }

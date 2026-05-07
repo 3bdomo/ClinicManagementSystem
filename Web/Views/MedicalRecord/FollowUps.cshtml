@@ -1,0 +1,117 @@
+@model IEnumerable<BLL.DTOs.MedicalRecord.MedicalRecordDto>
+@{
+    ViewData["Title"] = "Upcoming Follow-ups";
+    var from = ViewBag.From as DateTime?;
+    var to = ViewBag.To as DateTime?;
+}
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+            <div class="flex items-center gap-2 text-sm font-semibold text-amber-600">
+                <span class="material-symbols-outlined text-[20px]">schedule</span>
+                <span>Follow-ups</span>
+            </div>
+            <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">Upcoming Follow-ups</h2>
+            <p class="mt-1 text-sm text-slate-500">@Model.Count() follow-up(s) from @(from?.ToString("yyyy-MM-dd")) to @(to?.ToString("yyyy-MM-dd"))</p>
+        </div>
+        <div class="flex gap-2">
+            <a asp-action="Index" class="rounded-lg bg-slate-950 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800">
+                All Records
+            </a>
+        </div>
+    </div>
+
+    @* Stats *@
+    <div class="grid gap-4 md:grid-cols-3">
+        <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <span class="material-symbols-outlined text-xl text-amber-600">schedule</span>
+            <p class="mt-3 text-sm font-bold text-slate-500">Upcoming follow-ups</p>
+            <p class="mt-1 text-2xl font-black">@Model.Count()</p>
+        </div>
+        <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <span class="material-symbols-outlined text-xl text-red-500">warning</span>
+            <p class="mt-3 text-sm font-bold text-slate-500">Overdue</p>
+            <p class="mt-1 text-2xl font-black text-red-600">@Model.Count(r => r.FollowUpDate < DateTime.Today)</p>
+        </div>
+        <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <span class="material-symbols-outlined text-xl text-green-500">event_available</span>
+            <p class="mt-3 text-sm font-bold text-slate-500">This Week</p>
+            <p class="mt-1 text-2xl font-black text-green-600">@Model.Count(r => r.FollowUpDate >= DateTime.Today && r.FollowUpDate <= DateTime.Today.AddDays(7))</p>
+        </div>
+    </div>
+
+    @* Follow-ups Table *@
+    <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+        @if (Model.Any())
+        {
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Record #</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Patient</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Doctor</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Diagnosis</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Follow-up Date</th>
+                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Status</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach (var record in Model.OrderBy(r => r.FollowUpDate))
+                    {
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-4 py-4 text-sm font-mono font-bold text-slate-700">#@record.Id</td>
+                            <td class="px-4 py-4">
+                                <a asp-controller="Patient" asp-action="Details" asp-route-id="@record.PatientId"
+                                   class="text-sm font-semibold text-slate-900 hover:text-amber-600">@record.PatientName</a>
+                            </td>
+                            <td class="px-4 py-4 text-sm text-slate-600">@record.DoctorName</td>
+                            <td class="px-4 py-4 text-sm text-slate-900">@(record.Diagnosis ?? "—")</td>
+                            <td class="px-4 py-4 text-sm text-slate-600">@record.FollowUpDate?.ToString("yyyy-MM-dd")</td>
+                            <td class="px-4 py-4">
+                                @if (record.FollowUpDate < DateTime.Today)
+                                {
+                                    <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-bold bg-red-50 text-red-700">Overdue</span>
+                                }
+                                else if (record.FollowUpDate <= DateTime.Today.AddDays(7))
+                                {
+                                    <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-bold bg-amber-50 text-amber-700">Soon</span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-bold bg-green-50 text-green-700">Upcoming</span>
+                                }
+                            </td>
+                            <td class="px-4 py-4">
+                                <div class="flex items-center justify-end gap-3">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@record.Id"
+                                       class="inline-flex items-center gap-1 text-sm font-bold text-sky-600 hover:text-sky-700">
+                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        View
+                                    </a>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@record.Id"
+                                       class="inline-flex items-center gap-1 text-sm font-bold text-amber-600 hover:text-amber-700">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        Edit
+                                    </a>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="p-10 text-center">
+                <span class="material-symbols-outlined text-5xl text-slate-300">schedule</span>
+                <p class="mt-3 text-sm font-semibold text-slate-500">No upcoming follow-ups found.</p>
+            </div>
+        }
+    </div>
+</div>

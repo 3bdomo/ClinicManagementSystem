@@ -14,7 +14,7 @@ namespace BLL.Interfaces
         Task<OperationResult<IEnumerable<ProcedureDto>>> GetByMedicalRecordAsync(int medicalRecordId);
         Task<OperationResult<IEnumerable<ProcedureDto>>> GetByPatientAsync(int patientId);
  
-        // Procedure Types
+        
         Task<OperationResult<IEnumerable<ProcedureTypeDto>>> GetAllTypesAsync();
         Task<OperationResult<IEnumerable<ProcedureTypeDto>>> GetActiveTypesAsync();
         Task<OperationResult<ProcedureTypeDto>> GetTypeByIdAsync(int id);

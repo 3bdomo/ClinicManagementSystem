@@ -2,8 +2,11 @@ using Common.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Web.ViewModel;
+
 public class MedicalRecordFormViewModel
 {
     public int Id { get; set; }
@@ -12,6 +15,11 @@ public class MedicalRecordFormViewModel
     public string? Notes { get; set; }
     public DateTime? FollowUpDate { get; set; }
     public byte[]? RowVersion { get; set; }
-    public IEnumerable<IFormFile> NewAttachments { get; set; } = [];
-    public IEnumerable<SelectListItem> Appointments { get; set; } = [];
+
+    public int? DoctorId { get; set; }
+    public DateTime? VisitedDate { get; set; }
+
+    public IEnumerable<IFormFile> NewAttachments { get; set; } = Enumerable.Empty<IFormFile>();
+    public int? PatientId { get; set; }
+    public IEnumerable<SelectListItem> Appointments { get; set; } = Enumerable.Empty<SelectListItem>();
 }

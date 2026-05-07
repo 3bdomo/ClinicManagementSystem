@@ -5,10 +5,6 @@ using ClinicSystem.DAL.Models;
 using Common.Enums;
 using Common.Results;
 using DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BLL.Services
 {
@@ -23,278 +19,394 @@ namespace BLL.Services
             _mapper = mapper;
         }
 
+
         public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetAllAsync()
         {
-            var appointments = await _unitOfWork.Appointments.GetAllAsync(1, int.MaxValue);
-            var mapped = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
-            return OperationResult<IEnumerable<AppointmentDto>>.Success(mapped);
+            var appointments = await _unitOfWork.Appointments.GetAllAsync();
+
+            var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+
+            return OperationResult<IEnumerable<AppointmentDto>>.Success(dtos);
         }
 
-        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetAllAsync(
+            int pageNumber,
+            int pageSize)
         {
             var appointments = await _unitOfWork.Appointments.GetAllAsync(pageNumber, pageSize);
-            var mapped = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
-            return OperationResult<IEnumerable<AppointmentDto>>.Success(mapped);
+
+            var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+
+            return OperationResult<IEnumerable<AppointmentDto>>.Success(dtos);
         }
 
         public async Task<OperationResult<AppointmentDto>> GetByIdAsync(int id)
         {
-            var appointment = await _unitOfWork.Appointments.GetByIdAsync(id);
-            if (appointment == null)
-                return OperationResult<AppointmentDto>.Failure("Appointment not found");
+            var appointment = await _unitOfWork.Appointments.GetFullAsync(id);
 
-            var mapped = _mapper.Map<AppointmentDto>(appointment);
-            return OperationResult<AppointmentDto>.Success(mapped);
+            if (appointment == null)
+                return OperationResult<AppointmentDto>.Failure("Appointment not found.");
+
+            var dto = _mapper.Map<AppointmentDto>(appointment);
+
+            return OperationResult<AppointmentDto>.Success(dto);
         }
 
-        public async Task<OperationResult<int>> CreateAsync(AppointmentDto appointmentDto)
+        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetByDateAsync(DateTime date)
         {
-            // --- FIX: Validate appointment date is in the future ---
-            if (appointmentDto.AppointmentDate <= DateTime.Now)
+            var appointments = await _unitOfWork.Appointments.GetByDateAsync(date);
+
+            var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+
+            return OperationResult<IEnumerable<AppointmentDto>>.Success(dtos);
+        }
+
+        public async Task<OperationResult<IEnumerable<AppointmentHistoryDto>>> GetPatientHistoryAsync(
+            int patientId)
+        {
+            var appointments = await _unitOfWork.Appointments.GetByPatientAsync(patientId);
+
+            var dtos = _mapper.Map<IEnumerable<AppointmentHistoryDto>>(appointments);
+
+            return OperationResult<IEnumerable<AppointmentHistoryDto>>.Success(dtos);
+        }
+
+        public async Task<OperationResult<IEnumerable<AppointmentHistoryDto>>> GetDoctorHistoryAsync(
+            int doctorId,
+            int pageNumber,
+            int pageSize)
+        {
+            var appointments = await _unitOfWork.Appointments.GetByDoctorAsync(
+                doctorId,
+                pageNumber,
+                pageSize);
+
+            var dtos = _mapper.Map<IEnumerable<AppointmentHistoryDto>>(appointments);
+
+            return OperationResult<IEnumerable<AppointmentHistoryDto>>.Success(dtos);
+        }
+
+        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetDoctorAppointmentsAsync(
+            int doctorId)
+        {
+            var appointments = await _unitOfWork.Appointments.GetByDoctorAsync(doctorId);
+
+            var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+
+            return OperationResult<IEnumerable<AppointmentDto>>.Success(dtos);
+        }
+
+        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetDoctorAppointmentsByDateAsync(
+            int doctorId,
+            DateTime date)
+        {
+            var appointments = await _unitOfWork.Appointments.GetByDoctorAndDateAsync(
+                doctorId,
+                date);
+
+            var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+
+            return OperationResult<IEnumerable<AppointmentDto>>.Success(dtos);
+        }
+
+        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetAppointmentsByStatusAsync(
+            AppointmentStatus status)
+        {
+            var appointments = await _unitOfWork.Appointments.FindAsync(a => a.Status == status);
+
+            var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+
+            return OperationResult<IEnumerable<AppointmentDto>>.Success(dtos);
+        }
+
+        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetAppointmentsByTypeAsync(
+            AppointmentType type)
+        {
+            var appointments = await _unitOfWork.Appointments.FindAsync(a => a.AppointmentType == type);
+
+            var dtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+
+            return OperationResult<IEnumerable<AppointmentDto>>.Success(dtos);
+        }
+
+
+        public async Task<OperationResult<int>> CreateAsync(CreateAppointmentDto dto)
+        {
+            if (dto.AppointmentDate <= DateTime.Now)
                 return OperationResult<int>.Failure("Appointment date must be in the future.");
 
-            var isConflict = await _unitOfWork.Appointments.HasConflictAsync(
-                appointmentDto.DoctorId,
-                appointmentDto.AppointmentDate,
-                appointmentDto.DurationMinutes);
+            var doctor = await _unitOfWork.Doctors.GetByIdAsync(dto.DoctorId);
+            if (doctor is null || !doctor.IsAvailable)
+                return OperationResult<int>.Failure("Doctor not found or unavailable.");
 
-            if (isConflict)
-                return OperationResult<int>.Failure("There is a conflict with another appointment.");
+            var patient = await _unitOfWork.Patients.GetByIdAsync(dto.PatientId);
+            if (patient is null)
+                return OperationResult<int>.Failure("Patient not found.");
 
-            var appointment = _mapper.Map<Appointment>(appointmentDto);
+            var scheduleType = dto.AppointmentType == AppointmentType.Surgery
+                ? ScheduleType.Surgery
+                : ScheduleType.Consultation;
+
+            var schedule = await _unitOfWork.DoctorSchedules.GetScheduleForSlotAsync(
+                dto.DoctorId,
+                dto.AppointmentDate,
+                scheduleType);
+
+            if (schedule is null || !schedule.IsActive)
+                return OperationResult<int>.Failure(
+                    "Selected slot is outside doctor's active schedule.");
+
+          
+            
+            
+            
+            
+            dto.DurationMinutes = schedule.SlotMinutes;
+            dto.DoctorScheduleId = schedule.Id;
+
+            var slotEnd = dto.AppointmentDate.AddMinutes(dto.DurationMinutes);
+            var scheduleEnd = dto.AppointmentDate.Date + schedule.EndTime.ToTimeSpan();
+
+            if (slotEnd > scheduleEnd)
+                return OperationResult<int>.Failure(
+                    "Selected appointment duration exceeds schedule end time.");
+
+            var hasConflict = await _unitOfWork.Appointments.HasConflictAsync(
+                dto.DoctorId,
+                dto.AppointmentDate,
+                dto.DurationMinutes);
+
+            if (hasConflict)
+                return OperationResult<int>.Failure(
+                    "This time slot is no longer available.");
+
+            var appointment = _mapper.Map<Appointment>(dto);
+
             appointment.Status = AppointmentStatus.Waiting;
+            appointment.DoctorScheduleId = schedule.Id;
+            appointment.DurationMinutes = schedule.SlotMinutes;
 
             await _unitOfWork.Appointments.AddAsync(appointment);
             await _unitOfWork.SaveChangesAsync();
 
-            return OperationResult<int>.Success(appointment.Id);
+            return OperationResult<int>.Success(
+                appointment.Id,
+                "Appointment booked successfully.");
         }
 
-        public async Task<OperationResult> UpdateAsync(AppointmentDto appointmentDto)
+
+        public async Task<OperationResult> UpdateAsync(UpdateAppointmentDto dto)
         {
-            var existing = await _unitOfWork.Appointments.GetByIdAsync(appointmentDto.Id);
+            var existing = await _unitOfWork.Appointments.GetByIdAsync(dto.Id);
+
             if (existing == null)
-                return OperationResult.Failure("Appointment not found");
+                return OperationResult.Failure("Appointment not found.");
 
-            if (existing.Status == AppointmentStatus.Completed || existing.Status == AppointmentStatus.Cancelled)
-                return OperationResult.Failure($"Cannot update an appointment with status '{existing.Status}'.");
-
-            bool dateOrDoctorChanged =
-                existing.DoctorId != appointmentDto.DoctorId ||
-                existing.AppointmentDate != appointmentDto.AppointmentDate ||
-                existing.DurationMinutes != appointmentDto.DurationMinutes;
-
-            if (dateOrDoctorChanged)
+            if (existing.Status == AppointmentStatus.Completed ||
+                existing.Status == AppointmentStatus.Cancelled)
             {
+                return OperationResult.Failure(
+                    $"Cannot update an appointment with status '{existing.Status}'.");
+            }
+
+            if (dto.AppointmentDate <= DateTime.Now)
+                return OperationResult.Failure("Appointment date must be in the future.");
+
+            var scheduleChanged =
+                existing.AppointmentDate != dto.AppointmentDate ||
+                existing.DurationMinutes != dto.DurationMinutes;
+
+            if (scheduleChanged)
+            {
+                var scheduleType = existing.AppointmentType == AppointmentType.Surgery
+                    ? ScheduleType.Surgery
+                    : ScheduleType.Consultation;
+
+                var schedule = await _unitOfWork.DoctorSchedules.GetScheduleForSlotAsync(
+                    existing.DoctorId,
+                    dto.AppointmentDate,
+                    scheduleType);
+
+                if (schedule is null || !schedule.IsActive)
+                    return OperationResult.Failure(
+                        "Selected slot is outside doctor's active schedule.");
+
+                var durationMinutes = schedule.SlotMinutes;
+
+                var slotEnd = dto.AppointmentDate.AddMinutes(durationMinutes);
+                var scheduleEnd = dto.AppointmentDate.Date + schedule.EndTime.ToTimeSpan();
+
+                if (slotEnd > scheduleEnd)
+                    return OperationResult.Failure(
+                        "Selected appointment duration exceeds schedule end time.");
+
                 var isAvailable = await IsTimeSlotAvailableAsync(
-                    appointmentDto.DoctorId,
-                    appointmentDto.AppointmentDate,
-                    appointmentDto.DurationMinutes,
+                    existing.DoctorId,
+                    dto.AppointmentDate,
+                    durationMinutes,
                     excludeAppointmentId: existing.Id);
 
                 if (!isAvailable)
-                    return OperationResult.Failure("There is a scheduling conflict with another appointment.");
+                    return OperationResult.Failure(
+                        "The new time slot conflicts with another appointment.");
+
+                existing.DoctorScheduleId = schedule.Id;
+                existing.DurationMinutes = durationMinutes;
             }
 
-            existing.DoctorId = appointmentDto.DoctorId;
-            existing.PatientId = appointmentDto.PatientId;
-            existing.AppointmentDate = appointmentDto.AppointmentDate;
-            existing.DurationMinutes = appointmentDto.DurationMinutes;
-            existing.Notes = appointmentDto.Notes;
+            existing.AppointmentDate = dto.AppointmentDate;
+            existing.Notes = dto.Notes;
 
             _unitOfWork.Appointments.Update(existing);
             await _unitOfWork.SaveChangesAsync();
 
-            return OperationResult.Success();
+            return OperationResult.Success("Appointment updated successfully.");
         }
+
 
         public async Task<OperationResult> DeleteAsync(int id)
         {
             var appointment = await _unitOfWork.Appointments.GetByIdAsync(id);
-            if (appointment == null)
-                return OperationResult.Failure("Appointment not found");
 
-            if (appointment.Status == AppointmentStatus.InProgress)
-                return OperationResult.Failure("Cannot delete an appointment that is currently in progress.");
+            if (appointment == null)
+                return OperationResult.Failure("Appointment not found.");
+
+            if (appointment.Status == AppointmentStatus.InProgress ||
+                appointment.Status == AppointmentStatus.Completed)
+            {
+                return OperationResult.Failure(
+                    "Cannot delete an active or completed appointment. Use cancel instead.");
+            }
 
             _unitOfWork.Appointments.Delete(appointment);
             await _unitOfWork.SaveChangesAsync();
 
-            return OperationResult.Success();
+            return OperationResult.Success("Appointment deleted.");
         }
 
-        public async Task<OperationResult<IEnumerable<AppointmentHistoryDto>>> GetPatientHistoryAsync(int patientId)
-        {
-            var appointments = await _unitOfWork.Appointments.GetByPatientAsync(patientId);
-            var mapped = _mapper.Map<IEnumerable<AppointmentHistoryDto>>(appointments);
-            return OperationResult<IEnumerable<AppointmentHistoryDto>>.Success(mapped);
-        }
-
-        public async Task<OperationResult<IEnumerable<AppointmentHistoryDto>>> GetDoctorHistoryAsync(int doctorId, int pageNumber, int pageSize)
-        {
-            var appointments = await _unitOfWork.Appointments.GetByDoctorAsync(doctorId, pageNumber, pageSize);
-            var mapped = _mapper.Map<IEnumerable<AppointmentHistoryDto>>(appointments);
-            return OperationResult<IEnumerable<AppointmentHistoryDto>>.Success(mapped);
-        }
-
-        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetDoctorAppointmentsAsync(int doctorId)
-        {
-            var appointments = await _unitOfWork.Appointments.GetByDoctorAsync(doctorId);
-            var mapped = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
-            return OperationResult<IEnumerable<AppointmentDto>>.Success(mapped);
-        }
-
-        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetDoctorAppointmentsByDateAsync(int doctorId, DateTime date)
-        {
-            var appointments = await _unitOfWork.Appointments.GetByDoctorAndDateAsync(doctorId, date);
-            var mapped = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
-            return OperationResult<IEnumerable<AppointmentDto>>.Success(mapped);
-        }
-
-        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetAppointmentsByStatusAsync(AppointmentStatus status)
-        {
-            var appointments = await _unitOfWork.Appointments.FindAsync(a => a.Status == status);
-            var mapped = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
-            return OperationResult<IEnumerable<AppointmentDto>>.Success(mapped);
-        }
-
-        public async Task<OperationResult<IEnumerable<AppointmentDto>>> GetAppointmentsByTypeAsync(AppointmentType type)
-        {
-            var appointments = await _unitOfWork.Appointments.FindAsync(a => a.AppointmentType == type);
-            var mapped = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
-            return OperationResult<IEnumerable<AppointmentDto>>.Success(mapped);
-        }
 
         public async Task<OperationResult> StartAppointmentAsync(int id)
         {
             var appointment = await _unitOfWork.Appointments.GetByIdAsync(id);
+
             if (appointment == null)
-                return OperationResult.Failure("Appointment not found");
+                return OperationResult.Failure("Appointment not found.");
 
             if (appointment.Status != AppointmentStatus.Waiting)
-                return OperationResult.Failure($"Cannot start an appointment with status '{appointment.Status}'. Only 'Waiting' appointments can be started.");
+                return OperationResult.Failure(
+                    "Only waiting appointments can be started.");
 
             appointment.Status = AppointmentStatus.InProgress;
+
             _unitOfWork.Appointments.Update(appointment);
             await _unitOfWork.SaveChangesAsync();
 
-            return OperationResult.Success();
+            return OperationResult.Success("Appointment started successfully.");
         }
 
         public async Task<OperationResult> CompleteAppointmentAsync(int id)
         {
             var appointment = await _unitOfWork.Appointments.GetByIdAsync(id);
+
             if (appointment == null)
-                return OperationResult.Failure("Appointment not found");
+                return OperationResult.Failure("Appointment not found.");
 
             if (appointment.Status != AppointmentStatus.InProgress)
-                return OperationResult.Failure($"Cannot complete an appointment with status '{appointment.Status}'. Only 'InProgress' appointments can be completed.");
+                return OperationResult.Failure(
+                    "Only in-progress appointments can be completed.");
 
             appointment.Status = AppointmentStatus.Completed;
+
             _unitOfWork.Appointments.Update(appointment);
             await _unitOfWork.SaveChangesAsync();
 
-            return OperationResult.Success();
+            return OperationResult.Success("Appointment completed successfully.");
         }
 
-        public async Task<OperationResult> CancelAppointmentAsync(int id, string? cancellationReason = null)
+        public async Task<OperationResult> CancelAppointmentAsync(
+            int id,
+            string? cancellationReason = null)
         {
             var appointment = await _unitOfWork.Appointments.GetByIdAsync(id);
+
             if (appointment == null)
-                return OperationResult.Failure("Appointment not found");
+                return OperationResult.Failure("Appointment not found.");
 
             if (appointment.Status == AppointmentStatus.Completed)
-                return OperationResult.Failure("Cannot cancel an appointment that has already been completed.");
+                return OperationResult.Failure(
+                    "Cannot cancel a completed appointment.");
 
             if (appointment.Status == AppointmentStatus.Cancelled)
-                return OperationResult.Failure("Appointment is already cancelled.");
+                return OperationResult.Failure(
+                    "Appointment is already cancelled.");
 
             appointment.Status = AppointmentStatus.Cancelled;
-
-            if (!string.IsNullOrWhiteSpace(cancellationReason))
-            {
-                appointment.Notes = string.IsNullOrEmpty(appointment.Notes)
-                    ? $"Cancellation Reason: {cancellationReason}"
-                    : $"{appointment.Notes}\nCancellation Reason: {cancellationReason}";
-            }
+            appointment.CancellationReason = cancellationReason;
 
             _unitOfWork.Appointments.Update(appointment);
             await _unitOfWork.SaveChangesAsync();
 
-            return OperationResult.Success();
+            return OperationResult.Success("Appointment cancelled successfully.");
         }
 
-        public async Task<bool> IsTimeSlotAvailableAsync(int doctorId, DateTime appointmentDate, int durationMinutes, int? excludeAppointmentId = null)
+
+        public async Task<bool> IsTimeSlotAvailableAsync(
+            int doctorId,
+            DateTime appointmentDate,
+            int durationMinutes,
+            int? excludeAppointmentId = null)
         {
-            var apps = await _unitOfWork.Appointments.GetByDoctorAndDateAsync(doctorId, appointmentDate.Date);
-            var endTime = appointmentDate.AddMinutes(durationMinutes);
+            var existingAppointments =
+                await _unitOfWork.Appointments.GetByDoctorAndDateAsync(
+                    doctorId,
+                    appointmentDate.Date);
 
-            foreach (var a in apps)
+            var newEnd = appointmentDate.AddMinutes(durationMinutes);
+
+            foreach (var appointment in existingAppointments)
             {
-                if (excludeAppointmentId.HasValue && a.Id == excludeAppointmentId.Value)
+                if (excludeAppointmentId.HasValue &&
+                    appointment.Id == excludeAppointmentId.Value)
+                {
                     continue;
+                }
 
-                if (a.Status == AppointmentStatus.Cancelled || a.Status == AppointmentStatus.Completed)
+                if (appointment.Status == AppointmentStatus.Cancelled ||
+                    appointment.Status == AppointmentStatus.Completed)
+                {
                     continue;
+                }
 
-                var aEnd = a.AppointmentDate.AddMinutes(a.DurationMinutes);
-                if (appointmentDate < aEnd && endTime > a.AppointmentDate)
+                var existingStart = appointment.AppointmentDate;
+                var existingEnd = existingStart.AddMinutes(appointment.DurationMinutes);
+
+                var overlaps =
+                    existingStart < newEnd &&
+                    existingEnd > appointmentDate;
+
+                if (overlaps)
                     return false;
             }
 
             return true;
         }
 
-        public async Task<OperationResult<IEnumerable<DateTime>>> GetAvailableSlotsAsync(int doctorId, DateTime date, int slotDurationMinutes = 30)
+        public async Task<bool> HasConflictingAppointmentsAsync(
+            int doctorId,
+            DateTime startDate,
+            DateTime endDate)
         {
-            var slots = new List<DateTime>();
-            var startTime = date.Date.AddHours(9);
-            var endTime = date.Date.AddHours(17);
+            var durationMinutes = (int)(endDate - startDate).TotalMinutes;
 
-            var existingAppointments = await _unitOfWork.Appointments.GetByDoctorAndDateAsync(doctorId, date);
-
-            var activeAppointments = existingAppointments
-                .Where(a => a.Status != AppointmentStatus.Cancelled && a.Status != AppointmentStatus.Completed)
-                .ToList();
-
-            while (startTime.AddMinutes(slotDurationMinutes) <= endTime)
-            {
-                var slotEnd = startTime.AddMinutes(slotDurationMinutes);
-                var isAvailable = !activeAppointments.Any(a =>
-                    startTime < a.AppointmentDate.AddMinutes(a.DurationMinutes) &&
-                    slotEnd > a.AppointmentDate);
-
-                if (isAvailable)
-                    slots.Add(startTime);
-
-                startTime = startTime.AddMinutes(slotDurationMinutes);
-            }
-
-            return OperationResult<IEnumerable<DateTime>>.Success(slots);
-        }
-
-        public Task<OperationResult<IEnumerable<AppointmentDto>>> GetDeletedAsync()
-        {
-            return Task.FromResult(
-                OperationResult<IEnumerable<AppointmentDto>>.Failure("Soft-delete is not supported for Appointments."));
-        }
-
-        public Task<OperationResult> RestoreAsync(int id)
-        {
-            return Task.FromResult(
-                OperationResult.Failure("Restore functionality is not supported for Appointments."));
+            return await _unitOfWork.Appointments.HasConflictAsync(
+                doctorId,
+                startDate,
+                durationMinutes);
         }
 
         public async Task<int> GetTodayAppointmentsCountAsync()
         {
-            var apps = await _unitOfWork.Appointments.GetTodayAsync();
-            return apps.Count();
-        }
-
-        public async Task<bool> HasConflictingAppointmentsAsync(int doctorId, DateTime startDate, DateTime endDate)
-        {
-            var duration = (int)(endDate - startDate).TotalMinutes;
-            return await _unitOfWork.Appointments.HasConflictAsync(doctorId, startDate, duration);
+            return await _unitOfWork.Appointments.GetTodayCountAsync();
         }
     }
 }

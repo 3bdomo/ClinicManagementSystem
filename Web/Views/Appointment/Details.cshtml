@@ -1,0 +1,356 @@
+@model Web.ViewModels.Appointment.AppointmentDetailsViewModel
+@using Common.Enums
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Appointment Details";
+
+    var culture = CultureInfo.InvariantCulture;
+
+    var statusClasses = GetStatusBadgeClasses(Model.Status);
+    var typeClasses = GetTypeBadgeClasses(Model.AppointmentType);
+}
+
+@* ── Page Header ────────────────────────────────────────────── *@
+<div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+
+    <div>
+        <p class="text-sm text-slate-500">
+            Review appointment information and available actions.
+        </p>
+    </div>
+
+    <a asp-action="Index"
+       asp-route-date="@Model.AppointmentDate.ToString("yyyy-MM-dd")"
+       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        Back to Appointments
+    </a>
+
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+    @* Main details *@
+    <div class="xl:col-span-8 space-y-6">
+
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+
+            <div class="p-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-xl font-black text-slate-900">
+                        Appointment #@Model.Id
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1">
+                        @Model.AppointmentDate.ToString("dddd, MMM dd, yyyy - hh:mm tt", culture)
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="@statusClasses">
+                        @SplitPascal(Model.Status.ToString())
+                    </span>
+
+                    <span class="@typeClasses">
+                        @SplitPascal(Model.AppointmentType.ToString())
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+                    <div class="rounded-2xl bg-slate-50 border border-slate-100 p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-blue-600">person</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black uppercase tracking-wider text-slate-400">
+                                    Patient
+                                </p>
+                                <p class="font-black text-slate-900">
+                                    @Model.PatientName
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl bg-slate-50 border border-slate-100 p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-emerald-600">stethoscope</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black uppercase tracking-wider text-slate-400">
+                                    Doctor
+                                </p>
+                                <p class="font-black text-slate-900">
+                                    @Model.DoctorName
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+                    <div class="rounded-2xl border border-slate-200 p-5">
+                        <p class="text-xs font-black uppercase tracking-wider text-slate-400 mb-1">
+                            Date
+                        </p>
+                        <p class="font-bold text-slate-900">
+                            @Model.AppointmentDate.ToString("MMM dd, yyyy", culture)
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 p-5">
+                        <p class="text-xs font-black uppercase tracking-wider text-slate-400 mb-1">
+                            Time
+                        </p>
+                        <p class="font-bold text-slate-900">
+                            @Model.AppointmentDate.ToString("hh:mm tt", culture)
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 p-5">
+                        <p class="text-xs font-black uppercase tracking-wider text-slate-400 mb-1">
+                            Duration
+                        </p>
+                        <p class="font-bold text-slate-900">
+                            @Model.DurationMinutes minutes
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="rounded-2xl border border-slate-200 p-5 mb-6">
+                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">
+                        Notes
+                    </p>
+
+                    @if (string.IsNullOrWhiteSpace(Model.Notes))
+                    {
+                        <p class="text-sm text-slate-400">No notes were added.</p>
+                    }
+                    else
+                    {
+                        <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+                            @Model.Notes
+                        </p>
+                    }
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <div class="rounded-2xl border border-slate-200 p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-black uppercase tracking-wider text-slate-400">
+                                Medical Record
+                            </p>
+                            <p class="text-sm font-bold mt-1 @(Model.HasMedicalRecord ? "text-emerald-700" : "text-slate-500")">
+                                @(Model.HasMedicalRecord ? "Available" : "Not created")
+                            </p>
+                        </div>
+
+                        <span class="material-symbols-outlined @(Model.HasMedicalRecord ? "text-emerald-600" : "text-slate-300")">
+                            clinical_notes
+                        </span>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-black uppercase tracking-wider text-slate-400">
+                                Invoice
+                            </p>
+                            <p class="text-sm font-bold mt-1 @(Model.HasInvoice ? "text-blue-700" : "text-slate-500")">
+                                @(Model.HasInvoice ? "Available" : "Not created")
+                            </p>
+                        </div>
+
+                        <span class="material-symbols-outlined @(Model.HasInvoice ? "text-blue-600" : "text-slate-300")">
+                            receipt_long
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    @* Actions panel *@
+    <div class="xl:col-span-4">
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 sticky top-28">
+
+            <h3 class="text-lg font-black text-slate-900 mb-2">
+                Available Actions
+            </h3>
+
+            <p class="text-sm text-slate-500 mb-6">
+                Actions are shown based on your role and appointment status.
+            </p>
+
+            <div class="space-y-3">
+
+                @if (Model.CanEdit)
+                {
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">edit_calendar</span>
+                        Edit Appointment
+                    </a>
+                }
+
+                @if (Model.CanCancel)
+                {
+                    <a asp-action="Cancel"
+                       asp-route-id="@Model.Id"
+                       class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-red-200 text-red-600 text-sm font-bold hover:bg-red-50 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">event_busy</span>
+                        Cancel Appointment
+                    </a>
+                }
+
+                @if (Model.CanStart)
+                {
+                    <form asp-action="Start"
+                          asp-route-id="@Model.Id"
+                          method="post">
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">play_circle</span>
+                            Start Appointment
+                        </button>
+                    </form>
+                }
+
+                @if (Model.CanComplete)
+                {
+                    <form asp-action="Complete"
+                          asp-route-id="@Model.Id"
+                          method="post">
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            Complete Appointment
+                        </button>
+                    </form>
+                }
+
+                @if (Model.CanDelete)
+                {
+                    <form asp-action="Delete"
+                          asp-route-id="@Model.Id"
+                          method="post"
+                          onsubmit="return confirm('Are you sure you want to permanently delete this appointment?');">
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-red-300 text-red-700 text-sm font-bold hover:bg-red-50 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                            Delete Permanently
+                        </button>
+                    </form>
+                }
+
+                @if (!Model.CanEdit &&
+                     !Model.CanCancel &&
+                     !Model.CanStart &&
+                     !Model.CanComplete &&
+                     !Model.CanDelete)
+                {
+                    <div class="rounded-2xl bg-slate-50 border border-slate-100 p-5 text-center">
+                        <span class="material-symbols-outlined text-slate-300 block mb-2"
+                              style="font-size:36px">
+                            lock
+                        </span>
+                        <p class="text-sm font-semibold text-slate-500">
+                            No actions are currently available.
+                        </p>
+                    </div>
+                }
+
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-slate-100">
+                <a asp-action="Index"
+                   asp-route-date="@Model.AppointmentDate.ToString("yyyy-MM-dd")"
+                   class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                    Back to Day Schedule
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@functions {
+    // Converts "InProgress" to "In Progress"
+    private static string SplitPascal(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return value;
+
+        var result = "";
+
+        for (var i = 0; i < value.Length; i++)
+        {
+            if (i > 0 && char.IsUpper(value[i]))
+                result += " ";
+
+            result += value[i];
+        }
+
+        return result;
+    }
+
+    // Static classes are safer with Tailwind CDN.
+    private static string GetStatusBadgeClasses(AppointmentStatus status)
+    {
+        return status switch
+        {
+            AppointmentStatus.Waiting =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700",
+
+            AppointmentStatus.InProgress =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700",
+
+            AppointmentStatus.Completed =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700",
+
+            AppointmentStatus.Cancelled =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700",
+
+            _ =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600"
+        };
+    }
+
+    private static string GetTypeBadgeClasses(AppointmentType type)
+    {
+        return type switch
+        {
+            AppointmentType.Surgery =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-700",
+
+            AppointmentType.Consultation =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700",
+
+            _ =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600"
+        };
+    }
+}

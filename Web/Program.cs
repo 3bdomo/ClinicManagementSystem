@@ -34,7 +34,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDalServices(connectionString);
-// Identity
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -44,7 +44,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<DAL.Context.ClinicDbContext>()
 .AddDefaultTokenProviders();
 
-// Cookie 
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -56,8 +56,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddBllServices();
 builder.Services.AddAutoMapper(
-    typeof(ClinicSystem.BLL.Mapping.MappingProfile).Assembly,  // BLL profiles
-    typeof(WebMappingProfile).Assembly                          // Web profiles
+    typeof(ClinicSystem.BLL.Mapping.MappingProfile).Assembly,  
+    typeof(WebMappingProfile).Assembly                          
 );
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
@@ -78,7 +78,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// 5. Middleware Pipeline
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (!app.Environment.IsDevelopment())

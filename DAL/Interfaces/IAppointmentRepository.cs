@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ClinicSystem.DAL.Models;
-namespace DAL.Interfaces
+using Common.Enums;
+
+namespace DAL.Interfaces;
+
+public interface IAppointmentRepository : IGenericRepository<Appointment>
 {
-    public interface IAppointmentRepository: IGenericRepository<Appointment>
-    {
-        Task<IEnumerable<Appointment>> GetByDoctorAsync(int doctorId);
-        Task<IEnumerable<Appointment>> GetByDoctorAsync(int doctorId, int pageNumber, int pageSize);
-        Task<IEnumerable<Appointment>> GetByDoctorAndDateAsync(int doctorId, DateTime date);
-        Task<IEnumerable<Appointment>> GetByPatientAsync(int patientId);
-        Task<IEnumerable<Appointment>> GetTodayAsync();
+    Task<IEnumerable<Appointment>> GetByDoctorAndDateAsync(int doctorId, DateTime date);
+    Task<IEnumerable<Appointment>> GetByPatientAsync(int patientId);
+    Task<IEnumerable<Appointment>> GetTodayAsync();
+    new Task<IEnumerable<Appointment>> GetAllAsync();
 
-        Task<bool> HasConflictAsync(int doctorId, DateTime slotStart, int durationMinutes);
+    Task<bool> HasConflictAsync(int doctorId, DateTime slotStart, int durationMinutes);
 
-    }
+    Task<IEnumerable<Appointment>> GetByDoctorAsync(int doctorId);
+    Task<IEnumerable<Appointment>> GetByDoctorAsync(int doctorId, int pageNumber, int pageSize);
+
+    Task<Appointment?> GetFullAsync(int id);
+
+    Task<IEnumerable<Appointment>> GetByDateAsync(DateTime date);
+
+    Task<int> GetTodayCountAsync();
 }

@@ -3,6 +3,7 @@ using BLL.DTOs.User;
 using BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,6 +50,7 @@ namespace Web.Controllers
 
         public IActionResult Create()
         {
+            ViewBag.BloodTypes = GetBloodTypes();
             return View(new CreateUserViewModel());
         }
 
@@ -57,7 +59,10 @@ namespace Web.Controllers
         public async Task<IActionResult> Create(CreateUserViewModel vm)
         {
             if (!ModelState.IsValid)
+            {
+                ViewBag.BloodTypes = GetBloodTypes();
                 return View(vm);
+            }
 
             var dto = _mapper.Map<CreateUserDto>(vm);
             var result = await _userService.CreateAsync(dto);
@@ -159,6 +164,20 @@ namespace Web.Controllers
                 TempData["ErrorMessage"] = result.Message;
             }
             return RedirectToAction(nameof(Index));
+        }
+        private List<SelectListItem> GetBloodTypes()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem { Text = "A+", Value = "A+" },
+                new SelectListItem { Text = "A-", Value = "A-" },
+                new SelectListItem { Text = "B+", Value = "B+" },
+                new SelectListItem { Text = "B-", Value = "B-" },
+                new SelectListItem { Text = "AB+", Value = "AB+" },
+                new SelectListItem { Text = "AB-", Value = "AB-" },
+                new SelectListItem { Text = "O+", Value = "O+" },
+                new SelectListItem { Text = "O-", Value = "O-" }
+            };
         }
     }
 }

@@ -12,13 +12,13 @@ public class MedicalRecord : IAuditable
     public DateTime VisitDate { get; set; }
     public DateTime? FollowUpDate { get; set; }
 
-    // IAuditable
+    
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    // Navigation Properties
+    
     public Patient Patient { get; set; } = null!;
     public Doctor Doctor { get; set; } = null!;
     public Appointment Appointment { get; set; } = null!;

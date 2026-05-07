@@ -17,10 +17,10 @@ public static class DbSeeder
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-        // Ensure database is created/migrated
-        await context.Database.MigrateAsync();
+        
+        
 
-        // 1. Seed Roles
+        
         string[] roles = { "Admin", "Doctor", "Receptionist", "Patient" };
         foreach (var role in roles)
         {
@@ -30,7 +30,7 @@ public static class DbSeeder
             }
         }
 
-        // 2. Seed Admin User
+        
         var adminEmail = "admin@clinic.com";
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
@@ -52,7 +52,7 @@ public static class DbSeeder
             }
         }
 
-        // 3. Seed Doctors
+        
         if (!context.Doctors.Any())
         {
             var doctorUser = new ApplicationUser
@@ -80,7 +80,7 @@ public static class DbSeeder
             }
         }
 
-        // 4. Seed Receptionist
+        
         if (!context.Receptionists.Any())
         {
             var recUser = new ApplicationUser
@@ -106,7 +106,7 @@ public static class DbSeeder
             }
         }
 
-        // 5. Seed Procedure Types
+        
         if (!context.ProcedureTypes.Any())
         {
             context.ProcedureTypes.AddRange(
@@ -118,7 +118,7 @@ public static class DbSeeder
 
         await context.SaveChangesAsync();
 
-        // 6. Seed Patients
+        
         if (!context.Patients.Any())
         {
             var patientUser = new ApplicationUser
@@ -146,17 +146,17 @@ public static class DbSeeder
                     CreatedAt = DateTime.UtcNow
                 });
             }
-            await context.SaveChangesAsync(); // Save to generate IDs
+            await context.SaveChangesAsync(); 
         }
 
-        // Fetch needed records for relations
+        
         var doctor = await context.Doctors.FirstOrDefaultAsync(d => d.FullName == "Dr. Ahmed Ali");
         var patient = await context.Patients.FirstOrDefaultAsync(p => p.FullName == "Sara Tarek");
         var procType = await context.ProcedureTypes.FirstOrDefaultAsync(p => p.Name == "Consultation");
 
         if (doctor != null && patient != null)
         {
-            // 7. Seed Doctor Schedule
+            
             if (!context.DoctorSchedules.Any())
             {
                 context.DoctorSchedules.Add(new DoctorSchedule
@@ -173,7 +173,7 @@ public static class DbSeeder
                 await context.SaveChangesAsync();
             }
 
-            // 8. Seed Appointment
+            
             if (!context.Appointments.Any())
             {
                 var schedule = await context.DoctorSchedules.FirstOrDefaultAsync();
@@ -182,16 +182,29 @@ public static class DbSeeder
                     PatientId = patient.Id,
                     DoctorId = doctor.Id,
                     DoctorScheduleId = schedule?.Id,
-                    AppointmentDate = DateTime.Today.AddHours(10), // Today at 10 AM
+                    AppointmentDate = DateTime.Today.AddHours(10), 
                     DurationMinutes = 30,
                     AppointmentType = AppointmentType.Consultation,
                     Status = AppointmentStatus.Completed,
                     CreatedAt = DateTime.UtcNow
                 });
+                
+                context.Appointments.Add(new Appointment
+                {
+                    PatientId = patient.Id,
+                    DoctorId = doctor.Id,
+                    DoctorScheduleId = schedule?.Id,
+                    AppointmentDate = DateTime.Today.AddHours(14), 
+                    DurationMinutes = 30,
+                    AppointmentType = AppointmentType.Consultation,
+                    Status = AppointmentStatus.Completed,
+                    CreatedAt = DateTime.UtcNow
+                });
+                
                 await context.SaveChangesAsync();
             }
 
-            // 9. Seed Medical Record
+            
             if (!context.MedicalRecords.Any())
             {
                 var appointment = await context.Appointments.FirstOrDefaultAsync();
@@ -227,7 +240,7 @@ public static class DbSeeder
                 }
             }
 
-            // 10. Seed Invoice
+            
             if (!context.Invoices.Any())
             {
                 var appointment = await context.Appointments.FirstOrDefaultAsync();

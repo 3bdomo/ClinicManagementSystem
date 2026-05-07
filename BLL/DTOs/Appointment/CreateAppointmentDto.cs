@@ -3,26 +3,26 @@ using Common.Enums;
 
 namespace BLL.DTOs.Appointment
 {
-
     public class CreateAppointmentDto
     {
-        [Required(ErrorMessage = "DoctorId is required.")]
+        [Required(ErrorMessage = "Doctor is required.")]
         public int DoctorId { get; set; }
 
-        [Required(ErrorMessage = "PatientId is required.")]
+        [Required(ErrorMessage = "Patient is required.")]
         public int PatientId { get; set; }
 
         public int? DoctorScheduleId { get; set; }
 
-        [Required(ErrorMessage = "AppointmentDate is required.")]
+        [Required(ErrorMessage = "Appointment date is required.")]
         public DateTime AppointmentDate { get; set; }
 
-        [Required(ErrorMessage = "DurationMinutes is required.")]
-        [Range(15, 45, ErrorMessage = "DurationMinutes must be between 15 and 45 minutes.")]   
+       
+        [Required(ErrorMessage = "Duration is required.")]
+        [Range(1, 480, ErrorMessage = "Duration must be greater than zero.")]
         public int DurationMinutes { get; set; }
 
-        [Required(ErrorMessage = "Type is required.")]
-        public AppointmentType Type { get; set; }
+        [Required(ErrorMessage = "Appointment type is required.")]
+        public AppointmentType AppointmentType { get; set; }
 
         [StringLength(500, ErrorMessage = "Notes must be at most 500 characters long.")]
         public string? Notes { get; set; }

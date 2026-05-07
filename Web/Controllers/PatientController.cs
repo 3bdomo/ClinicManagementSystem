@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Web.ViewModel;
 
 namespace Web.Controllers
@@ -42,6 +43,7 @@ namespace Web.Controllers
         [Authorize(Roles = "Admin,Receptionist,Doctor")]
         public IActionResult Create()
         {
+            ViewBag.BloodTypes = GetBloodTypes();
             return View(new PatientFormViewModel());
         }
 
@@ -51,7 +53,10 @@ namespace Web.Controllers
         public async Task<IActionResult> Create(PatientFormViewModel vm)
         {
             if (!ModelState.IsValid)
+            {
+                ViewBag.BloodTypes = GetBloodTypes();
                 return View(vm);
+            }
 
             var dto = _mapper.Map<PatientDto>(vm);
             var result = await _patientService.CreateAsync(dto);
@@ -62,6 +67,7 @@ namespace Web.Controllers
             }
             
             ModelState.AddModelError(string.Empty, result.Message);
+            ViewBag.BloodTypes = GetBloodTypes();
             return View(vm);
         }
 
@@ -73,6 +79,7 @@ namespace Web.Controllers
                 return NotFound();
 
             var vm = _mapper.Map<PatientFormViewModel>(result.Data);
+            ViewBag.BloodTypes = GetBloodTypes();
             return View(vm);
         }
 
@@ -82,7 +89,10 @@ namespace Web.Controllers
         public async Task<IActionResult> Edit(PatientFormViewModel vm)
         {
             if (!ModelState.IsValid)
+            {
+                ViewBag.BloodTypes = GetBloodTypes();
                 return View(vm);
+            }
 
             var dto = _mapper.Map<PatientDto>(vm);
             var result = await _patientService.UpdateAsync(dto);
@@ -93,6 +103,7 @@ namespace Web.Controllers
             }
 
             ModelState.AddModelError(string.Empty, result.Message);
+            ViewBag.BloodTypes = GetBloodTypes();
             return View(vm);
         }
 
@@ -164,11 +175,25 @@ namespace Web.Controllers
             var result = await _patientAccountService.GetMyProfileAsync(userId);
             if (result.IsSuccess)
             {
-                // We use PatientDetailsViewModel since MyProfile represents exactly that data
                 var vm = _mapper.Map<PatientDetailsViewModel>(result.Data);
                 return View(vm);
             }
             return NotFound(result.Message);
+        }
+
+        private List<SelectListItem> GetBloodTypes()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem { Text = "A+", Value = "A+" },
+                new SelectListItem { Text = "A-", Value = "A-" },
+                new SelectListItem { Text = "B+", Value = "B+" },
+                new SelectListItem { Text = "B-", Value = "B-" },
+                new SelectListItem { Text = "AB+", Value = "AB+" },
+                new SelectListItem { Text = "AB-", Value = "AB-" },
+                new SelectListItem { Text = "O+", Value = "O+" },
+                new SelectListItem { Text = "O-", Value = "O-" }
+            };
         }
     }
 }

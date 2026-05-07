@@ -6,11 +6,11 @@ using Web.ViewModels.Receptionist;
 
 namespace Web.Controllers;
 
-/// <summary>
-/// Manages receptionist profiles — Admin only.
-/// Create / Delete go through UserController (same pattern as Doctor).
-/// </summary>
-//[Authorize(Roles = "Admin")]
+
+
+
+
+[Authorize(Roles = "Admin")]
 public class ReceptionistController : Controller
 {
     private readonly IReceptionistService _receptionistService;
@@ -20,15 +20,15 @@ public class ReceptionistController : Controller
         _receptionistService = receptionistService;
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // INDEX  —  GET /Receptionist
-    // ══════════════════════════════════════════════════════════════
+    
+    
+    
 
     public async Task<IActionResult> Index()
     {
         var result = await _receptionistService.GetAllAsync();
 
-        // Service never returns null Data on success, but guard anyway
+        
         var vm = new ReceptionistListViewModel
         {
             Receptionists = result.Data ?? Enumerable.Empty<ReceptionistDto>()
@@ -37,13 +37,13 @@ public class ReceptionistController : Controller
         return View(vm);
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // DETAILS  —  GET /Receptionist/Details/{id}
-    // ══════════════════════════════════════════════════════════════
+    
+    
+    
 
     public async Task<IActionResult> Details(int id)
     {
-        // Basic route guard — service also validates, but fail fast
+        
         if (id <= 0)
         {
             TempData["Error"] = "Invalid receptionist ID.";
@@ -64,9 +64,9 @@ public class ReceptionistController : Controller
         });
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // EDIT  —  GET /Receptionist/Edit/{id}
-    // ══════════════════════════════════════════════════════════════
+    
+    
+    
 
     public async Task<IActionResult> Edit(int id)
     {
@@ -90,21 +90,21 @@ public class ReceptionistController : Controller
         {
             Id = data.Id,
             FullName = data.FullName,
-            Email = data.Email,       // display-only, not bound on POST
+            Email = data.Email,       
             PhoneNumber = data.PhoneNumber,
             IsActive = data.IsActive
         });
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // EDIT  —  POST /Receptionist/Edit/{id}
-    // ══════════════════════════════════════════════════════════════
+    
+    
+    
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, ReceptionistFormViewModel vm)
     {
-        // Ensure route id matches posted Id (prevent tampering)
+        
         if (id != vm.Id)
         {
             TempData["Error"] = "Request mismatch. Please try again.";
@@ -114,7 +114,7 @@ public class ReceptionistController : Controller
         if (!ModelState.IsValid)
             return View(vm);
 
-        // Trim whitespace before sending to service
+        
         vm.FullName = vm.FullName.Trim();
         vm.PhoneNumber = string.IsNullOrWhiteSpace(vm.PhoneNumber)
                          ? null
@@ -136,14 +136,14 @@ public class ReceptionistController : Controller
             return RedirectToAction(nameof(Details), new { id = vm.Id });
         }
 
-        // Service-level error (e.g. DB failure) — show on same form
+        
         TempData["Error"] = result.Message;
         return View(vm);
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // TOGGLE ACTIVE  —  POST /Receptionist/ToggleActive/{id}
-    // ══════════════════════════════════════════════════════════════
+    
+    
+    
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -158,7 +158,7 @@ public class ReceptionistController : Controller
         var result = await _receptionistService.ToggleActiveAsync(id);
         TempData[result.IsSuccess ? "Success" : "Error"] = result.Message;
 
-        // Return to Details if toggled from there, otherwise Index
+        
         return returnTo == "Details"
             ? RedirectToAction(nameof(Details), new { id })
             : RedirectToAction(nameof(Index));

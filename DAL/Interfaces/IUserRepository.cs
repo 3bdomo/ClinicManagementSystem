@@ -15,5 +15,5 @@ public interface IUserRepository
     Task<ApplicationUser?> UpdateAsync(ApplicationUser user);
     Task DeleteAsync(ApplicationUser user);
     Task<IEnumerable<ApplicationUser>> GetActiveAsync();
+    Task<string?> GetFullNameAsync(string id);
 }
-

@@ -15,13 +15,16 @@ public class Appointment : IAuditable
     public AppointmentStatus Status { get; set; } = AppointmentStatus.Waiting;
     public string? Notes { get; set; }
 
-    // IAuditable
+    
+    public string? CancellationReason { get; set; }
+
+    
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    // Navigation Properties
+    
     public Patient Patient { get; set; } = null!;
     public Doctor Doctor { get; set; } = null!;
     public DoctorSchedule? DoctorSchedule { get; set; }

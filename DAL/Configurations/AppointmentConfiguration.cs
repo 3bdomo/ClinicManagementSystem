@@ -47,6 +47,9 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
             .HasForeignKey<Invoice>(i => i.AppointmentId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.Property(a => a.CancellationReason)
+    .HasMaxLength(500);
+
         builder.Property(a => a.CreatedBy).HasMaxLength(45);
         builder.Property(a => a.UpdatedBy).HasMaxLength(45);
     }

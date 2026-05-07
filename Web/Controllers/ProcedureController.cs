@@ -28,7 +28,7 @@ namespace Web.Controllers
             {
                 viewModel.Types = _mapper.Map<IEnumerable<ProcedureTypeFormViewModel>>(typesResult.Data);
                 viewModel.ActiveTypesCount = typesResult.Data.Count(t => t.IsActive);
-                viewModel.TotalProceduresToday = 0; // Populate properly if you have Dashboard metrics
+                viewModel.TotalProceduresToday = 0; 
                 viewModel.TotalRevenueToday = 0;
             }
 

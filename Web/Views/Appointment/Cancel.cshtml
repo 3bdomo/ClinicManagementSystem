@@ -1,0 +1,157 @@
+@model Web.ViewModels.Appointment.CancelAppointmentViewModel
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Cancel Appointment";
+    var culture = CultureInfo.InvariantCulture;
+}
+
+@* ── Page Header ─────────────────────────────────────────────── *@
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-black text-slate-900">Cancel Appointment</h1>
+        <p class="text-sm text-slate-500 mt-1">
+            Please review the details before confirming cancellation.
+        </p>
+    </div>
+    <a asp-action="Details" asp-route-id="@Model.AppointmentId"
+       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        Back to Details
+    </a>
+</div>
+
+<div class="max-w-2xl mx-auto space-y-5">
+
+    @* ── Warning banner ───────────────────────────────────────── *@
+    <div class="bg-red-50 border border-red-200 rounded-2xl p-5">
+        <div class="flex gap-3">
+            <span class="material-symbols-outlined text-red-500 text-[24px] mt-0.5 flex-shrink-0">
+                warning
+            </span>
+            <div>
+                <p class="text-sm font-black text-red-700">
+                    You are about to cancel this appointment.
+                </p>
+                <p class="text-sm text-red-600 mt-1">
+                    This action cannot be undone. The appointment will be marked as
+                    <strong>Cancelled</strong> and cannot be resumed.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @* ── Appointment summary card ─────────────────────────────── *@
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+
+        <div class="p-5 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900">Appointment Summary</h3>
+        </div>
+
+        <div class="p-5 space-y-0">
+
+            <div class="flex items-center justify-between py-3 border-b border-slate-100">
+                <div class="flex items-center gap-2 text-sm text-slate-500">
+                    <span class="material-symbols-outlined text-[18px] text-slate-400">person</span>
+                    Patient
+                </div>
+                <span class="text-sm font-black text-slate-900">@Model.PatientName</span>
+            </div>
+
+            <div class="flex items-center justify-between py-3 border-b border-slate-100">
+                <div class="flex items-center gap-2 text-sm text-slate-500">
+                    <span class="material-symbols-outlined text-[18px] text-slate-400">stethoscope</span>
+                    Doctor
+                </div>
+                <span class="text-sm font-black text-slate-900">@Model.DoctorName</span>
+            </div>
+
+            <div class="flex items-center justify-between py-3">
+                <div class="flex items-center gap-2 text-sm text-slate-500">
+                    <span class="material-symbols-outlined text-[18px] text-slate-400">calendar_month</span>
+                    Date &amp; Time
+                </div>
+                <span class="text-sm font-black text-slate-900">
+                    @Model.AppointmentDate.ToString("dddd, MMM dd, yyyy", culture)
+                    &nbsp;·&nbsp;
+                    @Model.AppointmentDate.ToString("hh:mm tt", culture)
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    @* ── Cancellation form ────────────────────────────────────── *@
+    <form asp-action="Cancel" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="AppointmentId" />
+
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+
+            <div class="p-5 border-b border-slate-100">
+                <h3 class="text-base font-black text-slate-900">Cancellation Reason</h3>
+                <p class="text-sm text-slate-500 mt-1">
+                    Providing a reason helps keep records clear. (Optional)
+                </p>
+            </div>
+
+            <div class="p-5">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700 font-semibold"></div>
+
+                <textarea asp-for="CancellationReason"
+                          rows="4"
+                          placeholder="e.g. Patient requested reschedule, emergency, etc."
+                          class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent transition-all"></textarea>
+
+                <div class="flex items-center justify-between mt-2">
+                    <span asp-validation-for="CancellationReason"
+                          class="text-xs text-red-600"></span>
+                    <p class="text-xs text-slate-400 ml-auto">
+                        <span id="reasonCount">0</span> / 500
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        @* ── Action buttons ───────────────────────────────────── *@
+        <div class="flex flex-wrap items-center justify-between gap-3 mt-5">
+
+            <a asp-action="Details" asp-route-id="@Model.AppointmentId"
+               class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Keep Appointment
+            </a>
+
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-red-600 text-white text-sm font-bold hover:bg-red-700 transition-colors"
+                    onclick="return confirm('Are you sure you want to cancel this appointment? This cannot be undone.')">
+                <span class="material-symbols-outlined text-[18px]">event_busy</span>
+                Cancel Appointment
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const textarea  = document.querySelector("textarea[name='CancellationReason']");
+            const counter   = document.getElementById("reasonCount");
+
+            function update() {
+                counter.textContent = textarea.value.length;
+            }
+            update();
+            textarea.addEventListener("input", update);
+        });
+    </script>
+}

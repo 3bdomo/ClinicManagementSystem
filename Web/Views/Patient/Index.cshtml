@@ -31,7 +31,7 @@
                 </label>
                 <input id="SearchQuery" name="SearchQuery" value="@Model.SearchQuery" type="search"
                        class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600"
-                       placeholder="Ahmed, 29901011234567, 010..." />
+                        />
             </div>
             <button class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800" type="submit">
                 <span class="material-symbols-outlined text-[18px]">search</span>
@@ -95,6 +95,11 @@
                                            class="rounded-lg px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-100">
                                             Edit
                                         </a>
+                                        <form asp-action="Delete" asp-route-id="@p.Id" method="post" onsubmit="return confirm('Delete patient @p.FullName? This will also remove their portal account.')">
+                                            <button type="submit" class="rounded-lg px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50">
+                                                Delete
+                                            </button>
+                                        </form>
                                     }
                                 </div>
                             </td>

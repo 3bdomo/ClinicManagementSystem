@@ -36,8 +36,11 @@ namespace DAL.Repositories
 
         public async Task<DoctorSchedule?> GetScheduleForSlotAsync(int doctorId, DateTime dateTime, ScheduleType type)
         {
+            // Lookup schedule for the given date (either specific date or weekly day)
+            // Note: caller (GetAvailableSlotsAsync) passes the date (time may be midnight),
+            // so do not require the time-of-day to be within StartTime/EndTime here —
+            // we'll use StartTime/EndTime later when generating slots.
             var dateOnly = DateOnly.FromDateTime(dateTime);
-            var timeOnly = TimeOnly.FromDateTime(dateTime);
             var dayOfWeek = dateTime.DayOfWeek;
 
             return await _dbSet
@@ -47,8 +50,8 @@ namespace DAL.Repositories
                                 (ds.SpecificDate.HasValue && ds.SpecificDate.Value == dateOnly)
                              || (ds.DayOfWeek.HasValue && ds.DayOfWeek.Value == dayOfWeek)
                              )
-                          && ds.StartTime <= timeOnly
-                          && ds.EndTime > timeOnly)
+                          && ds.IsActive)
+                .OrderBy(ds => ds.StartTime)
                 .FirstOrDefaultAsync();
         }
 
