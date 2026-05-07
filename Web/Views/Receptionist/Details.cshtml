@@ -3,11 +3,23 @@
     ViewData["Title"] = "Receptionist Details";
     var r = Model.Receptionist;
 
-    // Build avatar initials from first two words
     var initials = string.Concat(
         r.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                   .Take(2).Select(w => w[0])
     ).ToUpper();
+
+    // Returns null if the value looks like a raw GUID (no spaces, 36 chars with dashes)
+    static string? DisplayAuditName(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        if (System.Text.RegularExpressions.Regex.IsMatch(value.Trim(),
+            @"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
+            return null;
+        return value;
+    }
+
+    var createdByDisplay = DisplayAuditName(r.CreatedBy);
+    var updatedByDisplay = DisplayAuditName(r.UpdatedBy);
 }
 
 @* Breadcrumb *@
@@ -66,38 +78,30 @@
                 @if (r.IsActive)
                 {
                     <span class="mt-3 inline-flex items-center gap-1 px-3 py-1
-                                     rounded-full text-xs font-bold
-                                     bg-emerald-50 text-emerald-700">
+                                     rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
                         ● Active
                     </span>
                 }
                 else
                 {
                     <span class="mt-3 inline-flex items-center gap-1 px-3 py-1
-                                     rounded-full text-xs font-bold
-                                     bg-slate-100 text-slate-500">
+                                     rounded-full text-xs font-bold bg-slate-100 text-slate-500">
                         ● Inactive
                     </span>
                 }
             </div>
 
-            @* Info rows *@
+            @* Info rows — NO User ID row *@
             <div class="divide-y divide-slate-50">
 
                 @* Email *@
                 <div class="flex items-center gap-3 px-5 py-3.5">
-                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center
-                                justify-center flex-shrink-0">
-                        <span class="material-symbols-outlined text-blue-600 text-[18px]">
-                            mail
-                        </span>
+                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-blue-600 text-[18px]">mail</span>
                     </div>
                     <div class="overflow-hidden">
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                            Email
-                        </p>
-                        <p class="text-sm font-semibold text-slate-900 truncate"
-                           title="@r.Email">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Email</p>
+                        <p class="text-sm font-semibold text-slate-900 truncate" title="@r.Email">
                             @(r.Email ?? "—")
                         </p>
                     </div>
@@ -105,56 +109,23 @@
 
                 @* Phone *@
                 <div class="flex items-center gap-3 px-5 py-3.5">
-                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center
-                                justify-center flex-shrink-0">
-                        <span class="material-symbols-outlined text-blue-600 text-[18px]">
-                            call
-                        </span>
+                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-blue-600 text-[18px]">call</span>
                     </div>
                     <div>
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                            Phone
-                        </p>
-                        <p class="text-sm font-semibold text-slate-900">
-                            @(r.PhoneNumber ?? "—")
-                        </p>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Phone</p>
+                        <p class="text-sm font-semibold text-slate-900">@(r.PhoneNumber ?? "—")</p>
                     </div>
                 </div>
 
                 @* Joined *@
                 <div class="flex items-center gap-3 px-5 py-3.5">
-                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center
-                                justify-center flex-shrink-0">
-                        <span class="material-symbols-outlined text-blue-600 text-[18px]">
-                            calendar_today
-                        </span>
+                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-blue-600 text-[18px]">calendar_today</span>
                     </div>
                     <div>
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                            Joined
-                        </p>
-                        <p class="text-sm font-semibold text-slate-900">
-                            @r.CreatedAt.ToString("MMMM dd, yyyy")
-                        </p>
-                    </div>
-                </div>
-
-                @* User ID *@
-                <div class="flex items-center gap-3 px-5 py-3.5">
-                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center
-                                justify-center flex-shrink-0">
-                        <span class="material-symbols-outlined text-blue-600 text-[18px]">
-                            fingerprint
-                        </span>
-                    </div>
-                    <div class="overflow-hidden">
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                            User ID
-                        </p>
-                        <p class="text-xs font-mono text-slate-400 truncate"
-                           title="@r.ApplicationUserId">
-                            @r.ApplicationUserId
-                        </p>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Joined</p>
+                        <p class="text-sm font-semibold text-slate-900">@r.CreatedAt.ToString("MMMM dd, yyyy")</p>
                     </div>
                 </div>
 
@@ -165,46 +136,73 @@
     @* ── Right col (3/5) — Audit + Quick Actions ─────────── *@
     <div class="col-span-3 flex flex-col gap-5">
 
-        @* Audit info — using _AuditInfo partial pattern but with real data *@
+        @* Audit info *@
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
             <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-                <span class="material-symbols-outlined text-slate-400 text-[20px]">
-                    history
-                </span>
+                <span class="material-symbols-outlined text-slate-400 text-[20px]">history</span>
                 <span class="font-bold text-slate-900">Audit Information</span>
             </div>
             <div class="divide-y divide-slate-50 text-sm">
-                <div class="flex justify-between px-5 py-3.5">
-                    <span class="text-slate-400 font-semibold">Created by</span>
-                    <span class="text-slate-900 font-semibold text-right">
-                        @(r.CreatedBy ?? "—")
-                        <span class="block text-xs text-slate-400 font-normal">
+
+                @* Created by — only show row if we have a readable name *@
+                @if (createdByDisplay != null)
+                {
+                    <div class="flex justify-between px-5 py-3.5">
+                        <span class="text-slate-400 font-semibold">Created by</span>
+                        <span class="text-slate-900 font-semibold text-right">
+                            @createdByDisplay
+                            <span class="block text-xs text-slate-400 font-normal">
+                                @r.CreatedAt.ToString("MMM dd, yyyy · hh:mm tt")
+                            </span>
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    @* Show date only *@
+                    <div class="flex justify-between px-5 py-3.5">
+                        <span class="text-slate-400 font-semibold">Created</span>
+                        <span class="text-slate-900 font-semibold">
                             @r.CreatedAt.ToString("MMM dd, yyyy · hh:mm tt")
                         </span>
-                    </span>
-                </div>
-                <div class="flex justify-between px-5 py-3.5">
-                    <span class="text-slate-400 font-semibold">Last updated by</span>
-                    <span class="text-slate-900 font-semibold text-right">
-                        @(r.UpdatedBy ?? "—")
-                        @if (r.UpdatedAt.HasValue)
-                        {
+                    </div>
+                }
+
+                @* Last updated by — only show row if we have a readable name *@
+                @if (updatedByDisplay != null && r.UpdatedAt.HasValue)
+                {
+                    <div class="flex justify-between px-5 py-3.5">
+                        <span class="text-slate-400 font-semibold">Last updated by</span>
+                        <span class="text-slate-900 font-semibold text-right">
+                            @updatedByDisplay
                             <span class="block text-xs text-slate-400 font-normal">
-                                @r.UpdatedAt.Value.ToString("MMM dd, yyyy · hh:mm tt")
+                                @r.UpdatedAt!.Value.ToString("MMM dd, yyyy · hh:mm tt")
                             </span>
-                        }
-                    </span>
-                </div>
+                        </span>
+                    </div>
+                }
+                else if (r.UpdatedAt.HasValue)
+                {
+                    <div class="flex justify-between px-5 py-3.5">
+                        <span class="text-slate-400 font-semibold">Last updated</span>
+                        <span class="text-slate-900 font-semibold">
+                            @r.UpdatedAt!.Value.ToString("MMM dd, yyyy · hh:mm tt")
+                        </span>
+                    </div>
+                }
+
                 <div class="flex justify-between px-5 py-3.5">
                     <span class="text-slate-400 font-semibold">Account status</span>
                     <span class="font-bold @(r.IsActive ? "text-emerald-600" : "text-slate-400")">
                         @(r.IsActive ? "Active" : "Inactive")
                     </span>
                 </div>
+
                 <div class="flex justify-between px-5 py-3.5">
                     <span class="text-slate-400 font-semibold">Role</span>
                     <span class="text-slate-900 font-semibold">Receptionist</span>
                 </div>
+
             </div>
         </div>
 
@@ -215,30 +213,23 @@
             </div>
             <div class="p-4 flex flex-col gap-2">
 
-                @* Edit profile *@
                 <a asp-action="Edit" asp-route-id="@r.Id"
                    class="flex items-center gap-3 px-4 py-3 rounded-xl
                           border border-slate-200 text-slate-700 text-sm font-semibold
                           hover:bg-slate-50 transition-colors">
-                    <span class="material-symbols-outlined text-[20px] text-slate-400">
-                        edit
-                    </span>
+                    <span class="material-symbols-outlined text-[20px] text-slate-400">edit</span>
                     Edit Profile
                 </a>
 
-                @* Reset password — routes to UserController with ApplicationUserId *@
                 <a asp-controller="User" asp-action="ResetPassword"
                    asp-route-id="@r.ApplicationUserId"
                    class="flex items-center gap-3 px-4 py-3 rounded-xl
                           border border-slate-200 text-slate-700 text-sm font-semibold
                           hover:bg-slate-50 transition-colors">
-                    <span class="material-symbols-outlined text-[20px] text-slate-400">
-                        key
-                    </span>
+                    <span class="material-symbols-outlined text-[20px] text-slate-400">key</span>
                     Reset Password
                 </a>
 
-                @* Toggle active *@
                 <form asp-action="ToggleActive" asp-route-id="@r.Id" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="returnTo" value="Details" />

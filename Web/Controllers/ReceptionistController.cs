@@ -10,7 +10,7 @@ namespace Web.Controllers;
 
 
 
-
+[Authorize(Roles = "Admin")]
 public class ReceptionistController : Controller
 {
     private readonly IReceptionistService _receptionistService;
