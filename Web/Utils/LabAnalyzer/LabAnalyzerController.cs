@@ -117,7 +117,7 @@ Return your response STRICTLY as valid JSON with NO text before or after. Follow
 
             var apiKey = _config["GeminiApiKey"];
             
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={apiKey}";
             var requestBody = new
             {
                 contents = new[]

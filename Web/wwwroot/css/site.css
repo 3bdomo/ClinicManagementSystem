@@ -13,3 +13,21 @@ body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",san
 .clinic-card{background:white;border:1px solid var(--clinic-border);border-radius:1rem;box-shadow:0 10px 30px rgba(15,23,42,.06)}
 .clinic-btn-primary{background:#1a73e8;color:white;border-radius:.75rem;padding:.75rem 1rem;font-weight:800}
 .clinic-input{width:100%;border:1px solid #c1c6d6;border-radius:.75rem;padding:.75rem 1rem;background:white}
+
+/* Validation styles */
+.input-validation-error {
+    border-color: #dc2626 !important;
+    border-width: 2px !important;
+}
+.input-validation-error:focus {
+    border-color: #dc2626 !important;
+    --tw-ring-color: #dc2626 !important;
+    outline: none;
+}
+.field-validation-error {
+    color: #dc2626;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    display: block;
+}

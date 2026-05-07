@@ -1,22 +1,28 @@
 using BLL.DTOs.Doctor;
 using BLL.DTOs.Patient;
 using BLL.Interfaces;
+using DAL.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Web.ViewModel;
+using Web.ViewModel.Doctor;
 
 [Authorize]
 public class DoctorController : Controller
 {
     private readonly IDoctorService _doctorService;
     private readonly IDoctorScheduleService _scheduleService;
+    private readonly ClinicDbContext _context;
 
     public DoctorController(
         IDoctorService doctorService,
-        IDoctorScheduleService scheduleService)
+        IDoctorScheduleService scheduleService,
+        ClinicDbContext context)
     {
         _doctorService = doctorService;
         _scheduleService = scheduleService;
+        _context = context;
     }
 
     
@@ -55,7 +61,66 @@ public class DoctorController : Controller
         return View(vm);
     }
 
-    
+
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<IActionResult> TopDoctorsByPatients()
+    {
+        var appointmentLinks = await _context.Appointments
+            .Select(a => new
+            {
+                a.DoctorId,
+                a.PatientId
+            })
+            .ToListAsync();
+
+        var medicalRecordLinks = await _context.MedicalRecords
+            .Select(m => new
+            {
+                m.DoctorId,
+                m.PatientId
+            })
+            .ToListAsync();
+
+        var topStats = appointmentLinks
+            .Concat(medicalRecordLinks)
+            .Distinct()
+            .GroupBy(x => x.DoctorId)
+            .Select(g => new
+            {
+                DoctorId = g.Key,
+                PatientsCount = g.Count()
+            })
+            .OrderByDescending(x => x.PatientsCount)
+            .Take(10)
+            .ToList();
+
+        var doctorIds = topStats.Select(x => x.DoctorId).ToList();
+
+        var doctors = await _context.Doctors
+            .Where(d => doctorIds.Contains(d.Id))
+            .ToListAsync();
+
+        var model = topStats
+            .Join(
+                doctors,
+                stat => stat.DoctorId,
+                doctor => doctor.Id,
+                (stat, doctor) => new TopDoctorPatientsViewModel
+                {
+                    DoctorId = doctor.Id,
+                    DoctorName = doctor.FullName ?? string.Empty,
+                    Specialization = doctor.Specialization.ToString(),
+                    Phone = doctor.Phone,
+                    ConsultationFee = doctor.ConsultationFee,
+                    PatientsCount = stat.PatientsCount
+                })
+            .ToList();
+
+        return View("~/Views/Doctor/TopDoctorsByPatients.cshtml", model);
+    }
+
+    // ─── Details ──────────────────────────────────────────────────────────────
 
     [HttpGet]
     public async Task<IActionResult> Details(int? id)

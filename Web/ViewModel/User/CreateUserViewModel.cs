@@ -8,6 +8,9 @@ public class CreateUserViewModel
 {
     [Required] public string FullName { get; set; } = string.Empty;
     [Required, EmailAddress] public string Email { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Phone number is required")]
+    [StringLength(11, MinimumLength = 11, ErrorMessage = "Phone number must be exactly 11 digits")]
+    [RegularExpression(@"^\d{11}$", ErrorMessage = "Phone number must be numeric")]
     public string? PhoneNumber { get; set; }
     [Required, DataType(DataType.Password)] public string Password { get; set; } = string.Empty;
     [Compare(nameof(Password)), DataType(DataType.Password)] public string ConfirmPassword { get; set; } = string.Empty;
@@ -17,7 +20,10 @@ public class CreateUserViewModel
     public string? Bio { get; set; }
 
     
-    [Display(Name = "National ID")] public string? NationalId { get; set; }
+    [Display(Name = "National ID")] 
+    [StringLength(14, MinimumLength = 14, ErrorMessage = "National ID must be exactly 14 digits")]
+    [RegularExpression(@"^\d{14}$", ErrorMessage = "National ID must be numeric")]
+    public string? NationalId { get; set; }
     [Display(Name = "Date of Birth")] [DataType(DataType.Date)] public DateOnly? DateOfBirth { get; set; }
     public Gender? Gender { get; set; }
     public string? Address { get; set; }
