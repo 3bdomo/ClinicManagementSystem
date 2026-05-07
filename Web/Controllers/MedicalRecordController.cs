@@ -82,6 +82,13 @@ public class MedicalRecordController : Controller
                 Notes = r.Notes
             },
 
+            AuditInfo = new AuditInfoViewModel
+            {
+                CreatedAt = r.CreatedAt,
+                CreatedByName = r.CreatedBy,
+                UpdatedAt = r.UpdatedAt,
+                UpdatedByName = r.UpdatedBy
+            },
             
             CanEdit = true
         };
@@ -97,6 +104,13 @@ public class MedicalRecordController : Controller
             Appointments = await GetPatientAppointmentsAsync(patientId)
         };
 
+        await PopulatePatientsListAsync();
+
+        return View(vm);
+    }
+
+    private async Task PopulatePatientsListAsync()
+    {
         var patientsList = new List<PatientDto>();
         var activeRes = await _patientService.GetAllAsync();
         if (activeRes.IsSuccess && activeRes.Data != null)
@@ -107,8 +121,6 @@ public class MedicalRecordController : Controller
             patientsList.AddRange(deletedRes.Data);
 
         ViewBag.Patients = patientsList.OrderBy(p => p.FullName).ToList();
-
-        return View(vm);
     }
     
     [HttpPost]
@@ -118,6 +130,7 @@ public class MedicalRecordController : Controller
         if (!ModelState.IsValid)
         {
             vm.Appointments = await GetPatientAppointmentsAsync(vm.PatientId);
+            await PopulatePatientsListAsync();
             return View(vm);
         }
 
@@ -126,6 +139,7 @@ public class MedicalRecordController : Controller
         {
             ModelState.AddModelError(string.Empty, "Appointment not found.");
             vm.Appointments = await GetPatientAppointmentsAsync(vm.PatientId);
+            await PopulatePatientsListAsync();
             return View(vm);
         }
 
@@ -147,6 +161,7 @@ public class MedicalRecordController : Controller
         {
             ModelState.AddModelError(string.Empty, result.Message);
             vm.Appointments = await GetPatientAppointmentsAsync(vm.PatientId);
+            await PopulatePatientsListAsync();
             return View(vm);
         }
         TempData["Success"] = "Medical record created successfully.";

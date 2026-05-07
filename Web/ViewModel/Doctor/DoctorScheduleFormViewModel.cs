@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
-using Web.Validation;
 
 namespace Web.ViewModel;
 public class DoctorScheduleFormViewModel : IValidatableObject
@@ -13,11 +12,9 @@ public class DoctorScheduleFormViewModel : IValidatableObject
     public string? DoctorName { get; set; }
     [Required] public ScheduleType ScheduleType { get; set; }
     public DayOfWeek? DayOfWeek { get; set; }
-    [FutureDateOnly]
     public DateOnly? SpecificDate { get; set; }
     [Required] public TimeOnly StartTime { get; set; }
     [Required]
-    [EndTimeMatchesSlotMinutes(nameof(StartTime), nameof(SlotMinutes))]
     public TimeOnly EndTime { get; set; }
     [Range(5, 240)] public int SlotMinutes { get; set; } = 30;
     public bool IsActive { get; set; } = true;

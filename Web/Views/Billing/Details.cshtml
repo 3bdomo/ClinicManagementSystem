@@ -16,7 +16,7 @@
         </div>
         @if (inv.Status != Common.Enums.InvoiceStatus.Paid && (User.IsInRole("Admin") || User.IsInRole("Receptionist")))
         {
-            <form asp-action="MarkPaid" asp-route-id="@inv.Id" method="post" class="inline">
+            <form asp-action="MarkAsPaid" asp-route-id="@inv.Id" method="post" class="inline">
                 <button type="submit"
                         class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-emerald-700"
                         onclick="return confirm('Mark invoice #@inv.Id as paid?')">

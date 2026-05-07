@@ -238,44 +238,18 @@ public class BillingController : Controller
 
     
     [HttpGet]
-    public async Task<IActionResult> DailyReport()
+    public async Task<IActionResult> DailyReport(DateTime? SelectedDate)
     {
-        
-        var start = DateTime.Today.AddDays(-1); 
-        var end = DateTime.Today.AddDays(1).AddTicks(-1);
+        var date = SelectedDate ?? DateTime.Today;
+        var start = date.Date;
+        var end = date.Date.AddDays(1).AddTicks(-1);
 
         var result = await _billingService.GetStatisticsByDateRangeAsync(start, end);
         var stats = result.IsSuccess ? result.Data : new BillingStatisticsDto();
 
         var vm = new DailyReportViewModel
         {
-            SelectedDate = start,
-            TotalRevenue = stats.TotalRevenue,
-            TotalInvoices = stats.TotalInvoices,
-            PaidCount = stats.PaidInvoices,
-            UnpaidCount = stats.UnpaidInvoices,
-            UnpaidAmount = stats.UnpaidRevenue
-        };
-
-        ViewBag.From = start;
-        ViewBag.To = end;
-        return View(vm);
-    }
-
-    
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DailyReport(DateTime? from, DateTime? to)
-    {
-        var start = from ?? DateTime.Today.AddDays(-1);
-        var end = to ?? DateTime.Today.AddDays(1).AddTicks(-1);
-
-        var result = await _billingService.GetStatisticsByDateRangeAsync(start, end);
-        var stats = result.IsSuccess ? result.Data : new BillingStatisticsDto();
-
-        var vm = new DailyReportViewModel
-        {
-            SelectedDate = start,
+            SelectedDate = date,
             TotalRevenue = stats.TotalRevenue,
             TotalInvoices = stats.TotalInvoices,
             PaidCount = stats.PaidInvoices,
