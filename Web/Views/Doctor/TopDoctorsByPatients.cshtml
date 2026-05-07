@@ -1,0 +1,135 @@
+@using Web.ViewModel.Doctor
+@model IEnumerable<TopDoctorPatientsViewModel>
+
+@{
+    ViewData["Title"] = "Top Doctors By Patients";
+    var doctors = Model ?? Enumerable.Empty<TopDoctorPatientsViewModel>();
+    var rank = 1;
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@tabler/icons-webfont@@latest/tabler-icons.min.css" />
+
+<style>
+    .td-page { padding: 2.5rem 1.5rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .td-header-meta { font-size: 12px; font-weight: 500; color: #185fa5; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .td-header-title { font-size: 26px; font-weight: 500; color: #111; margin-bottom: 4px; }
+    .td-header-sub { font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+    .td-card { background: #fff; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    .td-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .td-table colgroup .col-rank  { width: 52px; }
+    .td-table colgroup .col-doc   { width: 220px; }
+    .td-table colgroup .col-spec  { width: 150px; }
+    .td-table colgroup .col-phone { width: 130px; }
+    .td-table colgroup .col-fee   { width: 110px; }
+    .td-table colgroup .col-pts   { width: 120px; }
+    .td-table thead th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 500; color: #6b7280; background: #f8f9fb; border-bottom: 0.5px solid rgba(0,0,0,0.10); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.04em; }
+    .td-table tbody tr { border-bottom: 0.5px solid rgba(0,0,0,0.07); transition: background 0.15s; }
+    .td-table tbody tr:last-child { border-bottom: none; }
+    .td-table tbody tr:hover { background: #f4f7fb; }
+    .td-table td { padding: 13px 14px; font-size: 13px; color: #111; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rank-badge { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; }
+    .rank-gold   { background: #FAEEDA; color: #633806; }
+    .rank-silver { background: #D3D1C7; color: #2C2C2A; }
+    .rank-bronze { background: #F5C4B3; color: #4A1B0C; }
+    .rank-norm   { background: #f1f3f5; color: #6b7280; }
+    .td-avatar { width: 34px; height: 34px; border-radius: 50%; background: #B5D4F4; color: #0C447C; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+    .doc-name { font-weight: 500; font-size: 13px; color: #111; }
+    .doc-id   { font-size: 11px; color: #9ca3af; }
+    .spec-pill { display: inline-block; padding: 2px 9px; border-radius: 999px; background: #E1F5EE; color: #085041; font-size: 11px; font-weight: 500; }
+    .pts-pill  { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #E6F1FB; color: #0C447C; font-size: 11px; font-weight: 500; }
+    .fee-val   { font-weight: 500; color: #374151; }
+    .phone-val { color: #6b7280; }
+    .td-empty  { text-align: center; padding: 3rem 1rem; color: #9ca3af; font-size: 13px; }
+    .td-empty i { font-size: 36px; display: block; margin-bottom: 8px; }
+    @@media (max-width: 640px) {
+        .td-table .col-phone, .td-table .col-fee { width: 0; }
+        .td-table .hide-sm { display: none; }
+    }
+</style>
+
+<div class="td-page">
+
+    <div class="td-header-meta">
+        <i class="ti ti-stethoscope" style="font-size:16px" aria-hidden="true"></i>
+        <span>Doctors ranking</span>
+    </div>
+    <h1 class="td-header-title">Top 10 doctors by patients</h1>
+    <p class="td-header-sub">Doctors ranked by number of unique patients.</p>
+
+    <div class="td-card">
+        <table class="td-table">
+            <colgroup>
+                <col class="col-rank" />
+                <col class="col-doc" />
+                <col class="col-spec" />
+                <col class="col-phone hide-sm" />
+                <col class="col-fee hide-sm" />
+                <col class="col-pts" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Doctor</th>
+                    <th>Specialization</th>
+                    <th class="hide-sm">Phone</th>
+                    <th class="hide-sm">Fee</th>
+                    <th>Patients</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!doctors.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="td-empty">
+                            <i class="ti ti-stethoscope" aria-hidden="true"></i>
+                            No doctor-patient data found.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var doctor in doctors)
+                    {
+                        var rankClass = rank switch
+                        {
+                            1 => "rank-badge rank-gold",
+                            2 => "rank-badge rank-silver",
+                            3 => "rank-badge rank-bronze",
+                            _ => "rank-badge rank-norm"
+                        };
+
+                        var initial = string.IsNullOrWhiteSpace(doctor.DoctorName)
+                            ? "D"
+                            : doctor.DoctorName.First().ToString().ToUpper();
+
+                        <tr>
+                            <td>
+                                <div class="@rankClass">@rank</div>
+                            </td>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <div class="td-avatar">@initial</div>
+                                    <div>
+                                        <div class="doc-name">@doctor.DoctorName</div>
+                                        <div class="doc-id">Doctor ID: @doctor.DoctorId</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="spec-pill">@doctor.Specialization</span></td>
+                            <td class="phone-val hide-sm">
+                                @(string.IsNullOrWhiteSpace(doctor.Phone) ? "—" : doctor.Phone)
+                            </td>
+                            <td class="fee-val hide-sm">
+                                @(doctor.ConsultationFee?.ToString("N0") ?? "0") EGP
+                            </td>
+                            <td><span class="pts-pill">@doctor.PatientsCount patient(s)</span></td>
+                        </tr>
+
+                        rank++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
