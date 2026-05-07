@@ -17,7 +17,6 @@ public class DoctorScheduleFormViewModel : IValidatableObject
     public DateOnly? SpecificDate { get; set; }
     [Required] public TimeOnly StartTime { get; set; }
     [Required]
-    [EndTimeMatchesSlotMinutes(nameof(StartTime), nameof(SlotMinutes))]
     public TimeOnly EndTime { get; set; }
     [Range(5, 240)] public int SlotMinutes { get; set; } = 30;
     public bool IsActive { get; set; } = true;
@@ -33,12 +32,7 @@ public class DoctorScheduleFormViewModel : IValidatableObject
                 [nameof(StartTime), nameof(EndTime)]);
         }
 
-        if (SlotMinutes > 0 && StartTime.AddMinutes(SlotMinutes) != EndTime)
-        {
-            yield return new ValidationResult(
-                "End time must equal start time + slot minutes.",
-                [nameof(StartTime), nameof(EndTime), nameof(SlotMinutes)]);
-        }
+     
 
         if (SpecificDate.HasValue && SpecificDate.Value < DateOnly.FromDateTime(DateTime.Today))
         {

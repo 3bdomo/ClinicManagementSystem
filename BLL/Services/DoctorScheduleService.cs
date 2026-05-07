@@ -50,8 +50,6 @@ public class DoctorScheduleService : IDoctorScheduleService
     {
         if (dto.StartTime >= dto.EndTime)
             return OperationResult<int>.Failure("Start time must be before end time");
-        if (dto.SlotMinutes > 0 && dto.StartTime.AddMinutes(dto.SlotMinutes) != dto.EndTime)
-            return OperationResult<int>.Failure("End time must equal start time + slot minutes");
         if (dto.DayOfWeek.HasValue == dto.SpecificDate.HasValue)
             return OperationResult<int>.Failure(
                 "Specify either a recurring weekday or a specific date — not both");
