@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BLL.DTOs.Appointment;
 using BLL.DTOs.Patient;
 using BLL.DTOs.Doctor;
@@ -7,6 +7,7 @@ using BLL.DTOs.User;
 using Common.Enums;
 using Web.ViewModel;
 using Web.ViewModels.Appointment;
+using BLL.DTOs.Billing;
 
 namespace Web.Mapping;
 
@@ -16,6 +17,7 @@ public class WebMappingProfile : Profile
     {
 
         CreateMap<UserDto, UserRowViewModel>();
+        CreateMap<AuditInfoDto, AuditInfoViewModel>();
 
 
         CreateMap<CreateUserViewModel, CreateUserDto>();
@@ -43,21 +45,21 @@ public class WebMappingProfile : Profile
             .ForMember(dest => dest.Appointments,   opt => opt.MapFrom(src => src.Appointments))
             .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
             .ForMember(dest => dest.Invoices,       opt => opt.Ignore())
-            .ForMember(dest => dest.AuditInfo,      opt => opt.Ignore());
+            .ForMember(dest => dest.AuditInfo,      opt => opt.MapFrom(src => src.AuditInfo));
 
         CreateMap<PatientDto, PatientDetailsViewModel>()
             .ForMember(dest => dest.Patient,        opt => opt.MapFrom(src => src))
             .ForMember(dest => dest.Appointments,   opt => opt.Ignore())
             .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore())
             .ForMember(dest => dest.Invoices,       opt => opt.Ignore())
-            .ForMember(dest => dest.AuditInfo,      opt => opt.Ignore());
+            .ForMember(dest => dest.AuditInfo,      opt => opt.MapFrom(src => new AuditInfoViewModel { CreatedAt = src.CreatedAt, CreatedByName = src.CreatedBy }));
 
 
         CreateMap<AppointmentDto, AppointmentRowViewModel>();
 
-        // ─────────────────────────────────────────────
-        // Appointment Web mappings
-        // ─────────────────────────────────────────────
+        
+        
+        
 
         CreateMap<AppointmentDto, AppointmentDetailsViewModel>()
             .ForMember(dest => dest.CanEdit, opt => opt.Ignore())
@@ -122,6 +124,11 @@ public class WebMappingProfile : Profile
 
         CreateMap<DoctorScheduleDto, DoctorScheduleFormViewModel>();
         CreateMap<DoctorScheduleFormViewModel, DoctorScheduleDto>();
+
+        
+        CreateMap<InvoiceDto, InvoiceRowViewModel>();
+        CreateMap<InvoiceDto, InvoiceDetailsViewModel>();
+        CreateMap<InvoiceItemDto, InvoiceItemDetailViewModel>();
     }
 
 

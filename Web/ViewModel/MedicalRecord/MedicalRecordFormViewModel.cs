@@ -13,5 +13,6 @@ public class MedicalRecordFormViewModel
     public DateTime? FollowUpDate { get; set; }
     public byte[]? RowVersion { get; set; }
     public IEnumerable<IFormFile> NewAttachments { get; set; } = [];
+    public int? PatientId { get; set; }
     public IEnumerable<SelectListItem> Appointments { get; set; } = [];
 }

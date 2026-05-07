@@ -30,7 +30,7 @@ namespace Web.ViewModels.Appointment
         [MaxLength(500, ErrorMessage = "Notes must be at most 500 characters.")]
         public string? Notes { get; set; }
 
-        // Loaded via AJAX when date changes
+        
         public IEnumerable<DateTime> AvailableSlots { get; set; } = new List<DateTime>();
     }
 }

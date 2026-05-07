@@ -15,4 +15,12 @@ public class CreateUserViewModel
     public Specialization? Specialization { get; set; }
     [Display(Name = "Consultation Fee (LE)")] public decimal? ConsultationFee { get; set; }
     public string? Bio { get; set; }
+
+    
+    [Display(Name = "National ID")] public string? NationalId { get; set; }
+    [Display(Name = "Date of Birth")] [DataType(DataType.Date)] public DateOnly? DateOfBirth { get; set; }
+    public Gender? Gender { get; set; }
+    public string? Address { get; set; }
+    [Display(Name = "Blood Type")] public string? BloodType { get; set; }
+    [Display(Name = "Emergency Contact")] public string? EmergencyContact { get; set; }
 }

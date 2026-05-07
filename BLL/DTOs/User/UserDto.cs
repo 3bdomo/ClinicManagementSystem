@@ -20,9 +20,19 @@ public class CreateUserDto
     public string Password { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
     public UserRole UserRole { get; set; }
+    
+    
     public Specialization? Specialization { get; set; }
     public decimal? ConsultationFee { get; set; }
     public string? Bio { get; set; }
+
+    
+    public string? NationalId { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
+    public Gender? Gender { get; set; }
+    public string? Address { get; set; }
+    public string? BloodType { get; set; }
+    public string? EmergencyContact { get; set; }
 }
 
 public class UpdateUserDto

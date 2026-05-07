@@ -2,17 +2,23 @@ using BLL.DTOs.MedicalRecord;
 using BLL.Interfaces;
 using ClinicSystem.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Common.Enums;
+using Web.ViewModel;
+using System.Linq;
 
 public class MedicalRecordController : Controller
 {
     private readonly IMedicalRecordService _medicalRecordService;
+    private readonly IAppointmentService _appointmentService;
 
-    public MedicalRecordController(IMedicalRecordService medicalRecordService)
+    public MedicalRecordController(IMedicalRecordService medicalRecordService, IAppointmentService appointmentService)
     {
         _medicalRecordService = medicalRecordService;
+        _appointmentService = appointmentService;
     }
 
-    // GET /MedicalRecord/Index
+    
     public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
     {
         var result = await _medicalRecordService.GetAllAsync(pageNumber, pageSize);
@@ -27,7 +33,7 @@ public class MedicalRecordController : Controller
         return View(result.Data);
     }
     
-    // GET /MedicalRecord/Details/5
+    
     public async Task<IActionResult> Details(int? id)
     {
         if (id is null) return BadRequest();
@@ -40,33 +46,80 @@ public class MedicalRecordController : Controller
         return View(result.Data);
     }
     
-    // GET /MedicalRecord/Create?PatientId=5
-    public IActionResult Create(int? patientId)
+    
+    public async Task<IActionResult> Create(int? patientId)
     {
-        var dto= new MedicalRecordDto()
+        var vm = new MedicalRecordFormViewModel
         {
-            PatientId = patientId ?? 0,
-            VisitedDate = DateTime.Now
+            PatientId = patientId,
+            Appointments = await GetPatientAppointmentsAsync(patientId)
         };
-        return View(dto);
+        return View(vm);
     }
-    //Post /MedicalRecord/Create
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateMedicalRecordDto dto)
+    public async Task<IActionResult> Create(MedicalRecordFormViewModel vm)
     {
-        if(!ModelState.IsValid)return View(dto);
+        if (!ModelState.IsValid)
+        {
+            vm.Appointments = await GetPatientAppointmentsAsync(vm.PatientId);
+            return View(vm);
+        }
+
+        var appointmentResult = await _appointmentService.GetByIdAsync(vm.AppointmentId);
+        if (!appointmentResult.IsSuccess)
+        {
+            ModelState.AddModelError(string.Empty, "Appointment not found.");
+            vm.Appointments = await GetPatientAppointmentsAsync(vm.PatientId);
+            return View(vm);
+        }
+
+        var appointment = appointmentResult.Data;
+
+        var dto = new CreateMedicalRecordDto
+        {
+            AppointmentId = vm.AppointmentId,
+            PatientId = appointment.PatientId,
+            DoctorId = appointment.DoctorId,
+            Diagnosis = vm.Diagnosis,
+            Notes = vm.Notes,
+            VisitedDate = appointment.AppointmentDate,
+            FollowUpDate = vm.FollowUpDate ?? DateTime.Now.AddDays(7) 
+        };
+
         var result = await _medicalRecordService.CreateAsync(dto);
         if (!result.IsSuccess)
         {
             ModelState.AddModelError(string.Empty, result.Message);
-            return View(dto);
+            vm.Appointments = await GetPatientAppointmentsAsync(vm.PatientId);
+            return View(vm);
         }
         TempData["Success"] = "Medical record created successfully.";
-        return RedirectToAction((nameof(Details)), new { id = result.Data });
+        return RedirectToAction(nameof(Details), new { id = result.Data });
+    }
+
+    private async Task<List<SelectListItem>> GetPatientAppointmentsAsync(int? patientId)
+    {
+        var appointments = new List<SelectListItem>();
+        if (patientId.HasValue)
+        {
+            var history = await _appointmentService.GetPatientHistoryAsync(patientId.Value);
+            if (history.IsSuccess)
+            {
+                appointments = history.Data
+                    .Where(a => !a.HasMedicalRecord && a.Status == AppointmentStatus.Completed)
+                    .Select(a => new SelectListItem
+                    {
+                        Text = $"{a.AppointmentDate:yyyy-MM-dd HH:mm} - {a.DoctorName}",
+                        Value = a.Id.ToString()
+                    }).ToList();
+            }
+        }
+        return appointments;
     }
     
-    // GET /MedicalRecord/Edit/5
+    
     public async Task<IActionResult> Edit(int? id)
     {
         if (id is null) return BadRequest();
@@ -86,7 +139,7 @@ public class MedicalRecordController : Controller
         return View(dto);
     }
     
-    // POST /MedicalRecord/Edit/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int? id,UpdateMedicalRecordDto dto)
@@ -104,7 +157,7 @@ public class MedicalRecordController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
     
-    // POST /MedicalRecord/Delete/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
@@ -113,7 +166,7 @@ public class MedicalRecordController : Controller
         TempData[ result.IsSuccess ?"Success" : "Error"]= result.Message;
         return RedirectToAction(nameof(Index));
     }
-    //Get/MedicalRecord/ByPatient/5
+    
     public async Task<IActionResult> ByPatient(int patientId)
     {
         var result = await _medicalRecordService.GetByPatientAsync(patientId);
@@ -126,7 +179,7 @@ public class MedicalRecordController : Controller
         return View(result.Data);
     }
     
-    //Get/MedicalRecord/ByAppointment/5
+    
     public async Task<IActionResult> ByAppointment(int appointmentId)
     {
         var result = await _medicalRecordService.GetByAppointmentAsync(appointmentId);
@@ -138,7 +191,7 @@ public class MedicalRecordController : Controller
         return RedirectToAction(nameof(Details), new { id = result.Data.Id });
     }
     
-    //Get/MedicalRecord/FollowUp/5
+    
     public async Task<IActionResult> FollowUp(DateTime? from, DateTime? to)
     {
         var startDate = from ?? DateTime.Now;
@@ -154,7 +207,7 @@ public class MedicalRecordController : Controller
         return View(result.Data);
     }
     
-    //GET /MedicalRecord/PatientStatistics/5
+    
     public async Task<IActionResult> PatientStatistics(int patientId)
     {
         var result = await _medicalRecordService.GetPatientStatisticsAsync(patientId);
@@ -165,7 +218,7 @@ public class MedicalRecordController : Controller
         }
         return View(result.Data);
     }
-    // GET /MedicalRecord/GetByPatient/5  (AJAX)
+    
     public async Task<IActionResult> GetByPatient(int patientId)
     {
         var result = await _medicalRecordService.GetByPatientAsync(patientId);

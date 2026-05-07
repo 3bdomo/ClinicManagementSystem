@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using BLL.DTOs.Patient;
 using BLL.Interfaces;
 using Common.Results;
@@ -44,7 +44,6 @@ namespace BLL.Services
 
         public async Task<OperationResult<IEnumerable<PatientDto>>> GetAllAsync()
         {
-            //Default to first page with a large page size 
             var patients = await _unitOfWork.Patients.GetAllAsync(1, 5000);
             var patientDtos = _mapper.Map<IEnumerable<PatientDto>>(patients);
             return OperationResult<IEnumerable<PatientDto>>.Success(patientDtos);
@@ -83,8 +82,18 @@ namespace BLL.Services
             if (patient == null)
                 return OperationResult<PatientHistoryDto>.Failure("Patient history not found.");
 
-            var patientHistoryDto = _mapper.Map<PatientHistoryDto>(patient);
-            return OperationResult<PatientHistoryDto>.Success(patientHistoryDto);
+            var dto = _mapper.Map<PatientHistoryDto>(patient);
+            
+            if (dto.AuditInfo != null)
+            {
+                if (!string.IsNullOrEmpty(dto.AuditInfo.CreatedBy))
+                    dto.AuditInfo.CreatedByName = await _unitOfWork.Users.GetFullNameAsync(dto.AuditInfo.CreatedBy);
+                
+                if (!string.IsNullOrEmpty(dto.AuditInfo.UpdatedBy))
+                    dto.AuditInfo.UpdatedByName = await _unitOfWork.Users.GetFullNameAsync(dto.AuditInfo.UpdatedBy);
+            }
+
+            return OperationResult<PatientHistoryDto>.Success(dto);
         }
 
         public async Task<OperationResult> RestoreAsync(int id)

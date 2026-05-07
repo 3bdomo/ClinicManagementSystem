@@ -46,7 +46,7 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
 
         builder.Property(p => p.DeletedBy).HasMaxLength(45);
 
-        // IAuditable fields
+        
         builder.Property(p => p.CreatedBy).HasMaxLength(45);
         builder.Property(p => p.UpdatedBy).HasMaxLength(45);
 

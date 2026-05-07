@@ -19,7 +19,7 @@ public class DoctorController : Controller
         _scheduleService = scheduleService;
     }
 
-    // ─── Index ────────────────────────────────────────────────────────────────
+    
 
     [HttpGet]
     public async Task<IActionResult> Index(string? searchQuery, int page = 1)
@@ -55,7 +55,7 @@ public class DoctorController : Controller
         return View(vm);
     }
 
-    // ─── Details ──────────────────────────────────────────────────────────────
+    
 
     [HttpGet]
     public async Task<IActionResult> Details(int? id)
@@ -103,7 +103,7 @@ public class DoctorController : Controller
         return View(vm);
     }
 
-    // ─── Edit GET ─────────────────────────────────────────────────────────────
+    
 
     [Authorize(Roles = "Admin")]
     [HttpGet]
@@ -120,7 +120,7 @@ public class DoctorController : Controller
         return View(MapToForm(result.Data));
     }
 
-    // ─── Edit POST ────────────────────────────────────────────────────────────
+    
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
@@ -162,7 +162,7 @@ public class DoctorController : Controller
         return RedirectToAction(nameof(Details), new { id = vm.Id });
     }
 
-    // ─── Mapping Helper ──────────────────────────────────────────────────────
+    
 
     private static DoctorFormViewModel MapToForm(DoctorDto dto)
     {

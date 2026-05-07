@@ -16,7 +16,7 @@ public class FollowUpController : Controller
         _medicalRecordService = medicalRecordService;
     }
 
-    // ─── Index ─────────────────────────────────────────────────────────────────
+    
 
     [HttpGet]
     public async Task<IActionResult> Index(DateTime? dateFrom, DateTime? dateTo)

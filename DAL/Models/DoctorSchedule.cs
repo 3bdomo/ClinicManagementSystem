@@ -16,13 +16,13 @@ public class DoctorSchedule : IAuditable
     public bool IsActive { get; set; } = true;
     public string? Notes { get; set; }
 
-    // IAuditable
+    
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    // Navigation Properties
+    
     public Doctor Doctor { get; set; } = null!;
     public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 }

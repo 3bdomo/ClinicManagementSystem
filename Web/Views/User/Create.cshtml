@@ -99,6 +99,53 @@
             </div>
         </div>
 
+        @* Patient Details (hidden until Patient role is selected) *@
+        <div id="patientSection" class="rounded-lg border border-emerald-200 bg-emerald-50 p-6 shadow-sm hidden">
+            <h3 class="mb-4 text-lg font-black text-emerald-800">
+                <span class="material-symbols-outlined align-middle text-[20px]">person</span>
+                Patient details
+            </h3>
+            <div class="grid gap-5 md:grid-cols-2">
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="NationalId">National ID</label>
+                    <input asp-for="NationalId" type="text" placeholder="14-digit National ID"
+                           class="w-full rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600" />
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="DateOfBirth">Date of birth</label>
+                    <input asp-for="DateOfBirth" type="date"
+                           class="w-full rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600" />
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Gender">Gender</label>
+                    <select asp-for="Gender" class="w-full rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600">
+                        <option value="">Select gender…</option>
+                        @foreach (var gender in Enum.GetValues<Common.Enums.Gender>())
+                        {
+                            <option value="@gender">@gender</option>
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="BloodType">Blood type</label>
+                    <select asp-for="BloodType" asp-items="ViewBag.BloodTypes" 
+                            class="w-full rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600">
+                        <option value="">Select type…</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Address">Address</label>
+                    <input asp-for="Address" type="text" placeholder="Street, City..."
+                           class="w-full rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600" />
+                </div>
+                <div class="md:col-span-2">
+                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="EmergencyContact">Emergency contact</label>
+                    <input asp-for="EmergencyContact" type="text" placeholder="Name and Phone..."
+                           class="w-full rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600" />
+                </div>
+            </div>
+        </div>
+
         <div class="flex justify-end gap-3 border-t border-slate-200 pt-5">
             <a asp-action="Index" class="rounded-lg px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-100">Cancel</a>
             <button type="submit"
@@ -114,10 +161,14 @@
     <script>
         const roleSelect = document.getElementById('UserRole');
         const doctorSection = document.getElementById('doctorSection');
-        function toggleDoctorSection() {
+        const patientSection = document.getElementById('patientSection');
+        
+        function toggleSections() {
             doctorSection.classList.toggle('hidden', roleSelect.value !== 'Doctor');
+            patientSection.classList.toggle('hidden', roleSelect.value !== 'Patient');
         }
-        roleSelect?.addEventListener('change', toggleDoctorSection);
-        toggleDoctorSection();
+        
+        roleSelect?.addEventListener('change', toggleSections);
+        toggleSections();
     </script>
 }

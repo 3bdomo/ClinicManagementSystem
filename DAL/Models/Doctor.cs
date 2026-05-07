@@ -14,7 +14,7 @@ public class Doctor
     public string? Phone { get; set; }
     public bool IsAvailable { get; set; } = true;
 
-    // Navigation Properties
+    
     public ApplicationUser ApplicationUser { get; set; } = null!;
     public ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
     public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();

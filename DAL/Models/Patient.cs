@@ -16,19 +16,19 @@ public class Patient : IAuditable, ISoftDeletable
     public string? EmergencyContact { get; set; }
     public string? ApplicationUserId { get; set; }
 
-    // IAuditable
+    
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    // ISoftDeletable
+    
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
     public string? DeletedBy { get; set; }
 
 
-    // Navigation Properties
+    
     public ApplicationUser? ApplicationUser { get; set; }
     public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     public ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();

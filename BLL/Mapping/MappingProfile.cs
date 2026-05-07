@@ -9,6 +9,7 @@ using BLL.DTOs.Procedure;
 using BLL.DTOs.Receptionist;
 using BLL.DTOs.Shared;
 using BLL.DTOs.User;
+using BLL.DTOs.Billing;
 using ClinicSystem.DAL.Models;
 using Common.Enums;
 
@@ -18,9 +19,10 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<CreateInvoiceDto, Invoice>();
+        CreateMap<CreateInvoiceItemDto, InvoiceItem>();
 
         CreateMap<Patient, PatientDto>();
-          //  .ForMember(dest => dest.ApplicationUserId,opt => opt.MapFrom(src => src.ApplicationUserId));
 
         CreateMap<PatientDto, Patient>()
             .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
@@ -67,90 +69,94 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Patient,
                        opt => opt.MapFrom(src => src))
             .ForMember(dest => dest.Appointments,
-                       opt => opt.MapFrom(src => src.Appointments));
-        // CreateMap<Doctor, DoctorDto>();
-        //
-        // CreateMap<DoctorDto, Doctor>()
-        //     .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore())
-        //     .ForMember(dest => dest.ApplicationUser, opt => opt.Ignore())
-        //     .ForMember(dest => dest.DoctorSchedules, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Appointments, opt => opt.Ignore())
-        //     .ForMember(dest => dest.MedicalRecords, opt => opt.Ignore());
-        //
-        // CreateMap<Doctor, UserDto>()
-        //     .ForMember(dest => dest.Id,
-        //                opt => opt.MapFrom(src => src.ApplicationUserId))
-        //     .ForMember(dest => dest.FullName,
-        //                opt => opt.MapFrom(src => src.FullName))
-        //     .ForMember(dest => dest.IsActive,
-        //                opt => opt.MapFrom(src => src.IsAvailable))
-        //     .ForMember(dest => dest.Email, opt => opt.Ignore())
-        //     .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UserRole, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
-        //
-        // CreateMap<DoctorSchedule, DoctorScheduleDto>()
-        //     .ForMember(dest => dest.DoctorName,
-        //                opt => opt.MapFrom(src => src.Doctor != null
-        //                                          ? src.Doctor.FullName
-        //                                          : string.Empty));
-        //
-        // CreateMap<DoctorScheduleDto, DoctorSchedule>()
-        //     .ForMember(dest => dest.Doctor, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Appointments, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
-        //
-        // CreateMap<Appointment, AppointmentDto>()
-        //     .ForMember(dest => dest.PatientName,
-        //                opt => opt.MapFrom(src => src.Patient != null
-        //                                          ? src.Patient.FullName
-        //                                          : string.Empty))
-        //     .ForMember(dest => dest.DoctorName,
-        //                opt => opt.MapFrom(src => src.Doctor != null
-        //                                          ? src.Doctor.FullName
-        //                                          : string.Empty));
-        //
-        // CreateMap<AppointmentDto, Appointment>()
-        //     .ForMember(dest => dest.Patient, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Doctor, opt => opt.Ignore())
-        //     .ForMember(dest => dest.DoctorSchedule, opt => opt.Ignore())
-        //     .ForMember(dest => dest.MedicalRecord, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Invoice, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
-        //
-        // CreateMap<MedicalRecord, MedicalRecordDto>()
-        //     .ForMember(dest => dest.PatientName,
-        //                opt => opt.MapFrom(src => src.Patient != null
-        //                                          ? src.Patient.FullName
-        //                                          : string.Empty))
-        //     .ForMember(dest => dest.DoctorName,
-        //                opt => opt.MapFrom(src => src.Doctor != null
-        //                                          ? src.Doctor.FullName
-        //                                          : string.Empty));
-        //
-        // CreateMap<MedicalRecordDto, MedicalRecord>()
-        //     .ForMember(dest => dest.Patient, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Doctor, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Appointment, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Attachments, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Procedures, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
+                       opt => opt.MapFrom(src => src.Appointments))
+            .ForMember(dest => dest.AuditInfo,
+                       opt => opt.MapFrom(src => src));
 
-        // CreateMap<RecordAttachment, AttachmentDto>();
-        //
-        // CreateMap<AttachmentDto, RecordAttachment>()
-        //     .ForMember(dest => dest.MedicalRecord, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UploadedAt, opt => opt.Ignore());
-        //
+        CreateMap<Patient, AuditInfoDto>();
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+        
+        
+        
+        
+        
         CreateMap<ProcedureType, ProcedureTypeDto>();
 
         CreateMap<ProcedureTypeDto, ProcedureType>()
@@ -172,29 +178,29 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
-        //
-        // CreateMap<Invoice, InvoiceDto>()
-        //     .ForMember(dest => dest.PatientName,
-        //                opt => opt.MapFrom(src => src.Patient != null
-        //                                          ? src.Patient.FullName
-        //                                          : string.Empty));
+        
+        
+        
+        
+        
+        
 
-        // CreateMap<InvoiceDto, Invoice>()
-        //     .ForMember(dest => dest.TotalAmount, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Patient, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Appointment, opt => opt.Ignore())
-        //     .ForMember(dest => dest.Items, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-        //     .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
-        //
-        // CreateMap<InvoiceItem, InvoiceItemDto>()
-        //     .ForMember(dest => dest.Total,
-        //                opt => opt.MapFrom(src => src.Quantity * src.UnitPrice));
-        //
-        // CreateMap<InvoiceItemDto, InvoiceItem>()
-        //     .ForMember(dest => dest.Invoice, opt => opt.Ignore());
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
         CreateMap<ApplicationUser, UserDto>()
             .ForMember(dest => dest.PhoneNumber,
@@ -226,7 +232,6 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
 
-        // New Mappings for RegisterDto
         CreateMap<RegisterDto, ApplicationUser>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -294,7 +299,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Email, opt => opt.Ignore())
             .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
             .ForMember(dest => dest.UserRole, opt => opt.Ignore())
-            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt));
 
         CreateMap<MedicalRecord, AuditInfoDto>()
             .ForMember(dest => dest.CreatedByName, opt => opt.Ignore())
@@ -312,13 +317,22 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CreatedByName, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedByName, opt => opt.Ignore());
 
+        CreateMap<Patient, AuditInfoDto>()
+            .ForMember(dest => dest.CreatedByName, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedByName, opt => opt.Ignore());
+
+        CreateMap<Invoice, InvoiceDto>()
+            .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient != null ? src.Patient.FullName : string.Empty));
+
+        CreateMap<InvoiceItem, InvoiceItemDto>();
+
         CreateMap<Procedure, AuditInfoDto>()
             .ForMember(dest => dest.CreatedByName, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedByName, opt => opt.Ignore());
 
 
-        ////-------
-        ///CreateMap<Doctor, DoctorDto>();
+        
+        
 
         CreateMap<DoctorDto, Doctor>()
             .ForMember(dest => dest.ApplicationUserId, opt => opt.Ignore())
@@ -393,8 +407,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
 
-        //---
-
+        
 
 
         CreateMap<Receptionist, ReceptionistDto>()
@@ -462,10 +475,10 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
 
-        /*
-         * Kept for compatibility if any old code still maps AppointmentDto to Appointment.
-         * Main Create flow should use CreateAppointmentDto.
-         */
+       
+        
+        
+        
         CreateMap<AppointmentDto, Appointment>()
             .ForMember(dest => dest.Doctor, opt => opt.Ignore())
             .ForMember(dest => dest.Patient, opt => opt.Ignore())

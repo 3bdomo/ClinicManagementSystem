@@ -10,6 +10,6 @@ public class RecordAttachment
     public DateTime UploadedAt { get; set; }
     public string? UploadedBy { get; set; }
 
-    // Navigation Properties
+    
     public MedicalRecord MedicalRecord { get; set; } = null!;
 }

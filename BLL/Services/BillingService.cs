@@ -39,7 +39,9 @@ namespace BLL.Services
             if (invoice is null)
                 return OperationResult<InvoiceDto>.Failure("Invoice not found.");
 
-            return OperationResult<InvoiceDto>.Success(_mapper.Map<InvoiceDto>(invoice));
+            var dto = _mapper.Map<InvoiceDto>(invoice);
+            await EnrichAuditInfoAsync(dto);
+            return OperationResult<InvoiceDto>.Success(dto);
         }
 
         public async Task<OperationResult<InvoiceDto>> GetWithItemsAsync(int id)
@@ -48,7 +50,9 @@ namespace BLL.Services
             if (invoice is null)
                 return OperationResult<InvoiceDto>.Failure("Invoice not found.");
 
-            return OperationResult<InvoiceDto>.Success(_mapper.Map<InvoiceDto>(invoice));
+            var dto = _mapper.Map<InvoiceDto>(invoice);
+            await EnrichAuditInfoAsync(dto);
+            return OperationResult<InvoiceDto>.Success(dto);
         }
 
         public async Task<OperationResult<int>> CreateAsync(CreateInvoiceDto dto)
@@ -57,9 +61,12 @@ namespace BLL.Services
             if (patient is null)
                 return OperationResult<int>.Failure("Patient not found.");
 
-            var appointment = await _unitOfWork.Appointments.GetByIdAsync(dto.AppointmentId);
+            var appointment = await _unitOfWork.Appointments.GetFullAsync(dto.AppointmentId);
             if (appointment is null)
                 return OperationResult<int>.Failure("Appointment not found.");
+            
+            if (appointment.Invoice != null)
+                return OperationResult<int>.Failure("An invoice already exists for this appointment.");
 
             if (!dto.Items.Any())
                 return OperationResult<int>.Failure("Invoice must have at least one item.");
@@ -202,7 +209,16 @@ namespace BLL.Services
             return OperationResult<decimal>.Success(totalRevenue);
         }
 
-        // ────────────────────────────── helpers ──────────────────────────────
+        private async Task EnrichAuditInfoAsync(InvoiceDto dto)
+        {
+            if (dto is null) return;
+
+            if (!string.IsNullOrEmpty(dto.CreatedBy))
+                dto.CreatedBy = await _unitOfWork.Users.GetFullNameAsync(dto.CreatedBy);
+
+            if (!string.IsNullOrEmpty(dto.UpdatedBy))
+                dto.UpdatedBy = await _unitOfWork.Users.GetFullNameAsync(dto.UpdatedBy);
+        }
 
         private static BillingStatisticsDto BuildStatistics(List<Invoice> invoices)
         {

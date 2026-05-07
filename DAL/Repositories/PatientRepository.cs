@@ -17,9 +17,10 @@ internal class PatientRepository : GenericRepository<Patient>, IPatientRepositor
             .FirstOrDefaultAsync(p => p.ApplicationUserId == applicationUserId);
 
     public async Task<IEnumerable<Patient>> GetDeletedAsync()
-        => await _dbSet
+        => await _context.Patients
             .IgnoreQueryFilters()
             .Where(p => p.IsDeleted)
+            .AsNoTracking()
             .ToListAsync();
 
     public async Task<Patient?> GetWithFullHistoryAsync(int patientId)

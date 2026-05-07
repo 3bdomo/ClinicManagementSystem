@@ -18,5 +18,9 @@ namespace BLL.DTOs.Patient
         public string? Address { get; set; }
         public string? BloodType { get; set; }
         public string? EmergencyContact { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string? CreatedBy { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 }
