@@ -1,4 +1,4 @@
-@model IEnumerable<BLL.DTOs.MedicalRecord.MedicalRecordDto>
+@model IEnumerable<Web.ViewModel.MedicalRecordRowViewModel>
 @{
     ViewData["Title"] = "Medical Records";
 }
@@ -63,16 +63,35 @@
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-4 py-4 text-sm font-mono font-bold text-slate-700">#@record.Id</td>
                             <td class="px-4 py-4">
-                                <a asp-controller="Patient" asp-action="Details" asp-route-id="@record.PatientId"
-                                   class="text-sm font-semibold text-slate-900 hover:text-emerald-600">@record.PatientName</a>
+                                <a asp-controller="Patient"
+                                   asp-action="Details"
+                                   asp-route-id="@record.PatientId"
+                                   class="text-sm font-semibold text-slate-900 hover:text-emerald-600">
+                                    @record.PatientName
+                                </a>
                             </td>
                             <td class="px-4 py-4 text-sm text-slate-600">@record.DoctorName</td>
                             <td class="px-4 py-4 text-sm text-slate-900">@(record.Diagnosis ?? "—")</td>
-                            <td class="px-4 py-4 text-sm text-slate-600">@record.VisitedDate.ToString("yyyy-MM-dd")</td>
+                            <td class="px-4 py-4 text-sm text-slate-600">@record.VisitDate.ToString("yyyy-MM-dd")</td>
                             <td class="px-4 py-4 text-sm text-slate-600">@(record.FollowUpDate?.ToString("yyyy-MM-dd") ?? "—")</td>
                             <td class="px-4 py-4 text-right">
-                                <a asp-action="Details" asp-route-id="@record.Id"
-                                   class="text-sm font-bold text-emerald-600 hover:underline">View</a>
+                                <div class="flex items-center justify-end gap-3">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@record.Id"
+                                       class="inline-flex items-center gap-1 text-sm font-bold text-emerald-600 hover:underline">
+                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        View
+                                    </a>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@record.Id"
+                                       class="inline-flex items-center gap-1 text-sm font-bold text-amber-600 hover:underline">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        Edit
+                                    </a>
+
+                                </div>
                             </td>
                         </tr>
                     }

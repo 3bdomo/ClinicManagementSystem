@@ -16,4 +16,6 @@ public class MedicalRecordRowViewModel
     public string Diagnosis { get; set; } = string.Empty;
     public DateTime? FollowUpDate { get; set; }
     public string? Notes { get; set; }
+    public int ProceduresCount { get; set; }
+    public int AttachmentsCount { get; set; }
 }

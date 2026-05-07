@@ -27,8 +27,6 @@ public static class BllServiceExtensions
         services.AddScoped<IAuthService, AuthService>();
 
 
-        services.AddScoped<IMedicalRecordService, MedicalRecordService>();
-
         services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
 
         services.AddScoped<IPatientAccountService, PatientAccountService>();

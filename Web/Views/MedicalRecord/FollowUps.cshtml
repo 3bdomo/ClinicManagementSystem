@@ -82,9 +82,24 @@
                                     <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-bold bg-green-50 text-green-700">Upcoming</span>
                                 }
                             </td>
-                            <td class="px-4 py-4 text-right">
-                                <a asp-action="Details" asp-route-id="@record.Id"
-                                   class="text-sm font-bold text-amber-600 hover:underline">View</a>
+                            <td class="px-4 py-4">
+                                <div class="flex items-center justify-end gap-3">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@record.Id"
+                                       class="inline-flex items-center gap-1 text-sm font-bold text-sky-600 hover:text-sky-700">
+                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        View
+                                    </a>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@record.Id"
+                                       class="inline-flex items-center gap-1 text-sm font-bold text-amber-600 hover:text-amber-700">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        Edit
+                                    </a>
+
+                                </div>
                             </td>
                         </tr>
                     }

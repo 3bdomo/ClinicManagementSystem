@@ -103,29 +103,37 @@
         @if (User.IsInRole("Doctor"))
         {
             <p class="mt-4 mb-1 px-3 text-[10px] font-black uppercase tracking-widest text-slate-500">My Work</p>
+
             <a class="clinic-nav-link" asp-controller="Appointment" asp-action="Index">
                 <span class="material-symbols-outlined">event</span>My Appointments
             </a>
+
+            <a class="clinic-nav-link" asp-controller="MedicalRecord" asp-action="Index">
+                <span class="material-symbols-outlined">clinical_notes</span>Medical Records
+            </a>
+
             <a class="clinic-nav-link" asp-controller="DoctorSchedule" asp-action="Index">
                 <span class="material-symbols-outlined">calendar_month</span>My Schedule
             </a>
+
             <a class="clinic-nav-link" asp-controller="FollowUp" asp-action="Index">
                 <span class="material-symbols-outlined">notification_important</span>Follow Ups
             </a>
 
             <p class="mt-4 mb-1 px-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Clinical</p>
+
             <a class="clinic-nav-link" asp-controller="MedicalRecord" asp-action="Create">
                 <span class="material-symbols-outlined">clinical_notes</span>Add Medical Record
             </a>
+
             <a class="clinic-nav-link" asp-controller="Procedure" asp-action="Create">
                 <span class="material-symbols-outlined">medical_information</span>Add Procedure
             </a>
+
             <a class="clinic-nav-link" asp-controller="Patient" asp-action="Index">
                 <span class="material-symbols-outlined">manage_search</span>Patient Search
             </a>
         }
-
-       
         @if (User.IsInRole("Receptionist"))
         {
             <p class="mt-4 mb-1 px-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Front desk</p>

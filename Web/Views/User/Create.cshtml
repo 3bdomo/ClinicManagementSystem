@@ -19,6 +19,7 @@
 
     <form asp-action="Create" method="post" class="space-y-6">
         @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="rounded-lg bg-red-50 p-4 text-sm font-semibold text-red-600 border border-red-200 mb-4"></div>
 
         @* Account Details *@
         <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
@@ -40,6 +41,7 @@
                     <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="PhoneNumber">Phone number</label>
                     <input asp-for="PhoneNumber" type="tel" placeholder="01000000000"
                            class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
+                    <span asp-validation-for="PhoneNumber" class="mt-1 text-xs text-red-500"></span>
                 </div>
                 <div>
                     <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="UserRole">Role</label>
@@ -110,6 +112,7 @@
                     <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="NationalId">National ID</label>
                     <input asp-for="NationalId" type="text" placeholder="14-digit National ID"
                            class="w-full rounded-lg border-slate-300 focus:border-emerald-600 focus:ring-emerald-600" />
+                    <span asp-validation-for="NationalId" class="mt-1 text-xs text-red-500"></span>
                 </div>
                 <div>
                     <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="DateOfBirth">Date of birth</label>
@@ -158,6 +161,7 @@
 </div>
 
 @section Scripts {
+    @await Html.PartialAsync("_ValidationScripts")
     <script>
         const roleSelect = document.getElementById('UserRole');
         const doctorSection = document.getElementById('doctorSection');

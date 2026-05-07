@@ -6,46 +6,88 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Common.Enums;
 using Web.ViewModel;
 using System.Linq;
+using BLL.DTOs.Patient;
+using BLL.DTOs.Procedure;
 
 public class MedicalRecordController : Controller
 {
     private readonly IMedicalRecordService _medicalRecordService;
     private readonly IAppointmentService _appointmentService;
+    private readonly IPatientService _patientService;
 
-    public MedicalRecordController(IMedicalRecordService medicalRecordService, IAppointmentService appointmentService)
+    public MedicalRecordController(IMedicalRecordService medicalRecordService, IAppointmentService appointmentService, IPatientService patientService)
     {
         _medicalRecordService = medicalRecordService;
         _appointmentService = appointmentService;
+        _patientService = patientService;
     }
 
     
     public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
     {
         var result = await _medicalRecordService.GetAllAsync(pageNumber, pageSize);
+        
         if (!result.IsSuccess)
         {
             TempData["Error"] = result.Message;
-            return View(Enumerable.Empty<MedicalRecordDto>());
+            return View(Enumerable.Empty<MedicalRecordRowViewModel>());
         }
+        var vm = result.Data.Select(r => new MedicalRecordRowViewModel
+        {
+            Id = r.Id,
+            PatientId = r.PatientId,
+            DoctorId = r.DoctorId,
+            AppointmentId = r.AppointmentId,
+            PatientName = r.PatientName ?? "—",
+            DoctorName = r.DoctorName ?? "—",
+            VisitDate = r.VisitedDate,
+            Diagnosis = r.Diagnosis ?? "—",
+            FollowUpDate = r.FollowUpDate,
+            Notes = r.Notes,
+            ProceduresCount = r.ProceduresCount,
+            AttachmentsCount = r.AttachmentsCount
+        });
         ViewBag.PageNumber = pageNumber;
         ViewBag.PageSize = pageSize;
         
-        return View(result.Data);
+        return View(vm);
     }
     
     
     public async Task<IActionResult> Details(int? id)
     {
         if (id is null) return BadRequest();
+
         var result = await _medicalRecordService.GetFullAsync(id.Value);
-        if (!result.IsSuccess)
+
+        if (!result.IsSuccess || result.Data == null)
         {
             TempData["Error"] = result.Message;
             return RedirectToAction(nameof(Index));
         }
-        return View(result.Data);
+
+        var r = result.Data;
+
+        var vm = new MedicalRecordDetailsViewModel
+        {
+            Record = new MedicalRecordRowViewModel
+            {
+                Id = r.Id,
+                PatientId = r.PatientId,
+                PatientName = r.PatientName,
+                DoctorName = r.DoctorName,
+                VisitDate = r.VisitedDate,
+                FollowUpDate = r.FollowUpDate,
+                Diagnosis = r.Diagnosis,
+                Notes = r.Notes
+            },
+
+            
+            CanEdit = true
+        };
+
+        return View(vm);
     }
-    
     
     public async Task<IActionResult> Create(int? patientId)
     {
@@ -54,6 +96,18 @@ public class MedicalRecordController : Controller
             PatientId = patientId,
             Appointments = await GetPatientAppointmentsAsync(patientId)
         };
+
+        var patientsList = new List<PatientDto>();
+        var activeRes = await _patientService.GetAllAsync();
+        if (activeRes.IsSuccess && activeRes.Data != null)
+            patientsList.AddRange(activeRes.Data);
+
+        var deletedRes = await _patientService.GetDeletedAsync();
+        if (deletedRes.IsSuccess && deletedRes.Data != null)
+            patientsList.AddRange(deletedRes.Data);
+
+        ViewBag.Patients = patientsList.OrderBy(p => p.FullName).ToList();
+
         return View(vm);
     }
     
@@ -108,7 +162,8 @@ public class MedicalRecordController : Controller
             if (history.IsSuccess)
             {
                 appointments = history.Data
-                    .Where(a => !a.HasMedicalRecord && a.Status == AppointmentStatus.Completed)
+                    .Where(a => !a.HasMedicalRecord && 
+                                (a.Status == AppointmentStatus.Completed || a.Status == AppointmentStatus.InProgress))
                     .Select(a => new SelectListItem
                     {
                         Text = $"{a.AppointmentDate:yyyy-MM-dd HH:mm} - {a.DoctorName}",
@@ -204,7 +259,7 @@ public class MedicalRecordController : Controller
         }
         ViewBag.From = startDate;
         ViewBag.To = endDate;
-        return View(result.Data);
+        return View("FollowUps", result.Data);
     }
     
     
@@ -227,6 +282,26 @@ public class MedicalRecordController : Controller
             return Json(new { success = false, message = result.Message });
         }
         return Json(new { success = true, data = result.Data });
+    }
+
+    public async Task<IActionResult> GetAppointmentsByPatient(int patientId)
+    {
+        var history = await _appointmentService.GetPatientHistoryAsync(patientId);
+        if (!history.IsSuccess)
+            return Json(new { success = false, message = history.Message });
+
+        var items = history.Data
+            .Where(a => !a.HasMedicalRecord && 
+                        (a.Status == AppointmentStatus.Completed || a.Status == AppointmentStatus.InProgress))
+            .Select(a => new
+            {
+                id = a.Id,
+                label = $"{a.AppointmentDate:yyyy-MM-dd HH:mm} - {a.DoctorName}",
+                doctorId = a.DoctorId,
+                doctorName = a.DoctorName
+            }).ToList();
+
+        return Json(new { success = true, data = items });
     }
     
 }

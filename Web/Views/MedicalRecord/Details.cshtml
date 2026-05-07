@@ -1,33 +1,53 @@
 @model MedicalRecordDetailsViewModel
+
 @{
     ViewData["Title"] = "Medical Record Details";
     var r = Model.Record;
 }
+
 <div class="space-y-6">
+
+    <!-- Header -->
     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+
         <div>
             <div class="flex items-center gap-2 text-sm font-semibold text-sky-600">
                 <span class="material-symbols-outlined text-[20px]">clinical_notes</span>
-                <span>Medical records</span>
+                <span>Medical Records</span>
                 <span class="text-slate-300">/</span>
                 <span>Record #@r.Id</span>
             </div>
-            <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">Medical Record Details</h2>
-            <p class="mt-1 text-sm text-slate-500">Visit on @r.VisitDate.ToString("dddd, MMMM d, yyyy")</p>
+
+            <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">
+                Medical Record Details
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Visit on @r.VisitDate.ToString("dddd, MMMM d, yyyy")
+            </p>
         </div>
+
+        <!-- Actions -->
         <div class="flex flex-wrap gap-2">
+
             @if (Model.CanEdit)
             {
-                <a asp-action="Edit" asp-route-id="@r.Id"
+                <a asp-action="Edit"
+                   asp-route-id="@r.Id"
                    class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50">
-                    <span class="material-symbols-outlined text-[16px]">edit_note</span>
+
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
                     Edit record
                 </a>
             }
+
             @if (User.IsInRole("Doctor"))
             {
-                <a asp-controller="Procedure" asp-action="Create"
+                <a asp-controller="Procedure"
+                   asp-action="Create"
+                   asp-route-recordId="@r.Id"
                    class="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-sky-700">
+
                     <span class="material-symbols-outlined text-[16px]">add</span>
                     Add procedure
                 </a>
@@ -35,108 +55,159 @@
         </div>
     </div>
 
+    <!-- Main Grid -->
     <div class="grid gap-6 lg:grid-cols-2">
-        @* Visit Record Card *@
+
+        <!-- Visit Info -->
         <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+
             <h3 class="text-lg font-black">Visit Record</h3>
+
             <dl class="mt-4 space-y-4 text-sm">
+
                 <div>
-                    <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">Patient</dt>
-                    <dd class="mt-0.5">
-                        <a asp-controller="Patient" asp-action="Details" asp-route-id="@r.PatientId"
-                           class="font-semibold text-sky-600 hover:underline">@r.PatientName</a>
+                    <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Patient
+                    </dt>
+
+                    <dd class="mt-1">
+                        <a asp-controller="Patient"
+                           asp-action="Details"
+                           asp-route-id="@r.PatientId"
+                           class="font-semibold text-sky-600 hover:underline">
+                            @r.PatientName
+                        </a>
                     </dd>
                 </div>
+
                 <div>
-                    <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">Doctor</dt>
-                    <dd class="mt-0.5 font-semibold text-slate-900">@r.DoctorName</dd>
+                    <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Doctor
+                    </dt>
+                    <dd class="mt-1 font-semibold text-slate-900">
+                        @r.DoctorName
+                    </dd>
                 </div>
+
                 <div>
-                    <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">Visit date</dt>
-                    <dd class="mt-0.5 text-slate-700">@r.VisitDate.ToString("yyyy-MM-dd HH:mm")</dd>
+                    <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Visit Date
+                    </dt>
+                    <dd class="mt-1 text-slate-700">
+                        @r.VisitDate.ToString("yyyy-MM-dd HH:mm")
+                    </dd>
                 </div>
+
                 @if (r.FollowUpDate.HasValue)
                 {
                     <div>
-                        <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">Follow-up date</dt>
-                        <dd class="mt-0.5 font-semibold text-amber-600">@r.FollowUpDate.Value.ToString("yyyy-MM-dd")</dd>
+                        <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                            Follow-up Date
+                        </dt>
+                        <dd class="mt-1 font-semibold text-amber-600">
+                            @r.FollowUpDate.Value.ToString("yyyy-MM-dd")
+                        </dd>
                     </div>
                 }
+
                 <div>
-                    <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">Diagnosis</dt>
-                    <dd class="mt-1 rounded-lg bg-slate-50 p-3 text-slate-800 leading-relaxed">@r.Diagnosis</dd>
+                    <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Diagnosis
+                    </dt>
+
+                    <dd class="mt-2 rounded-lg bg-slate-50 p-3 text-slate-800">
+                        @r.Diagnosis
+                    </dd>
                 </div>
+
                 @if (!string.IsNullOrWhiteSpace(r.Notes))
                 {
                     <div>
-                        <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">Doctor notes</dt>
-                        <dd class="mt-1 text-slate-600 leading-relaxed">@r.Notes</dd>
+                        <dt class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                            Notes
+                        </dt>
+
+                        <dd class="mt-2 text-slate-600">
+                            @r.Notes
+                        </dd>
                     </div>
                 }
             </dl>
         </div>
 
-        @* Audit Info *@
+        <!-- Audit -->
         <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 class="text-lg font-black">Audit information</h3>
+            <h3 class="text-lg font-black">Audit Information</h3>
             @await Html.PartialAsync("_AuditInfo", Model.AuditInfo)
         </div>
     </div>
 
-    @* Procedures Table *@
+    <!-- Procedures -->
     <div class="rounded-lg border border-slate-200 bg-white shadow-sm">
+
         <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-            <h3 class="text-lg font-black">Procedures performed</h3>
+
+            <h3 class="text-lg font-black">Procedures</h3>
+
             @if (User.IsInRole("Doctor"))
             {
-                <a asp-controller="Procedure" asp-action="Create"
+                <a asp-controller="Procedure"
+                   asp-action="Create"
+                   asp-route-recordId="@r.Id"
                    class="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-bold text-white">
+
                     <span class="material-symbols-outlined text-[14px]">add</span>
-                    Add procedure
+                    Add
                 </a>
             }
         </div>
+
         @if (Model.Procedures.Any())
         {
-            <table class="min-w-full divide-y divide-slate-200">
+            <table class="w-full text-sm">
+
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Procedure</th>
-                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Performed at</th>
-                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Duration</th>
-                        <th class="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">Cost</th>
-                        <th class="px-4 py-3"></th>
+                        <th class="px-4 py-3 text-left font-black text-slate-500">Procedure</th>
+                        <th class="px-4 py-3 text-left font-black text-slate-500">Date</th>
+                        <th class="px-4 py-3 text-left font-black text-slate-500">Duration</th>
+                        <th class="px-4 py-3 text-left font-black text-slate-500">Cost</th>
                     </tr>
                 </thead>
+
                 <tbody class="divide-y divide-slate-100">
-                    @foreach (var proc in Model.Procedures)
+                    @foreach (var p in Model.Procedures)
                     {
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="px-4 py-4 text-sm font-semibold text-slate-900">@proc.ProcedureTypeName</td>
-                            <td class="px-4 py-4 text-sm text-slate-700">@proc.PerformedAt.ToString("yyyy-MM-dd HH:mm")</td>
-                            <td class="px-4 py-4 text-sm text-slate-600">
-                                @(proc.DurationMinutes.HasValue ? $"{proc.DurationMinutes} min" : "—")
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-4 py-3 font-semibold">@p.ProcedureTypeName</td>
+                            <td class="px-4 py-3 text-slate-600">@p.PerformedAt.ToString("yyyy-MM-dd")</td>
+                            <td class="px-4 py-3 text-slate-600">
+                                @(p.DurationMinutes.HasValue ? $"{p.DurationMinutes} min" : "—")
                             </td>
-                            <td class="px-4 py-4 text-sm font-bold text-slate-900">@proc.Cost.ToString("N0") EGP</td>
-                            <td class="px-4 py-4 text-right">
-                                <a asp-controller="Procedure" asp-action="Details" asp-route-id="@proc.Id"
-                                   class="text-sm font-bold text-sky-600 hover:underline">Details</a>
+                            <td class="px-4 py-3 font-bold">
+                                @p.Cost.ToString("N0") EGP
                             </td>
                         </tr>
                     }
                 </tbody>
-                <tfoot class="bg-slate-50 border-t border-slate-200">
+
+                <tfoot class="bg-slate-50">
                     <tr>
-                        <td colspan="3" class="px-4 py-3 text-sm font-black text-right text-slate-700">Total:</td>
-                        <td class="px-4 py-3 text-sm font-black text-slate-900">@Model.Procedures.Sum(p => p.Cost).ToString("N0") EGP</td>
-                        <td></td>
+                        <td colspan="3" class="px-4 py-3 text-right font-black">
+                            Total
+                        </td>
+                        <td class="px-4 py-3 font-black">
+                            @Model.Procedures.Sum(x => x.Cost).ToString("N0") EGP
+                        </td>
                     </tr>
                 </tfoot>
             </table>
         }
         else
         {
-            <div class="p-8 text-center text-sm text-slate-500">No procedures recorded for this visit.</div>
+            <div class="p-8 text-center text-slate-500">
+                No procedures found.
+            </div>
         }
     </div>
 </div>
