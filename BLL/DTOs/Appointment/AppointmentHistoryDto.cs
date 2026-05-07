@@ -5,7 +5,7 @@ namespace BLL.DTOs.Appointment
     public class AppointmentHistoryDto
     {
         public int Id { get; set; }
-
+        public int DoctorId { get; set; }
         public string? DoctorName { get; set; }
         public Specialization? DoctorSpecialization { get; set; }
 

@@ -386,6 +386,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
 
+
+        // Map VisitDate -> VisitedDate and counts for attachments/procedures
         CreateMap<MedicalRecord, MedicalRecordDto>()
             .ForMember(dest => dest.PatientName,
                 opt => opt.MapFrom(src => src.Patient != null
@@ -394,9 +396,29 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.DoctorName,
                 opt => opt.MapFrom(src => src.Doctor != null
                     ? src.Doctor.FullName
-                    : string.Empty));
+                    : string.Empty))
+            .ForMember(dest => dest.VisitedDate,
+                opt => opt.MapFrom(src => src.VisitDate))
+            .ForMember(dest => dest.ProceduresCount,
+                opt => opt.MapFrom(src => src.Procedures != null ? src.Procedures.Count : 0))
+            .ForMember(dest => dest.AttachmentsCount,
+                opt => opt.MapFrom(src => src.Attachments != null ? src.Attachments.Count : 0));
 
         CreateMap<MedicalRecordDto, MedicalRecord>()
+            .ForMember(dest => dest.Patient, opt => opt.Ignore())
+            .ForMember(dest => dest.Doctor, opt => opt.Ignore())
+            .ForMember(dest => dest.Appointment, opt => opt.Ignore())
+            .ForMember(dest => dest.Attachments, opt => opt.Ignore())
+            .ForMember(dest => dest.Procedures, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore());
+
+            // Mapping from CreateMedicalRecordDto -> MedicalRecord
+        // Note: DTO uses "VisitedDate" while entity uses "VisitDate" so map explicitly.
+        CreateMap<CreateMedicalRecordDto, MedicalRecord>()
+            .ForMember(dest => dest.VisitDate, opt => opt.MapFrom(src => src.VisitedDate))
             .ForMember(dest => dest.Patient, opt => opt.Ignore())
             .ForMember(dest => dest.Doctor, opt => opt.Ignore())
             .ForMember(dest => dest.Appointment, opt => opt.Ignore())

@@ -1,66 +1,344 @@
-@model MedicalRecordFormViewModel
+@model Web.ViewModel.MedicalRecordFormViewModel
 @{
+    Layout = null;
     ViewData["Title"] = "Create Medical Record";
+    var patients = ViewBag.Patients as IEnumerable<BLL.DTOs.Patient.PatientDto> ?? Enumerable.Empty<BLL.DTOs.Patient.PatientDto>();
 }
-<div class="space-y-6">
-    <div>
-        <div class="flex items-center gap-2 text-sm font-semibold text-sky-600">
-            <span class="material-symbols-outlined text-[20px]">note_add</span>
-            <span>Medical records</span>
-            <span class="text-slate-300">/</span>
-            <span>Create</span>
-        </div>
-        <h2 class="mt-2 text-3xl font-black tracking-tight text-slate-950">Create Medical Record</h2>
-        <p class="mt-1 text-sm text-slate-500">Link this record to an appointment, add diagnosis and notes.</p>
-    </div>
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create Medical Record - ClinicSystem</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+    .field-error { color: #ba1a1a; font-size: 12px; margin-top: 4px; display: block; }
+    input.input-error, select.input-error, textarea.input-error { border-color: #ba1a1a !important; }
+</style>
+<script id="tailwind-config">
+    tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#005bbf", "error": "#ba1a1a", "on-surface": "#0d1d2b", "background": "#f7f9ff", "outline": "#727785", "primary-container": "#1a73e8", "error-container": "#ffdad6" }, fontSize: { "h1": ["32px",{"lineHeight":"40px","fontWeight":"700"}], "h3": ["20px",{"lineHeight":"28px","fontWeight":"600"}], "label-md": ["14px",{"lineHeight":"20px","fontWeight":"500"}], "label-sm": ["12px",{"lineHeight":"16px","fontWeight":"600"}], "body-md": ["14px",{"lineHeight":"20px","fontWeight":"400"}] } } } }
+</script>
+<link href="/css/site.css" rel="stylesheet"/>
+<link href="/css/dashboard.css" rel="stylesheet"/>
+</head>
+<body class="bg-[#f7f9ff] text-[#0d1d2b] min-h-screen">
+<input id="CurrentMvcView" type="hidden" value="Views/MedicalRecord/Create.cshtml"/>
 
-    <form asp-action="Create" method="post" enctype="multipart/form-data" class="space-y-6">
-        <input type="hidden" asp-for="PatientId" />
-        <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-            <div class="grid gap-5 md:grid-cols-2">
-                <div class="md:col-span-2">
-                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="AppointmentId">Appointment</label>
-                    <select asp-for="AppointmentId" asp-items="Model.Appointments"
-                            class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600">
-                        <option value="">Select appointment...</option>
+<!-- Sidebar -->
+<aside class="fixed left-0 top-0 h-full w-[240px] z-50 bg-slate-950 flex flex-col py-6 border-r border-slate-800">
+    <div class="px-6 mb-8 flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <span class="material-symbols-outlined text-white">medical_services</span>
+        </div>
+        <div>
+            <h1 class="text-lg font-black text-white leading-none">ClinicSystem</h1>
+            <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Medical Management</p>
+        </div>
+    </div>
+    <nav class="flex-1 px-4 space-y-1">
+        <a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 rounded-lg hover:bg-slate-900 transition-colors" href="/Home/Index"><span class="material-symbols-outlined">dashboard</span><span class="text-sm">Dashboard</span></a>
+        <a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 rounded-lg hover:bg-slate-900 transition-colors" href="/Patient/Index"><span class="material-symbols-outlined">person</span><span class="text-sm">Patients</span></a>
+        <a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 rounded-lg hover:bg-slate-900 transition-colors" href="/Appointment/Index"><span class="material-symbols-outlined">event</span><span class="text-sm">Appointments</span></a>
+        <a class="flex items-center gap-3 bg-blue-600/10 text-white border-l-4 border-blue-600 px-4 py-3 rounded-r-lg" href="/MedicalRecord/Index"><span class="material-symbols-outlined text-blue-500">clinical_notes</span><span class="text-sm font-medium">Medical Records</span></a>
+        <a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 rounded-lg hover:bg-slate-900 transition-colors" href="/Billing/Index"><span class="material-symbols-outlined">receipt_long</span><span class="text-sm">Billing</span></a>
+        <a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 rounded-lg hover:bg-slate-900 transition-colors" href="/Procedure/ManageTypes"><span class="material-symbols-outlined">inventory_2</span><span class="text-sm">Inventory</span></a>
+    </nav>
+    <div class="px-4 mt-auto border-t border-slate-800 pt-6">
+        <a class="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-3 rounded-lg hover:bg-slate-900 transition-colors" href="/User/Index"><span class="material-symbols-outlined">settings</span><span class="text-sm">Settings</span></a>
+    </div>
+</aside>
+
+<!-- Top Bar -->
+<header class="fixed top-0 right-0 h-16 w-[calc(100%-240px)] z-40 bg-white border-b border-slate-200 shadow-sm flex justify-between items-center px-8">
+    <div class="flex items-center gap-3">
+        <a href="/MedicalRecord/Index" class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <span class="text-slate-300">|</span>
+        <span class="text-sm text-slate-500">New Medical Record</span>
+    </div>
+    <p class="text-sm font-semibold text-slate-900">Dr. Sarah Jenkins</p>
+</header>
+
+<!-- Main -->
+<main class="ml-[240px] pt-16 p-8 min-h-screen">
+    <div class="max-w-3xl mx-auto">
+
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-[#0d1d2b]">New Medical Record</h2>
+            <p class="text-sm text-[#727785] mt-1">Fill in the details below to create a new medical record</p>
+        </div>
+
+        <!-- Server-side validation summary -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-red-600">error</span>
+                    <span class="text-sm font-semibold text-red-800">Please fix the following errors:</span>
+                </div>
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li class="text-sm text-red-700">@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form method="post" action="/MedicalRecord/Create" id="createRecordForm">
+            @Html.AntiForgeryToken()
+
+            <!-- Hidden fields -->
+            <input type="hidden" id="PatientId"     name="PatientId"     value="@Model.PatientId"/>
+            <input type="hidden" id="DoctorId"      name="DoctorId"      value="@Model.DoctorId"/>
+            <input type="hidden" id="AppointmentId" name="AppointmentId" value="@Model.AppointmentId"/>
+
+            <!-- ── Step 1: Patient ── -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 mb-6">
+                <h4 class="text-base font-semibold text-slate-800 mb-5 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center">1</span>
+                    Select Patient
+                </h4>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Patient <span class="text-red-500">*</span></label>
+                    <select id="patientSelect"
+                            class="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 @(ViewData.ModelState["PatientId"]?.Errors.Any() == true ? "input-error" : "")"
+                            onchange="onPatientChange(this)">
+                        <option value="">— Select a patient —</option>
+                        @foreach (var p in patients)
+                        {
+                            <option value="@p.Id" data-name="@p.FullName" selected="@(Model.PatientId == p.Id ? "selected" : null)">
+                                @p.FullName @((p.IsDeleted) ? "(former)" : "") — @p.Phone
+                            </option>
+                        }
                     </select>
-                    <span asp-validation-for="AppointmentId" class="text-xs font-semibold text-red-600 mt-1 block"></span>
-                </div>
-                <div>
-                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="FollowUpDate">Follow-up date</label>
-                    <input asp-for="FollowUpDate" type="datetime-local"
-                           class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
-                </div>
-                <div>
-                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="NewAttachments">Attachments</label>
-                    <input asp-for="NewAttachments" type="file" multiple
-                           class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600" />
-                </div>
-                <div class="md:col-span-2">
-                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Diagnosis">Diagnosis</label>
-                    <textarea asp-for="Diagnosis" rows="4" placeholder="Enter diagnosis details"
-                              class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600"></textarea>
-                    <span asp-validation-for="Diagnosis" class="text-xs font-semibold text-red-600 mt-1 block"></span>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="mb-2 block text-sm font-semibold text-slate-700" asp-for="Notes">Doctor notes</label>
-                    <textarea asp-for="Notes" rows="4" placeholder="Additional notes, observations"
-                              class="w-full rounded-lg border-slate-300 focus:border-sky-600 focus:ring-sky-600"></textarea>
+                    @if (ViewData.ModelState["PatientId"]?.Errors.Any() == true)
+                    {
+                        <span class="field-error">@ViewData.ModelState["PatientId"]!.Errors.First().ErrorMessage</span>
+                    }
                 </div>
             </div>
-        </div>
 
-        <div class="flex justify-end gap-3 border-t border-slate-200 pt-5">
-            <a asp-controller="Appointment" asp-action="Index"
-               class="rounded-lg px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-100">Cancel</a>
-            <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-sky-700">
-                <span class="material-symbols-outlined text-[18px]">note_add</span>
-                Create record
-            </button>
-        </div>
-    </form>
-</div>
+            <!-- ── Step 2: Appointment ── -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 mb-6" id="appointmentSection">
+                <h4 class="text-base font-semibold text-slate-800 mb-5 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center">2</span>
+                    Select Appointment
+                </h4>
 
-@section Scripts {
-    @await Html.PartialAsync("_ValidationScripts")
-}
+                <div id="appointmentLoading" class="hidden text-sm text-slate-400 flex items-center gap-2 py-2">
+                    <svg class="animate-spin w-4 h-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    Loading appointments...
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Appointment <span class="text-red-500">*</span></label>
+                    <select id="appointmentSelect"
+                            class="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 @(ViewData.ModelState["AppointmentId"]?.Errors.Any() == true ? "input-error" : "")"
+                            onchange="onAppointmentChange(this)">
+                        <option value="">— Select an appointment —</option>
+                    </select>
+                    @if (ViewData.ModelState["AppointmentId"]?.Errors.Any() == true)
+                    {
+                        <span class="field-error">@ViewData.ModelState["AppointmentId"]!.Errors.First().ErrorMessage</span>
+                    }
+                </div>
+
+                <!-- Doctor preview (auto-filled) -->
+                <div id="doctorPreview" class="hidden mt-4 flex items-center gap-3 bg-blue-50 border border-blue-100 rounded-lg px-4 py-3">
+                    <span class="material-symbols-outlined text-blue-600">stethoscope</span>
+                    <div>
+                        <p class="text-xs text-blue-500 font-semibold uppercase tracking-wider">Assigned Doctor</p>
+                        <p id="doctorPreviewName" class="text-sm font-semibold text-slate-800"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Step 3: Clinical Details ── -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 mb-6">
+                <h4 class="text-base font-semibold text-slate-800 mb-5 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center">3</span>
+                    Clinical Details
+                </h4>
+
+                <div class="space-y-5">
+                    <!-- Diagnosis -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" for="Diagnosis">
+                            Diagnosis <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="Diagnosis" name="Diagnosis" rows="3"
+                                  maxlength="1000"
+                                  class="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 resize-none @(ViewData.ModelState["Diagnosis"]?.Errors.Any() == true ? "input-error" : "")"
+                                  placeholder="Enter the primary diagnosis (min. 10 characters)…">@Model.Diagnosis</textarea>
+                        <div class="flex justify-between mt-1">
+                            @if (ViewData.ModelState["Diagnosis"]?.Errors.Any() == true)
+                            {
+                                <span class="field-error">@ViewData.ModelState["Diagnosis"]!.Errors.First().ErrorMessage</span>
+                            }
+                            else { <span></span> }
+                            <span class="text-xs text-slate-400" id="diagnosisCount">0 / 1000</span>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" for="Notes">
+                            Clinical Notes <span class="text-slate-400 font-normal">(optional)</span>
+                        </label>
+                        <textarea id="Notes" name="Notes" rows="4"
+                                  maxlength="2000"
+                                  class="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 resize-none"
+                                  placeholder="Additional clinical notes, observations, treatment plan…">@Model.Notes</textarea>
+                        <div class="flex justify-end mt-1">
+                            <span class="text-xs text-slate-400" id="notesCount">0 / 2000</span>
+                        </div>
+                    </div>
+
+                    <!-- Dates row -->
+                    <div class="grid grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" for="VisitedDate">
+                                Visit Date <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" id="VisitedDate" name="VisitedDate"
+                                   value='@(Model.VisitedDate.HasValue ? Model.VisitedDate.Value.ToString("yyyy-MM-dd") : string.Empty)'
+                                   max='@DateTime.Today.ToString("yyyy-MM-dd")'
+                                   class='w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 @(ViewData.ModelState["VisitedDate"]?.Errors.Any() == true ? "input-error" : "")'/>
+                            @if (ViewData.ModelState["VisitedDate"]?.Errors.Any() == true)
+                            {
+                                <span class="field-error">@ViewData.ModelState["VisitedDate"]!.Errors.First().ErrorMessage</span>
+                            }
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" for="FollowUpDate">
+                                Follow-up Date <span class="text-slate-400 font-normal">(optional)</span>
+                            </label>
+                            <input type="date" id="FollowUpDate" name="FollowUpDate"
+                                   value='@(Model.FollowUpDate.HasValue ? Model.FollowUpDate.Value.ToString("yyyy-MM-dd") : "")'
+                                   min='@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")'
+                                   class='w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10'/>
+                            <p class="text-xs text-slate-400 mt-1">Leave blank if no follow-up is required</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-3 justify-end">
+                <a href="/MedicalRecord/Index" class="px-6 py-3 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" id="submitBtn"
+                        class="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Create Record
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+    // ── Character counters ──
+    function updateCount(textarea, counterId) {
+        document.getElementById(counterId).textContent = textarea.value.length + ' / ' + textarea.maxLength;
+    }
+    const diagnosisEl = document.getElementById('Diagnosis');
+    const notesEl     = document.getElementById('Notes');
+    diagnosisEl.addEventListener('input', () => updateCount(diagnosisEl, 'diagnosisCount'));
+    notesEl.addEventListener('input',     () => updateCount(notesEl,     'notesCount'));
+    updateCount(diagnosisEl, 'diagnosisCount');
+    updateCount(notesEl,     'notesCount');
+
+    // ── Patient change → load appointments via AJAX ──
+    async function onPatientChange(select) {
+        const patientId = select.value;
+        document.getElementById('PatientId').value = patientId;
+
+        // Reset downstream fields
+        document.getElementById('AppointmentId').value = '';
+        document.getElementById('DoctorId').value      = '';
+        document.getElementById('doctorPreview').classList.add('hidden');
+
+        const apptSelect = document.getElementById('appointmentSelect');
+        apptSelect.innerHTML = '<option value="">— Select an appointment —</option>';
+
+        if (!patientId) return;
+
+        document.getElementById('appointmentLoading').classList.remove('hidden');
+
+        try {
+            const res  = await fetch(`/MedicalRecord/GetAppointmentsByPatient?patientId=${patientId}`);
+            const json = await res.json();
+
+            if (json.success && json.data.length > 0) {
+                json.data.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a.id;
+                    opt.textContent = a.label;
+                    opt.dataset.doctorId   = a.doctorId;
+                    opt.dataset.doctorName = a.doctorName;
+                    apptSelect.appendChild(opt);
+                });
+            } else {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'No appointments found for this patient';
+                opt.disabled = true;
+                apptSelect.appendChild(opt);
+            }
+        } catch (e) {
+            console.error('Failed to load appointments', e);
+        } finally {
+            document.getElementById('appointmentLoading').classList.add('hidden');
+        }
+    }
+
+    // ── Appointment change → auto-fill doctor ──
+    function onAppointmentChange(select) {
+        const opt = select.options[select.selectedIndex];
+        document.getElementById('AppointmentId').value = select.value;
+
+        if (select.value && opt.dataset.doctorId) {
+            document.getElementById('DoctorId').value = opt.dataset.doctorId;
+            document.getElementById('doctorPreviewName').textContent = opt.dataset.doctorName || 'Unknown';
+            document.getElementById('doctorPreview').classList.remove('hidden');
+        } else {
+            document.getElementById('DoctorId').value = '';
+            document.getElementById('doctorPreview').classList.add('hidden');
+        }
+    }
+
+    // ── On page load: if patientId was pre-selected, reload appointments ──
+    window.addEventListener('DOMContentLoaded', () => {
+        const preselectedPatient = '@Model.PatientId';
+        const preselectedAppt   = '@Model.AppointmentId';
+
+        if (preselectedPatient && preselectedPatient !== '0') {
+            // The select already has the patient selected from server render,
+            // trigger appointment load
+            const patientSelect = document.getElementById('patientSelect');
+            patientSelect.value = preselectedPatient;
+            onPatientChange(patientSelect).then(() => {
+                if (preselectedAppt && preselectedAppt !== '0') {
+                    const apptSelect = document.getElementById('appointmentSelect');
+                    apptSelect.value = preselectedAppt;
+                    onAppointmentChange(apptSelect);
+                }
+            });
+        }
+    });
+</script>
+<script src="/js/site.js"></script>
+</body>
+</html>
