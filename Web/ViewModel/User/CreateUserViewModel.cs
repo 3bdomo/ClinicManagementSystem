@@ -13,6 +13,6 @@ public class CreateUserViewModel
     [Compare(nameof(Password)), DataType(DataType.Password)] public string ConfirmPassword { get; set; } = string.Empty;
     [Required] public UserRole UserRole { get; set; }
     public Specialization? Specialization { get; set; }
-    [Display(Name = "Consultation Fee (EGP)")] public decimal? ConsultationFee { get; set; }
+    [Display(Name = "Consultation Fee (LE)")] public decimal? ConsultationFee { get; set; }
     public string? Bio { get; set; }
 }

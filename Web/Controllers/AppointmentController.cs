@@ -2,6 +2,7 @@ using AutoMapper;
 using BLL.DTOs.Appointment;
 using BLL.Interfaces;
 using Common.Enums;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -20,19 +21,22 @@ namespace Web.Controllers
         private readonly IDoctorScheduleService _doctorScheduleService;
         private readonly IPatientService _patientService;
         private readonly IMapper _mapper;
+        private readonly ILogger<AppointmentController> _logger;
 
         public AppointmentController(
             IAppointmentService appointmentService,
             IDoctorService doctorService,
             IDoctorScheduleService doctorScheduleService,
             IPatientService patientService,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<AppointmentController> logger)
         {
             _appointmentService = appointmentService;
             _doctorService = doctorService;
             _doctorScheduleService = doctorScheduleService;
             _patientService = patientService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         // ─────────────────────────────────────────────────────────
@@ -362,11 +366,40 @@ namespace Web.Controllers
                 return View(reloaded);
             }
 
+            // Verify there are available slots for the selected date/type before redirecting.
+            var slotsResult = await _doctorScheduleService.GetAvailableSlotsAsync(
+                vm.DoctorId,
+                vm.SelectedDate!.Value.Date,
+                vm.SelectedScheduleType);
+
+            var hasFutureSlots = slotsResult.IsSuccess &&
+                                 slotsResult.Data != null &&
+                                 slotsResult.Data.Any(s => s.SlotStart > DateTime.Now);
+
+            if (!hasFutureSlots)
+            {
+                ModelState.AddModelError(nameof(vm.SelectedDate), "No available slots for the selected date. Please choose another date.");
+
+                var reloaded = await BuildBookStep2ViewModelAsync(
+                    vm.DoctorId,
+                    vm.PatientId.Value);
+
+                if (reloaded == null)
+                    return RedirectToAction(nameof(BookStep1));
+
+                reloaded.SelectedDate = vm.SelectedDate;
+                reloaded.SelectedScheduleType = vm.SelectedScheduleType;
+
+                return View(reloaded);
+            }
+
+            // Pass date in ISO yyyy-MM-dd format to avoid ambiguous culture-specific
+            // serialization when RedirectToAction builds the query string.
             return RedirectToAction(nameof(BookStep3), new
             {
                 doctorId = vm.DoctorId,
                 patientId = vm.PatientId,
-                date = vm.SelectedDate!.Value.Date,
+                date = vm.SelectedDate!.Value.Date.ToString("yyyy-MM-dd"),
                 scheduleType = vm.SelectedScheduleType
             });
         }
@@ -412,6 +445,8 @@ namespace Web.Controllers
         // BOOK STEP 3 - POST
         // Validates selected slot, then redirects to confirmation page.
         // ─────────────────────────────────────────────────────────
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Receptionist,Patient")]
@@ -426,50 +461,66 @@ namespace Web.Controllers
             if (User.IsInRole(nameof(UserRole.Patient)))
                 vm.ScheduleType = ScheduleType.Consultation;
 
-            if (!vm.SelectedSlotStart.HasValue)
+            var rawSlot = Request.Form["SelectedSlotStart"].ToString();
+
+            if (!string.IsNullOrWhiteSpace(rawSlot) &&
+                DateTime.TryParse(rawSlot, null,
+                    System.Globalization.DateTimeStyles.None, out var parsedSlot))
             {
-                ModelState.AddModelError(
-                    nameof(vm.SelectedSlotStart),
-                    "Please select a time slot.");
+                vm.SelectedSlotStart = DateTime.SpecifyKind(parsedSlot, DateTimeKind.Unspecified);
+            }
+            else if (vm.SelectedSlotStart.HasValue)
+            {
+                vm.SelectedSlotStart = DateTime.SpecifyKind(
+                    vm.SelectedSlotStart.Value, DateTimeKind.Unspecified);
             }
 
-            if (vm.SelectedSlotStart.HasValue &&
-                vm.SelectedSlotStart.Value <= DateTime.Now)
+            ModelState.Clear();
+
+            if (!vm.SelectedSlotStart.HasValue)
             {
-                ModelState.AddModelError(
-                    nameof(vm.SelectedSlotStart),
-                    "Selected slot must be in the future.");
+                ModelState.AddModelError(nameof(vm.SelectedSlotStart), "Please select a time slot.");
+            }
+            else if (vm.SelectedSlotStart.Value <= DateTime.Now)
+            {
+                ModelState.AddModelError(nameof(vm.SelectedSlotStart), "Selected slot must be in the future.");
             }
 
             var availableSlotsResult = await _doctorScheduleService.GetAvailableSlotsAsync(
-                vm.DoctorId,
-                vm.SelectedDate,
-                vm.ScheduleType);
+                vm.DoctorId, vm.SelectedDate, vm.ScheduleType);
 
             var availableSlots = availableSlotsResult.IsSuccess
                 ? availableSlotsResult.Data!
                     .Where(s => s.SlotStart > DateTime.Now)
+                    .Select(s => new BLL.DTOs.Doctor.TimeSlotDto
+                    {
+                        SlotStart = DateTime.SpecifyKind(s.SlotStart, DateTimeKind.Unspecified),
+                        SlotEnd = DateTime.SpecifyKind(s.SlotEnd, DateTimeKind.Unspecified),
+                        SlotMinutes = s.SlotMinutes,
+                        IsAvailable = s.IsAvailable,
+                        DoctorId = s.DoctorId,
+                        ScheduleType = s.ScheduleType
+                    })
                     .ToList()
                 : new List<BLL.DTOs.Doctor.TimeSlotDto>();
 
             var selectedSlot = availableSlots.FirstOrDefault(s =>
                 vm.SelectedSlotStart.HasValue &&
-                Math.Abs((s.SlotStart - vm.SelectedSlotStart.Value).TotalSeconds) < 1);
+                s.SlotStart.Year == vm.SelectedSlotStart.Value.Year &&
+                s.SlotStart.Month == vm.SelectedSlotStart.Value.Month &&
+                s.SlotStart.Day == vm.SelectedSlotStart.Value.Day &&
+                s.SlotStart.Hour == vm.SelectedSlotStart.Value.Hour &&
+                s.SlotStart.Minute == vm.SelectedSlotStart.Value.Minute);
 
-            if (selectedSlot == null)
+            if (selectedSlot == null && vm.SelectedSlotStart.HasValue)
             {
-                ModelState.AddModelError(
-                    nameof(vm.SelectedSlotStart),
-                    "Selected slot is no longer available.");
+                ModelState.AddModelError(nameof(vm.SelectedSlotStart), "Selected slot is no longer available.");
             }
 
             if (!ModelState.IsValid)
             {
                 var reloaded = await BuildBookStep3ViewModelAsync(
-                    vm.DoctorId,
-                    vm.PatientId.Value,
-                    vm.SelectedDate,
-                    vm.ScheduleType);
+                    vm.DoctorId, vm.PatientId.Value, vm.SelectedDate, vm.ScheduleType);
 
                 if (reloaded == null)
                 {
@@ -481,7 +532,6 @@ namespace Web.Controllers
                 }
 
                 reloaded.SelectedSlotStart = vm.SelectedSlotStart;
-
                 return View(reloaded);
             }
 
@@ -489,7 +539,7 @@ namespace Web.Controllers
             {
                 doctorId = vm.DoctorId,
                 patientId = vm.PatientId,
-                appointmentDate = selectedSlot!.SlotStart,
+                appointmentDate = selectedSlot!.SlotStart.ToString("yyyy-MM-ddTHH:mm:ss"),
                 durationMinutes = selectedSlot.SlotMinutes,
                 scheduleType = vm.ScheduleType
             });

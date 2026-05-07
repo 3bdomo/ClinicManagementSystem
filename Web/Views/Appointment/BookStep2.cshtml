@@ -63,7 +63,7 @@
 
 <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
 
-    @* Summary card *@
+    @* ── Summary card ────────────────────────────────────────── *@
     <div class="xl:col-span-4 space-y-6">
 
         <div class="bg-white rounded-2xl border border-slate-200 p-6">
@@ -100,7 +100,7 @@
                             Consultation Fee
                         </p>
                         <p class="text-sm font-black text-slate-900">
-                            @Model.ConsultationFee.ToString("C", culture)
+                            @Model.ConsultationFee.ToString() LE
                         </p>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
 
     </div>
 
-    @* Schedule form *@
+    @* ── Schedule form ───────────────────────────────────────── *@
     <div class="xl:col-span-8">
 
         <form asp-action="BookStep2" method="post"
@@ -136,6 +136,8 @@
             @Html.AntiForgeryToken()
 
             <input type="hidden" asp-for="DoctorId" />
+
+            @* FIX 1: PatientId must always be posted — Patient role needs it *@
             <input type="hidden" asp-for="PatientId" />
 
             <div class="p-6 border-b border-slate-100">
@@ -154,22 +156,29 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
 
+                    @* ── Date input ──────────────────────────────── *@
                     <div>
-                        <label asp-for="SelectedDate"
+                        <label for="SelectedDate"
                                class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">
                             Appointment Date
                         </label>
 
-                        <input asp-for="SelectedDate"
-                               type="date"
+                        @* FIX 2: Use name= instead of asp-for to avoid asp-for
+                           overriding the value attribute with null on fresh load *@
+                        <input type="date"
+                               name="SelectedDate"
+                               id="SelectedDate"
                                value="@(Model.SelectedDate?.ToString("yyyy-MM-dd"))"
                                min="@DateTime.Today.ToString("yyyy-MM-dd")"
-                               class="w-full rounded-xl border-slate-200 text-sm focus:border-blue-500 focus:ring-blue-500" />
+                               class="w-full rounded-xl border-slate-200 text-sm
+                                      focus:border-blue-500 focus:ring-blue-500"
+                               required />
 
                         <span asp-validation-for="SelectedDate"
                               class="block mt-2 text-sm text-red-600"></span>
                     </div>
 
+                    @* ── Schedule type ───────────────────────────── *@
                     <div>
                         <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1">
                             Schedule Type
@@ -177,8 +186,11 @@
 
                         @if (isPatient)
                         {
-                            @* Patient booking is consultation only. *@
-                            <input type="hidden" asp-for="SelectedScheduleType" value="@ScheduleType.Consultation" />
+                            @* FIX 3: Send int value so model binding works correctly.
+                               String "Consultation" fails to bind to ScheduleType enum. *@
+                            <input type="hidden"
+                                   name="SelectedScheduleType"
+                                   value="@((int)ScheduleType.Consultation)" />
 
                             <div class="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-700">
                                 Consultation
@@ -196,7 +208,7 @@
                                     <div class="flex items-center gap-3">
                                         <input type="radio"
                                                asp-for="SelectedScheduleType"
-                                               value="@ScheduleType.Consultation"
+                                               value="@((int)ScheduleType.Consultation)"
                                                class="text-blue-600 focus:ring-blue-500" />
                                         <div>
                                             <p class="font-black text-slate-900">Consultation</p>
@@ -209,7 +221,7 @@
                                     <div class="flex items-center gap-3">
                                         <input type="radio"
                                                asp-for="SelectedScheduleType"
-                                               value="@ScheduleType.Surgery"
+                                               value="@((int)ScheduleType.Surgery)"
                                                class="text-purple-600 focus:ring-purple-500" />
                                         <div>
                                             <p class="font-black text-slate-900">Surgery</p>
@@ -227,15 +239,15 @@
 
                 </div>
 
-                @* Schedule list. It is intentionally light to avoid depending on too many DTO fields. *@
+                @* ── Doctor schedules preview ─────────────────── *@
                 <div class="rounded-2xl border border-slate-200 p-5 mb-6">
-                    <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center justify-between gap-3 mb-4">
                         <div>
                             <h4 class="font-black text-slate-900">
                                 Doctor Schedules
                             </h4>
                             <p class="text-sm text-slate-500 mt-1">
-                                @Model.Schedules.Count() schedule record(s) available for this doctor.
+                                Review the doctor's working schedules before selecting a date.
                             </p>
                         </div>
 
@@ -247,18 +259,81 @@
 
                     @if (!Model.Schedules.Any())
                     {
-                        <div class="mt-4 rounded-xl bg-amber-50 border border-amber-100 p-4 text-sm text-amber-700 font-semibold">
+                        <div class="rounded-xl bg-amber-50 border border-amber-100 p-4 text-sm text-amber-700 font-semibold">
                             No schedules were found for this doctor.
                         </div>
                     }
                     else
                     {
-                        <div class="mt-4 rounded-xl bg-slate-50 border border-slate-100 p-4 text-sm text-slate-600">
-                            Select a date and type, then continue to view available slots.
+                        <div class="space-y-3">
+
+                            @foreach (var schedule in Model.Schedules
+                                                    .OrderBy(s => s.DayOfWeek)
+                                                    .ThenBy(s => s.SpecificDate)
+                                                    .ThenBy(s => s.StartTime))
+                            {
+                                // Pre-compute badge classes — safer with Tailwind CDN
+                                var typeBadge = GetScheduleTypeBadgeClasses(schedule.ScheduleType);
+
+                                var statusBadge = schedule.IsActive
+                                ? "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700"
+                                : "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500";
+
+                                <div class="rounded-2xl border border-slate-200 p-4 hover:bg-slate-50 transition-colors">
+                                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+
+                                        <div class="flex items-start gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                                <span class="material-symbols-outlined text-blue-600">schedule</span>
+                                            </div>
+
+                                            <div>
+                                                <div class="flex flex-wrap items-center gap-2 mb-2">
+                                                    <span class="@typeBadge">
+                                                        @SplitPascal(schedule.ScheduleType.ToString())
+                                                    </span>
+                                                    <span class="@statusBadge">
+                                                        @(schedule.IsActive ? "Active" : "Inactive")
+                                                    </span>
+                                                </div>
+
+                                                <p class="font-black text-slate-900">
+                                                    @GetScheduleDisplayDate(schedule.DayOfWeek, schedule.SpecificDate)
+                                                </p>
+
+                                                <p class="text-sm text-slate-500 mt-1">
+                                                    @schedule.StartTime.ToString("hh:mm tt")
+                                                    –
+                                                    @schedule.EndTime.ToString("hh:mm tt")
+                                                </p>
+
+                                                @if (!string.IsNullOrWhiteSpace(schedule.Notes))
+                                                {
+                                                    <p class="text-xs text-slate-400 mt-2">
+                                                        @schedule.Notes
+                                                    </p>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center gap-2 text-sm text-slate-600 lg:text-right">
+                                            <span class="material-symbols-outlined text-slate-400 text-[18px]">timer</span>
+                                            <span class="font-bold">@schedule.SlotMinutes min slots</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+
+                        <div class="mt-4 rounded-xl bg-blue-50 border border-blue-100 p-4 text-sm text-blue-700">
+                            Select a date and schedule type above, then continue to view available slots.
                         </div>
                     }
                 </div>
 
+                @* ── Footer buttons ───────────────────────────── *@
                 <div class="flex flex-wrap items-center justify-between gap-3 pt-6 border-t border-slate-100">
 
                     <a asp-action="BookStep1"
@@ -289,19 +364,37 @@
 @functions {
     private static string SplitPascal(string value)
     {
-        if (string.IsNullOrWhiteSpace(value))
-            return value;
-
+        if (string.IsNullOrWhiteSpace(value)) return value;
         var result = "";
-
         for (var i = 0; i < value.Length; i++)
         {
-            if (i > 0 && char.IsUpper(value[i]))
-                result += " ";
-
+            if (i > 0 && char.IsUpper(value[i])) result += " ";
             result += value[i];
         }
-
         return result;
+    }
+
+    // Shows weekly day name or specific date string
+    private static string GetScheduleDisplayDate(DayOfWeek? dayOfWeek, DateOnly? specificDate)
+    {
+        if (specificDate.HasValue)
+            return specificDate.Value.ToString("MMM dd, yyyy");
+        if (dayOfWeek.HasValue)
+            return dayOfWeek.Value.ToString();
+        return "Flexible schedule";
+    }
+
+    // Pre-computed static classes — dynamic ternary breaks Tailwind CDN
+    private static string GetScheduleTypeBadgeClasses(ScheduleType scheduleType)
+    {
+        return scheduleType switch
+        {
+            ScheduleType.Surgery =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-700",
+            ScheduleType.Consultation =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700",
+            _ =>
+                "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600"
+        };
     }
 }
