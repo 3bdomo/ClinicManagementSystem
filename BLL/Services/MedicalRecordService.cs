@@ -157,6 +157,7 @@ namespace BLL.Services
                     TotalRecords = records.Count,
                     TotalVisits = records.Count,
                     TotalProcedures = records.Sum(r => r.Procedures?.Count ?? 0),
+
                     UniqueConditions = records
                         .Select(r => r.Diagnosis.ToLower().Trim())
                         .Distinct()

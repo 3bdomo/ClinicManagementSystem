@@ -62,7 +62,7 @@
                 <col class="col-rank" />
                 <col class="col-doc" />
                 <col class="col-spec" />
-                <col class="col-phone hide-sm" />
+                @* <col class="col-phone hide-sm" /> *@
                 <col class="col-fee hide-sm" />
                 <col class="col-pts" />
             </colgroup>
@@ -71,7 +71,7 @@
                     <th>#</th>
                     <th>Doctor</th>
                     <th>Specialization</th>
-                    <th class="hide-sm">Phone</th>
+                    @* <th class="hide-sm">Phone</th> *@
                     <th class="hide-sm">Fee</th>
                     <th>Patients</th>
                 </tr>
@@ -111,14 +111,14 @@
                                     <div class="td-avatar">@initial</div>
                                     <div>
                                         <div class="doc-name">@doctor.DoctorName</div>
-                                        <div class="doc-id">Doctor ID: @doctor.DoctorId</div>
+                                        @* <div class="doc-id he">Doctor ID: @doctor.DoctorId</div> *@
                                     </div>
                                 </div>
                             </td>
                             <td><span class="spec-pill">@doctor.Specialization</span></td>
-                            <td class="phone-val hide-sm">
+                            @* <td class="phone-val hide-sm">
                                 @(string.IsNullOrWhiteSpace(doctor.Phone) ? "—" : doctor.Phone)
-                            </td>
+                            </td> *@
                             <td class="fee-val hide-sm">
                                 @(doctor.ConsultationFee?.ToString("N0") ?? "0") EGP
                             </td>

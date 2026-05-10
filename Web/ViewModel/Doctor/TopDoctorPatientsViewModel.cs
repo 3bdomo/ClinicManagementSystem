@@ -10,7 +10,7 @@
 
         public string Specialization { get; set; } = string.Empty;
 
-        public string? Phone { get; set; }
+      //  public string? Phone { get; set; }
 
         public decimal? ConsultationFee { get; set; }
 
