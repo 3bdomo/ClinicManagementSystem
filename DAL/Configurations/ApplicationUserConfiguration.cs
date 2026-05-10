@@ -8,6 +8,8 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
+        builder.HasQueryFilter(u => !u.IsDeleted);
+
         builder.Property(u => u.IsActive)
             .HasDefaultValue(true);
 
@@ -20,6 +22,15 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
 
         builder.Property(u => u.CreatedAt)
             .IsRequired();
+
+        builder.HasIndex(u => u.NormalizedUserName)
+            .HasDatabaseName("UserNameIndex")
+            .IsUnique()
+            .HasFilter("[NormalizedUserName] IS NOT NULL AND [IsDeleted] = 0");
+
+        builder.HasIndex(u => u.NormalizedEmail)
+            .HasDatabaseName("EmailIndex")
+            .HasFilter("[NormalizedEmail] IS NOT NULL AND [IsDeleted] = 0");
 
         builder.HasOne(u => u.Doctor)
             .WithOne(d => d.ApplicationUser)

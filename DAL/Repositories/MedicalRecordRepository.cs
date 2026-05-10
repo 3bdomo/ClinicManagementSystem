@@ -16,11 +16,23 @@ namespace DAL.Repositories
         {
         }
 
+        public override async Task<IEnumerable<MedicalRecord>> GetAllAsync(int pageNumber, int pageSize)
+            => await _dbSet
+                .Include(r => r.Patient)
+                .Include(r => r.Doctor)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
         public async Task<MedicalRecord?> GetByAppointmentAsync(int appointmentId)
             => await _dbSet.FirstOrDefaultAsync(r => r.AppointmentId == appointmentId);
 
         public async Task<IEnumerable<MedicalRecord>> GetByPatientAsync(int patientId)
-            => await _dbSet.Where(r => r.PatientId == patientId).ToListAsync();
+            => await _dbSet
+                .Include(r => r.Patient)
+                .Include(r => r.Doctor)
+                .Where(r => r.PatientId == patientId)
+                .ToListAsync();
 
         public async Task<MedicalRecord?> GetFullAsync(int recordId)
             => await _dbSet

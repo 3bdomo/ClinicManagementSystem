@@ -2,10 +2,12 @@ using AutoMapper;
 using BLL.DTOs.Doctor;
 using BLL.Interfaces;
 using Common.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Web.ViewModel;
 
+[Authorize(Roles = "Admin,Doctor,Receptionist")]
 public class DoctorScheduleController : Controller
 {
     private const int DoctorsPageSize = 500;

@@ -73,8 +73,8 @@ public class DoctorScheduleService : IDoctorScheduleService
         if (dto.SlotMinutes <= 0)
         {
             var configKey = dto.ScheduleType == ScheduleType.Surgery
-                ? "ClinicSettings:SurgerySlotMinutes"
-                : "ClinicSettings:AppointmentSlotMinutes";
+                ? "AppSettings:SurgerySlotMinutes"
+                : "AppSettings:AppointmentSlotMinutes";
 
             var raw = _config[configKey];
             if (!int.TryParse(raw, out var slotMinutes))
@@ -100,6 +100,8 @@ public class DoctorScheduleService : IDoctorScheduleService
 
         if (dto.StartTime >= dto.EndTime)
             return OperationResult.Failure("Start time must be before end time");
+        if (dto.SlotMinutes > 0 && dto.StartTime.AddMinutes(dto.SlotMinutes) != dto.EndTime)
+            return OperationResult.Failure("End time must equal start time + slot minutes");
 
         if (dto.DayOfWeek.HasValue == dto.SpecificDate.HasValue)
             return OperationResult.Failure("Specify either a weekday or a specific date — not both");

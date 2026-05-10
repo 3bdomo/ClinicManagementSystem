@@ -1,12 +1,14 @@
 using AutoMapper;
 using BLL.DTOs.Procedure;
 using BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Web.ViewModel;
 
 namespace Web.Controllers
 {
+    [Authorize(Roles = "Admin,Doctor,Receptionist")]
     public class ProcedureController : Controller
     {
         private readonly IProcedureService _procedureService;

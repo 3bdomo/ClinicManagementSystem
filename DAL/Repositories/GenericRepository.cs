@@ -21,11 +21,11 @@ namespace DAL.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(int pageNumber, int pageSize)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(int pageNumber, int pageSize)
         {
             return await _dbSet.Skip((pageNumber - 1) * pageSize)
-                               .Take(pageSize)
-                               .ToListAsync();
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)
@@ -36,7 +36,7 @@ namespace DAL.Repositories
             => await _dbSet.FirstOrDefaultAsync(expression);
 
         public async Task AddAsync(T entity)
-           => await _dbSet.AddAsync(entity);
+            => await _dbSet.AddAsync(entity);
 
         public void Update(T entity)
             => _dbSet.Update(entity);
