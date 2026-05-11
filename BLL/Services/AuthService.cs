@@ -35,8 +35,8 @@ public class AuthService : IAuthService
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                return OperationResult<string>.Failure(errors);
+               // var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return OperationResult<string>.Failure("Failed to register user.");
             }
 
             var patient = _mapper.Map<Patient>(model);
