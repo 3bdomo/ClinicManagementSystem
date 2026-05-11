@@ -47,10 +47,10 @@ public static class DbSeeder
         {
             var receptionistsData = new[]
             {
-                (Email: "rec1@clinic.com", Name: "Mona Adel",   Phone: "01000000010"),
-                (Email: "rec2@clinic.com", Name: "Dina Kamal",  Phone: "01000000011"),
-                (Email: "rec3@clinic.com", Name: "Heba Nasser", Phone: "01000000012"),
-                (Email: "rec4@clinic.com", Name: "Reem Samir",  Phone: "01000000013"),
+                (Email: "reception1@clinic.com", Name: "Mona Adel",   Phone: "01000000010"),
+                (Email: "reception2@clinic.com", Name: "Dina Kamal",  Phone: "01000000011"),
+                (Email: "reception3@clinic.com", Name: "Heba Nasser", Phone: "01000000012"),
+                (Email: "reception4@clinic.com", Name: "Reem Samir",  Phone: "01000000013"),
             };
 
             foreach (var r in receptionistsData)
@@ -65,7 +65,7 @@ public static class DbSeeder
                     CreatedAt      = DateTime.UtcNow,
                     EmailConfirmed = true
                 };
-                var res = await userManager.CreateAsync(recUser, "Rec@123");
+                var res = await userManager.CreateAsync(recUser, "Receptionist@123");
                 if (res.Succeeded)
                 {
                     await userManager.AddToRoleAsync(recUser, "Receptionist");
@@ -140,16 +140,16 @@ public static class DbSeeder
         {
             var patientsData = new[]
             {
-                (Email: "p1@clinic.com",  Name: "Sara Tarek",     Dob: new DateOnly(1995, 5, 20),  Gender: Gender.Female, NatId: "29505201234501", Phone: "01200000001", Blood: "A+",  Addr: "Cairo"),
-                (Email: "p2@clinic.com",  Name: "Omar Fathy",     Dob: new DateOnly(1988, 3, 15),  Gender: Gender.Male,   NatId: "28803151234502", Phone: "01200000002", Blood: "B+",  Addr: "Giza"),
-                (Email: "p3@clinic.com",  Name: "Layla Hassan",   Dob: new DateOnly(2000, 7, 10),  Gender: Gender.Female, NatId: "30007101234503", Phone: "01200000003", Blood: "O+",  Addr: "Alexandria"),
-                (Email: "p4@clinic.com",  Name: "Karim Nabil",    Dob: new DateOnly(1979, 11, 25), Gender: Gender.Male,   NatId: "27911251234504", Phone: "01200000004", Blood: "AB+", Addr: "Cairo"),
-                (Email: "p5@clinic.com",  Name: "Nadia Samir",    Dob: new DateOnly(1993, 1, 8),   Gender: Gender.Female, NatId: "29301081234505", Phone: "01200000005", Blood: "A-",  Addr: "Mansoura"),
-                (Email: "p6@clinic.com",  Name: "Youssef Adel",   Dob: new DateOnly(1985, 9, 3),   Gender: Gender.Male,   NatId: "28509031234506", Phone: "01200000006", Blood: "O-",  Addr: "Tanta"),
-                (Email: "p7@clinic.com",  Name: "Hana Mostafa",   Dob: new DateOnly(2002, 4, 17),  Gender: Gender.Female, NatId: "30204171234507", Phone: "01200000007", Blood: "B-",  Addr: "Minya"),
-                (Email: "p8@clinic.com",  Name: "Tarek Salah",    Dob: new DateOnly(1970, 6, 30),  Gender: Gender.Male,   NatId: "27006301234508", Phone: "01200000008", Blood: "A+",  Addr: "Aswan"),
-                (Email: "p9@clinic.com",  Name: "Rania Gamal",    Dob: new DateOnly(1998, 12, 5),  Gender: Gender.Female, NatId: "29812051234509", Phone: "01200000009", Blood: "O+",  Addr: "Luxor"),
-                (Email: "p10@clinic.com", Name: "Mahmoud Wael",   Dob: new DateOnly(1991, 8, 22),  Gender: Gender.Male,   NatId: "29108221234510", Phone: "01200000010", Blood: "B+",  Addr: "Suez"),
+                (Email: "patient1@clinic.com",  Name: "Sara Tarek",     Dob: new DateOnly(1995, 5, 20),  Gender: Gender.Female, NatId: "29505201234501", Phone: "01200000001", Blood: "A+",  Addr: "Cairo"),
+                (Email: "patient2@clinic.com",  Name: "Omar Fathy",     Dob: new DateOnly(1988, 3, 15),  Gender: Gender.Male,   NatId: "28803151234502", Phone: "01200000002", Blood: "B+",  Addr: "Giza"),
+                (Email: "patient3@clinic.com",  Name: "Layla Hassan",   Dob: new DateOnly(2000, 7, 10),  Gender: Gender.Female, NatId: "30007101234503", Phone: "01200000003", Blood: "O+",  Addr: "Alexandria"),
+                (Email: "patient4@clinic.com",  Name: "Karim Nabil",    Dob: new DateOnly(1979, 11, 25), Gender: Gender.Male,   NatId: "27911251234504", Phone: "01200000004", Blood: "AB+", Addr: "Cairo"),
+                (Email: "patient5@clinic.com",  Name: "Nadia Samir",    Dob: new DateOnly(1993, 1, 8),   Gender: Gender.Female, NatId: "29301081234505", Phone: "01200000005", Blood: "A-",  Addr: "Mansoura"),
+                (Email: "patient6@clinic.com",  Name: "Youssef Adel",   Dob: new DateOnly(1985, 9, 3),   Gender: Gender.Male,   NatId: "28509031234506", Phone: "01200000006", Blood: "O-",  Addr: "Tanta"),
+                (Email: "patient7@clinic.com",  Name: "Hana Mostafa",   Dob: new DateOnly(2002, 4, 17),  Gender: Gender.Female, NatId: "30204171234507", Phone: "01200000007", Blood: "B-",  Addr: "Minya"),
+                (Email: "patient8@clinic.com",  Name: "Tarek Salah",    Dob: new DateOnly(1970, 6, 30),  Gender: Gender.Male,   NatId: "27006301234508", Phone: "01200000008", Blood: "A+",  Addr: "Aswan"),
+                (Email: "patient9@clinic.com",  Name: "Rania Gamal",    Dob: new DateOnly(1998, 12, 5),  Gender: Gender.Female, NatId: "29812051234509", Phone: "01200000009", Blood: "O+",  Addr: "Luxor"),
+                (Email: "patient10@clinic.com", Name: "Mahmoud Wael",   Dob: new DateOnly(1991, 8, 22),  Gender: Gender.Male,   NatId: "29108221234510", Phone: "01200000010", Blood: "B+",  Addr: "Suez"),
             };
 
             foreach (var p in patientsData)
