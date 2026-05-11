@@ -111,7 +111,7 @@ public class DoctorController : Controller
                     DoctorId = doctor.Id,
                     DoctorName = doctor.FullName ?? string.Empty,
                     Specialization = doctor.Specialization.ToString(),
-                    Phone = doctor.Phone,
+                    //Phone = doctor.Phone,
                     ConsultationFee = doctor.ConsultationFee,
                     PatientsCount = stat.PatientsCount
                 })

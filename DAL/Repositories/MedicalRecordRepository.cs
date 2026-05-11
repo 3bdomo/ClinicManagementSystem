@@ -44,13 +44,14 @@ namespace DAL.Repositories
                 .FirstOrDefaultAsync(r => r.Id == recordId);
 
         public async Task<IEnumerable<MedicalRecord>> GetUpcomingFollowUpsAsync(DateTime from, DateTime to)
-            => await _dbSet
-                .Include(r => r.Patient)
-                .Include(r => r.Doctor)
-                .Where(r => r.FollowUpDate.HasValue
-                         && r.FollowUpDate.Value >= from
-                         && r.FollowUpDate.Value <= to)
-                .ToListAsync();
+         => await _dbSet
+          .Include(r => r.Patient)
+          .Include(r => r.Doctor)
+          .Where(r => r.FollowUpDate.HasValue
+                   && r.FollowUpDate.Value >= from
+                   && r.FollowUpDate.Value <= to)
+          .OrderBy(r => r.FollowUpDate)
+          .ToListAsync();
     }
 
 }
