@@ -96,7 +96,7 @@ public static class DbSeeder
             var doctorsData = new[]
             {
                 (Email: "dr.ahmed@clinic.com",   Name: "Dr. Ahmed Ali",      Spec: Specialization.General,       Fee: 500m,  Phone: "01100000001"),
-                (Email: "dr.sara@clinic.com",    Name: "Dr. Sara Mohamed",   Spec: Specialization.Cardiology,    Fee: 700m,  Phone: "01100000002"),
+                (Email: "dr.sara@clinic.com",    Name: "Dr. Sara Mohamed",   Spec: Specialization.Pediatrics,    Fee: 700m,  Phone: "01100000002"),
                 (Email: "dr.khaled@clinic.com",  Name: "Dr. Khaled Hassan",  Spec: Specialization.Orthopedics,   Fee: 600m,  Phone: "01100000003"),
                 (Email: "dr.nour@clinic.com",    Name: "Dr. Nour Ibrahim",   Spec: Specialization.Dermatology,   Fee: 550m,  Phone: "01100000004"),
             };
