@@ -11,6 +11,10 @@ public static class DbSeeder
     public static async Task SeedAsync(IServiceProvider serviceProvider)
     {
         var context     = serviceProvider.GetRequiredService<ClinicDbContext>();
+        
+        // Ensure database is created and migrations are applied
+        await context.Database.MigrateAsync();
+
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
