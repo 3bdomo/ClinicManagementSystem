@@ -97,9 +97,37 @@ public class AuthService : IAuthService
                 return OperationResult<string>.Failure(errors);
             }
 
-            var patient = _mapper.Map<Patient>(model);
-            patient.ApplicationUserId = user.Id;
-            await _unitOfWork.Patients.AddAsync(patient);
+            // Create role-specific profile based on the user role
+            switch (role)
+            {
+                case UserRole.Patient:
+                    var patient = _mapper.Map<Patient>(model);
+                    patient.ApplicationUserId = user.Id;
+                    await _unitOfWork.Patients.AddAsync(patient);
+                    break;
+
+                case UserRole.Doctor:
+                    var doctor = new Doctor
+                    {
+                        ApplicationUserId = user.Id,
+                        FullName = model.FullName,
+                        Phone = model.Phone,
+                        IsAvailable = true
+                    };
+                    await _unitOfWork.Doctors.AddAsync(doctor);
+                    break;
+
+                case UserRole.Receptionist:
+                    var receptionist = new Receptionist
+                    {
+                        ApplicationUserId = user.Id,
+                        FullName = model.FullName,
+                        Phone = model.Phone,
+                        IsActive = true
+                    };
+                    await _unitOfWork.Receptionists.AddAsync(receptionist);
+                    break;
+            }
 
             await _unitOfWork.SaveChangesAsync();
             await transaction.CommitAsync();
