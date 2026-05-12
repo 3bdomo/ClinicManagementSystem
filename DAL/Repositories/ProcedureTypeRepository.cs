@@ -1,4 +1,4 @@
-﻿using ClinicSystem.DAL.Models;
+using ClinicSystem.DAL.Models;
 using DAL.Context;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -20,5 +20,8 @@ namespace DAL.Repositories
         => await _dbSet
         .Where(pt => pt.IsActive)
         .ToListAsync();
+
+        public async Task<ProcedureType?> GetByNameAsync(string name)
+            => await _dbSet.FirstOrDefaultAsync(pt => pt.Name == name);
     }
 }

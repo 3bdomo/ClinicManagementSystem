@@ -22,7 +22,12 @@ namespace BLL.Services
         {
             var existingPatient = await _unitOfWork.Patients.GetByNationalIdAsync(dto.NationalId);
             if (existingPatient != null)
+            {
+                if (existingPatient.IsDeleted)
+                    return OperationResult.Failure("A patient with this National ID exists but was previously deleted. Please restore the patient instead of creating a new one.");
+                
                 return OperationResult.Failure("A patient with the same National ID already exists.");
+            }
             var patientEntity = _mapper.Map<Patient>(dto);
             await _unitOfWork.Patients.AddAsync(patientEntity);
             await _unitOfWork.SaveChangesAsync();

@@ -81,27 +81,14 @@
     {
         @* Patient specific quick actions *@
         <div class="grid gap-4 md:grid-cols-3">
-            <div class="stat-card">
+            <div class="stat-card cursor-pointer hover:shadow-md transition-shadow">
                 <span class="material-symbols-outlined text-sky-600">event</span>
                 <p class="mt-4 text-sm font-bold text-slate-500">My Appointments</p>
                 <a asp-controller="Appointment" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
                     Manage appointments <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </a>
             </div>
-            <div class="stat-card">
-                <span class="material-symbols-outlined text-emerald-500">clinical_notes</span>
-                <p class="mt-4 text-sm font-bold text-slate-500">My Medical Records</p>
-                <a asp-controller="MedicalRecord" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
-                    View records <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                </a>
-            </div>
-            <div class="stat-card">
-                <span class="material-symbols-outlined text-amber-500">receipt</span>
-                <p class="mt-4 text-sm font-bold text-slate-500">My Invoices</p>
-                <a asp-controller="Billing" asp-action="Index" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:underline">
-                    View bills <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                </a>
-            </div>
+            
         </div>
     }
 

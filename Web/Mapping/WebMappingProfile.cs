@@ -122,6 +122,14 @@ public class WebMappingProfile : Profile
         CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.CreateProcedureTypeDto>();
         CreateMap<ProcedureTypeFormViewModel, BLL.DTOs.Procedure.UpdateProcedureTypeDto>();
 
+        CreateMap<ProcedureFormViewModel, BLL.DTOs.Procedure.CreateProcedureDto>();
+        CreateMap<BLL.DTOs.Procedure.ProcedureDto, ProcedureFormViewModel>();
+        CreateMap<ProcedureFormViewModel, BLL.DTOs.Procedure.UpdateProcedureDto>();
+        CreateMap<BLL.DTOs.Procedure.ProcedureDto, ProcedureRowViewModel>();
+        CreateMap<BLL.DTOs.Procedure.ProcedureDto, ProcedureDetailsViewModel>()
+            .ForMember(dest => dest.Procedure, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.AuditInfo, opt => opt.MapFrom(src => src));
+
         CreateMap<DoctorScheduleDto, DoctorScheduleFormViewModel>();
         CreateMap<DoctorScheduleFormViewModel, DoctorScheduleDto>();
 

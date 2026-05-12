@@ -140,6 +140,10 @@ namespace BLL.Services
 
         public async Task<OperationResult<int>> CreateTypeAsync(CreateProcedureTypeDto dto)
         {
+            var existing = await _unitOfWork.ProcedureTypes.GetByNameAsync(dto.Name);
+            if (existing != null)
+                return OperationResult<int>.Failure($"A procedure type with name '{dto.Name}' already exists.");
+
             var procedureType = _mapper.Map<ProcedureType>(dto);
             await _unitOfWork.ProcedureTypes.AddAsync(procedureType);
             await _unitOfWork.SaveChangesAsync();

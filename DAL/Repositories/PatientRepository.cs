@@ -10,7 +10,7 @@ internal class PatientRepository : GenericRepository<Patient>, IPatientRepositor
     public PatientRepository(ClinicDbContext context) : base(context) { }
 
     public async Task<Patient?> GetByNationalIdAsync(string nationalId)
-        => await _dbSet.FirstOrDefaultAsync(p => p.NationalId == nationalId);
+        => await _dbSet.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.NationalId == nationalId);
 
     public async Task<Patient?> GetByUserIdAsync(string applicationUserId)
         => await _dbSet
